@@ -1,0 +1,21 @@
+html {
+    background-color: transparent;
+}
+
+body {
+    margin: 0;
+    border-radius: 16px;
+    background-color: transparent;
+}
+
+h1 {
+    text-align: center;
+}
+
+div {
+    border-radius: 16px;
+    width: 400px;
+    height: 250px;
+    overflow: hidden;
+    background-color: #172e53;
+}
