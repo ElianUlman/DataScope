@@ -1,7 +1,7 @@
-//FRONTEND DE LA EXTENSION
+//BACKEND DE LA EXTENSION
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.type === "Prompt Enviado") {
-        document.getElementById("mensaje").textContent = message.data;
+        console.log("Mensaje recibido del content script:", message.data);
     }
 });

@@ -1,21 +1,19 @@
-html {
-    background-color: transparent;
+html, body {
+    margin: 0;
+    padding: 0;
+    background: transparent;
+    overflow: hidden;
+    
 }
 
-body {
-    margin: 0;
-    border-radius: 16px;
-    background-color: transparent;
+div {
+    width: 400px;
+    height: 250px;
+    background-color: #172e53;
+    overflow: hidden;
 }
 
 h1 {
     text-align: center;
-}
-
-div {
-    border-radius: 16px;
-    width: 400px;
-    height: 250px;
-    overflow: hidden;
-    background-color: #172e53;
+    color: white;
 }

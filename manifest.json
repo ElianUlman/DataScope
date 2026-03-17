@@ -3,8 +3,22 @@
   "description": "Base Level Extension",
   "version": "1.0",
   "manifest_version": 3,
+  "permissions": ["storage", "activeTab", "scripting"], 
   "action": {
     "default_popup": "hello.html",
     "default_icon": "hello_extensions.png"
-  }
+  },
+  "host_permissions": [
+    "https://chat.openai.com/*",
+    "https://*.openai.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://chat.openai.com/*", "https://chatgpt.com/"],
+      "js": ["content.js"]
+    }
+  ]
 }
