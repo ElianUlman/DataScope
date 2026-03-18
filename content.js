@@ -45,13 +45,16 @@ function guardarDatos(texto) {
     }
 }
 
+let editorEncontrado = false
+
 const observer = new MutationObserver((mutations, obs) => {
     const element = document.querySelector(TARGET_EDITOR);
 
-    if (element) {
-        console.log("¡Elemento encontrado!", element);
+    if (element && !editorEncontrado) {
 
+        console.log("¡Elemento encontrado!", element);
         editor = element
+        editorEncontrado = true
 
         setupButtonListener();
     }
@@ -61,5 +64,3 @@ observer.observe(document.body, {
     childList: true,
     subtree: true
 });
-
-console.log("LA EXTENSION ESTUVO ACA")
