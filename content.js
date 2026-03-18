@@ -1,8 +1,8 @@
-const TARGET_SELECTOR = 'div[id="prompt-textarea"]';
+const TARGET_EDITOR = 'div[id="prompt-textarea"]';
 let editor; 
 
 const observer = new MutationObserver((mutations, obs) => {
-    const element = document.querySelector(TARGET_SELECTOR);
+    const element = document.querySelector(TARGET_EDITOR);
 
     if (element) {
         console.log("¡Elemento encontrado!", element);
