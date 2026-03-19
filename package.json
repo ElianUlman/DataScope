@@ -1,0 +1,18 @@
+{
+  "name": "datascopeapi",
+  "version": "1.0.0",
+  "description": "API for dataScope db queries",
+  "license": "ISC",
+  "author": "LucaG",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js"
+  },
+  "dependencies": {
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}

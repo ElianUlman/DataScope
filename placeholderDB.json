@@ -1,0 +1,30 @@
+{
+    "company":[
+        {
+            "id":1,
+            "name": "pepe SRL.",
+            "password": "easy1234"
+        }
+    ],
+
+    "companyAreas":[
+        {
+            "id":1,
+            "name": "IT",
+            "password": "fuckHR",
+            "companyId": 1
+        },
+        {
+            "id": 2,
+            "name": "HR",
+            "password": "we_are_a_community",
+            "companyId": 1
+        },
+        {
+            "id":3,
+            "name": "I+D",
+            "password": "putoElQueLee",
+            "companyId": 1
+        }
+    ]
+}
