@@ -14,12 +14,12 @@ const CONFIG_SITIOS = {
 };
 
 function guardarDatos(texto) {
-    const limpio = texto.trim();
+    const TextoLimpio = texto.trim();
 
-    if (limpio !== "" && limpio !== ultimoTextoProcesado) {
-        ultimoTextoProcesado = limpio;
+    if (TextoLimpio !== "" && TextoLimpio !== ultimoTextoProcesado) {
+        ultimoTextoProcesado = TextoLimpio;
 
-        const DATOS = { tipo: "PROMPT", contenido: limpio };
+        const DATOS = { tipo: "PROMPT", contenido: TextoLimpio };
         chrome.runtime.sendMessage(DATOS, (res) => {
             if (chrome.runtime.lastError) {
                 console.warn("Error enviando:", chrome.runtime.lastError.message);
@@ -28,7 +28,7 @@ function guardarDatos(texto) {
     }
 }
 
-function obtenerConfiguracionActual() {
+function obtenerConfiguracion() {
     const host = window.location.hostname;
     let config = null
 
@@ -49,7 +49,7 @@ function manejarTeclado(e) {
     }
 }
 
-const configActual = obtenerConfiguracionActual();
+const configActual = obtenerConfiguracion();
 let editor;
 let ultimaUrl = location.href;
 let ultimoTextoProcesado = "";
@@ -67,8 +67,8 @@ if (configActual) {
 
     document.addEventListener('click', (e) => {
 
-        const btn = e.target.closest(configActual.boton);
-        if (btn) {
+        const botonEnviar = e.target.closest(configActual.boton);
+        if (botonEnviar) {
             const contenido = editor.innerText || editor.value;
             console.log("Botón presionado. Contenido:", contenido);
             guardarDatos(contenido);
