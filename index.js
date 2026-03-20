@@ -1,5 +1,7 @@
 //needed to start exectuion (configuration)
 // npm i express (installa el node_modules y todo lo que necesita para correr)
+//npm i cors (installa cors, para conectar con extension)
+
 // npm i nodemon -D (la -D significa que es una dependencia de desarrollo)
 // *extension*: REST client
 
@@ -7,34 +9,39 @@
 
 
 import express from "express";
-import fs from "fs";
+import cors from "cors";
+import fs, { read } from "fs";
 
 const app = express();
-
+app.use(cors());
 
 const readData=()=>{
     try{
-      const Data= fs.readFileSync("./placeholderDB.json");
-        return JSON.parse(Data);  
+      const data= fs.readFileSync("./placeholderDB.json");
+        return JSON.parse(data);  
     }catch (error){
-        console.log("PEDAZO DE PELOTUDO")
+        console.log("error")
     }
 };
 
-const writeDate=(data)=>{
+const writeData=(data)=>{
     try{
-        fs.writeFileSync("./placeholderDB.json", JSON.stringify(Data))
+        fs.writeFileSync("./placeholderDB.json", JSON.stringify(data))
     }catch (error){
-        console.log("TA BANNEADO, PERMABANNEADO, QUE TE ARREGLEN BIEN EL ANO")
+        console.log("error")
     }
 }
 
 app.get("/", (req, res) => {
-    res.send("ME CORRO... me corri");
+    res.send("funciono");
 });
+
+app.get("/usuarios", (req, res)=>{
+    res.send(JSON.stringify(readData()))
+})
 
 app.listen(3000, ()=>{
 
-    console.log("ME CORRO ME CORRO... me corri");
+    console.log("api corriendo");
     
 })
