@@ -2,26 +2,26 @@ const TARGET_EDITOR = 'div[id="prompt-textarea"]';
 const TARGET_BOTON_ENVIAR = 'button[data-testid="send-button"]';
 
 let editor;
+let ultimaUrl = location.href;
 
-function setupButtonListener() {
+document.addEventListener('click', (e) => {
 
-    document.addEventListener('click', (e) => {
+    const btn = e.target.closest(TARGET_BOTON_ENVIAR);
+    if (btn) {
+        console.log("Botón de enviar presionado. Contenido:", editor.innerText);
+        guardarDatos(editor.innerText);
+    }
 
-        const btn = e.target.closest(TARGET_BOTON_ENVIAR);
-        if (btn) {
-            console.log("Botón de enviar presionado. Contenido:", editor.innerText);
-            guardarDatos(editor.innerText);
-        }
+}, true);
 
-    }, true);
+function configurarEditor(elemento) {
 
-    editor.addEventListener('keydown', (e) => {
+    elemento.addEventListener('keydown', (e) => {
 
         if (e.key === 'Enter' && !e.shiftKey) {
-            console.log("Enter detectado. Contenido:", editor.innerText);
-            guardarDatos(editor.innerText);
+            console.log("Enter detectado. Contenido:", e.currentTarget.innerText);
+            guardarDatos(e.currentTarget.innerText);
         }
-
     });
 }
 
@@ -45,18 +45,20 @@ function guardarDatos(texto) {
     }
 }
 
-let editorEncontrado = false
+const observer = new MutationObserver(() => {
 
-const observer = new MutationObserver((mutations, obs) => {
+    if (location.href !== ultimaUrl && !editor) {
+        console.log("cambio la url")
+        ultimaUrl = location.href;
+        editor = null;
+    }
+
     const element = document.querySelector(TARGET_EDITOR);
 
-    if (element && !editorEncontrado) {
-
-        console.log("¡Elemento encontrado!", element);
-        editor = element
-        editorEncontrado = true
-
-        setupButtonListener();
+    if (element && editor !== element) {
+        console.log("¡Nuevo elemento encontrado!", element);
+        editor = element;
+        configurarEditor(editor);
     }
 });
 
