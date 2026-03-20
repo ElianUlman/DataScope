@@ -1,68 +1,97 @@
-const TARGET_EDITOR = 'div[id="prompt-textarea"]';
-const TARGET_BOTON_ENVIAR = 'button[data-testid="send-button"]';
-
-let editor;
-let ultimaUrl = location.href;
-
-document.addEventListener('click', (e) => {
-
-    const btn = e.target.closest(TARGET_BOTON_ENVIAR);
-    if (btn) {
-        console.log("Botón de enviar presionado. Contenido:", editor.innerText);
-        guardarDatos(editor.innerText);
+const CONFIG_SITIOS = {
+    'chatgpt.com': {
+        editor: 'div[id="prompt-textarea"]',
+        boton: 'button[data-testid="send-button"]'
+    },
+    'gemini.google.com': {
+        editor: 'div[role="textbox"]',
+        boton: 'button[aria-label*="Enviar"], .send-button'
+    },
+    'copilot.microsoft.com': {
+        editor: 'textarea',
+        boton: 'button[id="send-button"]'
     }
-
-}, true);
-
-function configurarEditor(elemento) {
-
-    elemento.addEventListener('keydown', (e) => {
-
-        if (e.key === 'Enter' && !e.shiftKey) {
-            console.log("Enter detectado. Contenido:", e.currentTarget.innerText);
-            guardarDatos(e.currentTarget.innerText);
-        }
-    });
-}
+};
 
 function guardarDatos(texto) {
-    const DATOS = {
-        tipo: "PROMPT",
-        contenido: texto
-    }
+    const limpio = texto.trim();
 
-    if (texto.trim() !== "") {
-        console.log("Guardando:", texto);
+    if (limpio !== "" && limpio !== ultimoTextoProcesado) {
+        ultimoTextoProcesado = limpio;
 
-        chrome.runtime.sendMessage(DATOS, (Respuesta) => {
-
+        const DATOS = { tipo: "PROMPT", contenido: limpio };
+        chrome.runtime.sendMessage(DATOS, (res) => {
             if (chrome.runtime.lastError) {
-                console.log("Error o nadie escuchando:", chrome.runtime.lastError.message);
-            } else {
-                console.log("Respuesta del receptor:", Respuesta.status);
+                console.warn("Error enviando:", chrome.runtime.lastError.message);
             }
-        })
+        });
     }
 }
 
-const observer = new MutationObserver(() => {
+function obtenerConfiguracionActual() {
+    const host = window.location.hostname;
+    let config = null
 
-    if (location.href !== ultimaUrl && !editor) {
-        console.log("cambio la url")
-        ultimaUrl = location.href;
-        editor = null;
+    for (const dominio in CONFIG_SITIOS) {
+        if (host.includes(dominio)) {
+            config = CONFIG_SITIOS[dominio];
+        }
     }
 
-    const element = document.querySelector(TARGET_EDITOR);
+    return config;
+}
 
-    if (element && editor !== element) {
-        console.log("¡Nuevo elemento encontrado!", element);
-        editor = element;
-        configurarEditor(editor);
+function manejarTeclado(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+        const contenido = e.currentTarget.innerText || e.currentTarget.value;
+        console.log("Enter detectado. Contenido:", contenido);
+        guardarDatos(contenido);
     }
-});
+}
 
-observer.observe(document.body, {
-    childList: true,
-    subtree: true
-});
+const configActual = obtenerConfiguracionActual();
+let editor;
+let ultimaUrl = location.href;
+let ultimoTextoProcesado = "";
+
+
+function configurarEditor(elemento) {
+    if (elemento.getAttribute('data-extension-configurado') !== 'true') {
+        elemento.addEventListener('keydown', manejarTeclado);
+        elemento.setAttribute('data-extension-configurado', 'true');
+        console.log("Listener vinculado exitosamente");
+    }
+}
+
+if (configActual) {
+
+    document.addEventListener('click', (e) => {
+
+        const btn = e.target.closest(configActual.boton);
+        if (btn) {
+            const contenido = editor.innerText || editor.value;
+            console.log("Botón presionado. Contenido:", contenido);
+            guardarDatos(contenido);
+        }
+    }, true);
+
+    const observer = new MutationObserver(() => {
+
+        if (location.href !== ultimaUrl && !editor) {
+            editor.removeEventListener('keydown', manejarTeclado)
+            console.log("cambio la url")
+            ultimaUrl = location.href;
+            editor = null;
+        }
+
+        const element = document.querySelector(configActual.editor);
+
+        if (element && editor !== element) {
+            console.log("¡Nuevo elemento encontrado!", element);
+            editor = element;
+            configurarEditor(editor);
+        }
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true });
+}

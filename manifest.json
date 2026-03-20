@@ -9,15 +9,22 @@
     "default_icon": "hello_extensions.png"
   },
   "host_permissions": [
-    "https://chat.openai.com/*",
-    "https://*.openai.com/*"
+    "https://chatgpt.com/*",
+    "https://*.openai.com/*",
+    "https://gemini.google.com/*", 
+    "https://copilot.microsoft.com/*"
   ],
   "background": {
     "service_worker": "background.js"
   },
   "content_scripts": [
     {
-      "matches": ["https://chat.openai.com/*", "https://chatgpt.com/"],
+      "matches": [
+        "https://chatgpt.com/*",
+        "https://*.openai.com/*",
+        "https://gemini.google.com/*",
+        "https://copilot.microsoft.com/*"
+      ],
       "js": ["content.js"]
     }
   ]
