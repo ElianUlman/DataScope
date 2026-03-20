@@ -1,8 +1,6 @@
 //needed to start exectuion (configuration)
-// npm i express (installa el node_modules y todo lo que necesita para correr)
-//npm i cors (installa cors, para conectar con extension)
+// npm i (installs all dependencies)
 
-// npm i nodemon -D (la -D significa que es una dependencia de desarrollo)
 // *extension*: REST client
 
 //to run: npm run dev |OR| node index.js
