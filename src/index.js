@@ -9,6 +9,8 @@
 import express from "express";
 import cors from "cors";
 import fs, { read } from "fs";
+import {PORT} from "./config.js";
+import routesPrueba from './routes/placeholderRoutes.js';
 
 const app = express();
 app.use(cors());
@@ -38,8 +40,10 @@ app.get("/usuarios", (req, res)=>{
     res.send(JSON.stringify(readData()))
 })
 
-app.listen(3000, ()=>{
+app.use(routesPrueba);
 
-    console.log("api corriendo");
+app.listen(PORT, ()=>{
+
+    console.log("api corriendo en localhost:"+PORT);
     
 })
