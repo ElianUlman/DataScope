@@ -1,4 +1,10 @@
-//Aca escribis para hacer requests (GET, POST, PUT, DELETE)
-GET http://localhost:3000/
+
+GET http://localhost:3000/companies
 
 ###
+POST http://localhost:3000/areas/name
+Content-Type: application/json
+
+{
+    "name": "IT"
+}
