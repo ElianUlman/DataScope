@@ -8,6 +8,8 @@ export const initialPage = (req, res) => {
 };
 
 
+/*
+
 
 export const getCompanies = async (req, res)=>{
     const {rows} = await pool.query('SELECT * FROM public.company');
@@ -74,7 +76,7 @@ export const insertCompany = async (req, res)=>{
     const {rows} = await pool.query('INSERT INTO public.company (name, password) VALUES ($1, $2) RETURNING *', [name, hashedPassword])
     res.json(rows[0])
 }
-
+*/
 
 export const login = async (req, res)=>{
     const {companyName, companyPassword, areaName, areaPassword} = req.body

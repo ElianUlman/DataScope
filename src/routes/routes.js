@@ -3,14 +3,14 @@ import {Router} from "express";
 //import fs, { read } from "fs";
 
 import {
+    initialPage, /*
     getCompanies, 
-    initialPage, 
     getAreas, 
     getCompanyById, 
     getAreaById,
     getCompanyByName,
     getAreaByName,
-    insertCompany,
+    insertCompany, */
     login,
     getCompanyByToken
 } from "../controllers/controller.js"
@@ -24,6 +24,8 @@ const routes = Router();
 
 //GETs
 routes.get("/", initialPage);
+
+/*
 routes.get('/companies', getCompanies)
 routes.get('/areas', getAreas)
 
@@ -35,12 +37,13 @@ routes.get('/areas/:id', onlyIntParam, getAreaById)
 routes.post('/company/name', getCompanyByName)
 routes.post('/areas/name', getAreaByName)
 
-routes.post('/login', login)
+
 
 //PUTS
 routes.put('/company', insertCompany)
+*/
 
-
+routes.post('/login', login)
 routes.get('/comapnyToken', authentication, getCompanyByToken)
 
 
