@@ -8,3 +8,18 @@ Content-Type: application/json
 {
     "name": "IT"
 }
+
+### 
+POST http://localhost:3000/login
+Content-Type: application/json
+
+{
+    "companyName": "pepe SRL",
+    "companyPassword": "hardPassword1234",
+    "areaName": "IT",
+    "areaPassword": "fuckHR"
+}
+
+###
+GET http://localhost:3000/comapnyToken
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb21wYW55SWQiOiIwIiwiY29tcGFueU5hbWUiOiJwZXBlIFNSTCIsImFyZWFJZCI6IjEiLCJhcmVhTmFtZSI6IklUIiwiaWF0IjoxNzc0NzI0NjE0LCJleHAiOjE3NzQ3MjgyMTR9.WH0OURO9Vfoj7ZOu7Soac3uvhW1VFZYbYzRD5jehmUY

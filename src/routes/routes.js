@@ -9,10 +9,16 @@ import {
     getCompanyById, 
     getAreaById,
     getCompanyByName,
-    getAreaByName
+    getAreaByName,
+    insertCompany,
+    login,
+    getCompanyByToken
 } from "../controllers/controller.js"
 
-import {onlyIntParam} from "../middleware/middleware.js"
+import {
+    authentication, 
+    onlyIntParam
+} from "../middleware/middleware.js"
 
 const routes = Router();
 
@@ -28,6 +34,15 @@ routes.get('/areas/:id', onlyIntParam, getAreaById)
 //POSTs
 routes.post('/company/name', getCompanyByName)
 routes.post('/areas/name', getAreaByName)
+
+routes.post('/login', login)
+
+//PUTS
+routes.put('/company', insertCompany)
+
+
+routes.get('/comapnyToken', authentication, getCompanyByToken)
+
 
 export default routes;
 

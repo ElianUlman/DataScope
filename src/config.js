@@ -1,4 +1,7 @@
 export const PORT=3000
+export const hashRounds = 10;
+export const tokenPassword = "horse lamp plane fart";
+
 const config = {
     user: 'dbo',
     password: 'dbo',
