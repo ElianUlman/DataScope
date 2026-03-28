@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import {tokenPassword} from "../config.js"
+import {tokenCompanyPassword, tokenWholePassword} from "../config.js"
 
 export function onlyIntParam(req, res, next){
     const {id}=req.params;
@@ -14,7 +14,21 @@ export const authentication = (req, res, next) => {
     if(!token) return res.status(401).send("not logged")
 
     try{
-        const user = jwt.verify(token, tokenPassword);
+        const user = jwt.verify(token, tokenWholePassword);
+        req.user = user
+        next()
+    }catch(error){
+        res.send("encountered "+error)
+    }
+}
+
+export const onlyCompanyAuth = (req, res, next) => {
+    const token = req.headers.authorization;;
+
+    if(!token) return res.status(401).send("not logged")
+
+    try{
+        const user = jwt.verify(token, tokenCompanyPassword);
         req.user = user
         next()
     }catch(error){

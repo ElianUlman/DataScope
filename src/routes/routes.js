@@ -11,12 +11,15 @@ import {
     getCompanyByName,
     getAreaByName,
     insertCompany, */
-    login,
-    getCompanyByToken
+    getCompanyByToken,
+    loginCompany,
+    loginAreaByCompany,
+    getAllByToken
 } from "../controllers/controller.js"
 
 import {
     authentication, 
+    onlyCompanyAuth, 
     onlyIntParam
 } from "../middleware/middleware.js"
 
@@ -43,8 +46,11 @@ routes.post('/areas/name', getAreaByName)
 routes.put('/company', insertCompany)
 */
 
-routes.post('/login', login)
-routes.get('/comapnyToken', authentication, getCompanyByToken)
+routes.post('/loginCompany', loginCompany)
+routes.post('/loginArea', onlyCompanyAuth, loginAreaByCompany)
+
+routes.get('/companyToken', onlyCompanyAuth, getCompanyByToken)
+routes.get('/allToken', authentication, getAllByToken)
 
 
 export default routes;

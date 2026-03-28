@@ -1,25 +1,30 @@
 
-GET http://localhost:3000/companies
 
-###
-POST http://localhost:3000/areas/name
-Content-Type: application/json
-
-{
-    "name": "IT"
-}
 
 ### 
-POST http://localhost:3000/login
+POST http://localhost:3000/loginCompany
 Content-Type: application/json
 
 {
     "companyName": "pepe SRL",
-    "companyPassword": "hardPassword1234",
+    "companyPassword": "hardPassword1234"
+}
+
+###
+GET http://localhost:3000/companyToken
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb21wYW55SWQiOiIwIiwiY29tcGFueU5hbWUiOiJwZXBlIFNSTCIsImlhdCI6MTc3NDczNDU4MCwiZXhwIjoxNzc0NzM4MTgwfQ.tl9v7LrJ_rFlcULMGOswqkVYBTGWPFRfFZYgS0PS1aY
+
+
+### 
+POST http://localhost:3000/loginArea
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb21wYW55SWQiOiIwIiwiY29tcGFueU5hbWUiOiJwZXBlIFNSTCIsImlhdCI6MTc3NDczNDU4MCwiZXhwIjoxNzc0NzM4MTgwfQ.tl9v7LrJ_rFlcULMGOswqkVYBTGWPFRfFZYgS0PS1aY
+
+{
     "areaName": "IT",
     "areaPassword": "fuckHR"
 }
 
 ###
-GET http://localhost:3000/comapnyToken
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb21wYW55SWQiOiIwIiwiY29tcGFueU5hbWUiOiJwZXBlIFNSTCIsImFyZWFJZCI6IjEiLCJhcmVhTmFtZSI6IklUIiwiaWF0IjoxNzc0NzI0NjE0LCJleHAiOjE3NzQ3MjgyMTR9.WH0OURO9Vfoj7ZOu7Soac3uvhW1VFZYbYzRD5jehmUY
+GET http://localhost:3000/allToken
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb21wYW55SWQiOiIwIiwiY29tcGFueU5hbWUiOiJwZXBlIFNSTCIsImFyZWFJZCI6IjEiLCJhcmVhTmFtZSI6IklUIiwiaWF0IjoxNzc0NzM0ODMxLCJleHAiOjE3NzQ3Mzg0MzF9.9uQxGqfExQCnhkXeFLjnkzlWGrfp-83WSxqXcyXP3Tg
