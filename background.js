@@ -19,7 +19,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 async function enviarDatos(data) {
     console.log("Enviando datos a la API:", data);
 
-    const response = await fetch("localhost:3000/loginCompany", {
+    const response = await fetch("http://127.0.0.1:3000/api/loginCompany", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)
