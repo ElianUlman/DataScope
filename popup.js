@@ -29,8 +29,8 @@ document.getElementById("registro").addEventListener("submit", async (e) => {
     e.preventDefault();
 
     const payload = {
-        name: document.getElementById("companyName").value,
-        password: document.getElementById("pwd").value
+        name: document.getElementById("regName").value,
+        password: document.getElementById("regPwd").value
     };
 
     chrome.runtime.sendMessage({ type: "REGISTER_API", payload }, (res) => {
