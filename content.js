@@ -1,25 +1,25 @@
-const CONFIG_SITIOS = {
+const CONFIG_SITES = {
     'chatgpt.com': {
         editor: 'div[id="prompt-textarea"]',
-        boton: 'button[data-testid="send-button"]'
+        button: 'button[data-testid="send-button"]'
     },
     'gemini.google.com': {
         editor: 'div[role="textbox"]',
-        boton: 'button[aria-label*="Enviar"], .send-button'
+        button: 'button[aria-label*="Enviar"], .send-button'
     },
     'copilot.microsoft.com': {
         editor: '#userInput', 
-        boton: 'button[data-testid="submit-button"], button[aria-label*="Submit"]'
+        button: 'button[data-testid="submit-button"], button[aria-label*="Submit"]'
     }
 };
 
-function guardarDatos(texto) {
-    const TextoLimpio = texto.trim();
+function saveData(text) {
+    const cleanText = text.trim();
 
-    if (TextoLimpio !== "" && TextoLimpio !== ultimoTextoProcesado) {
-        ultimoTextoProcesado = TextoLimpio;
+    if (cleanText !== "" && cleanText !== lastText) {
+        lastText = cleanText;
 
-        const DATOS = { tipo: "PROMPT", contenido: TextoLimpio };
+        const DATOS = { type: "PROMPT", content: cleanText };
         chrome.runtime.sendMessage(DATOS, (res) => {
             if (chrome.runtime.lastError) {
                 console.warn("Error enviando:", chrome.runtime.lastError.message);
@@ -28,70 +28,70 @@ function guardarDatos(texto) {
     }
 }
 
-function obtenerConfiguracion() {
+function getConfig() {
     const host = window.location.hostname;
     let config = null
 
-    for (const dominio in CONFIG_SITIOS) {
-        if (host.includes(dominio)) {
-            config = CONFIG_SITIOS[dominio];
+    for (const domain in CONFIG_SITES) {
+        if (host.includes(domain)) {
+            config = CONFIG_SITES[domain];
         }
     }
 
     return config;
 }
 
-function manejarTeclado(e) {
+function checkKeyboard(e) {
     if (e.key === 'Enter' && !e.shiftKey) {
         const contenido = e.currentTarget.innerText || e.currentTarget.value;
         console.log("Enter detectado. Contenido:", contenido);
-        guardarDatos(contenido);
+        saveData(contenido);
     }
 }
 
-const configActual = obtenerConfiguracion();
+const presentConfig = getConfig();
 let editor;
-let ultimaUrl = location.href;
-let ultimoTextoProcesado = "";
+let lastUrl = location.href;
+let lastText = "";
 
 
-function configurarEditor(elemento) {
-    if (elemento.getAttribute('data-extension-configurado') !== 'true') {
-        elemento.addEventListener('keydown', manejarTeclado);
-        elemento.setAttribute('data-extension-configurado', 'true');
+function configEditor(element) {
+    if (element.getAttribute('data-extension-configurado') !== 'true') {
+        element.addEventListener('keydown', checkKeyboard);
+        element.setAttribute('data-extension-configurado', 'true');
         console.log("Listener vinculado exitosamente");
     }
 }
 
-if (configActual) {
+if (presentConfig) {
 
     document.addEventListener('click', (e) => {
 
-        const botonEnviar = e.target.closest(configActual.boton);
-        if (botonEnviar) {
-            const contenido = editor.innerText || editor.value;
-            console.log("Botón presionado. Contenido:", contenido);
-            guardarDatos(contenido);
+        const sendButton = e.target.closest(presentConfig.button);
+        if (sendButton) {
+            const content = editor.innerText || editor.value;
+            console.log("Botón presionado. Contenido:", content);
+            saveData(content);
         }
     }, true);
 
     const observer = new MutationObserver(() => {
 
-        if (location.href !== ultimaUrl && !editor) {
+        if (location.href !== lastUrl && !editor) {
             console.log("cambio la url")
-            ultimaUrl = location.href;
+            lastUrl = location.href;
             if (editor) {
-                editor.removeEventListener('keydown', manejarTeclado);
+                editor.removeEventListener('keydown', checkKeyboard);
                 editor = null;
             }
         }
 
-        const element = document.querySelector(configActual.editor);
+        const element = document.querySelector(presentConfig.editor);
 
         if (element && editor !== element) {
             console.log("¡Nuevo elemento encontrado!", element);
             editor = element;
-            configurarEditor(editor);
+            configEditor(editor);
         }
     });
 
