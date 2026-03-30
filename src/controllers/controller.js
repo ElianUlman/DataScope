@@ -68,7 +68,7 @@ export const getAreaByName = async (req, res)=>{
 }
 
 
-
+*/
 export const insertCompany = async (req, res)=>{
     const {name, password} = req.body;
     const hashedPassword = await bcrypt.hash(password, hashRounds);
@@ -76,7 +76,7 @@ export const insertCompany = async (req, res)=>{
     const {rows} = await pool.query('INSERT INTO public.company (name, password) VALUES ($1, $2) RETURNING *', [name, hashedPassword])
     res.json(rows[0])
 }
-*/
+
 
 export const loginCompany = async (req, res)=>{
     const {companyName, companyPassword} = req.body
