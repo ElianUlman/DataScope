@@ -99,7 +99,7 @@ export const loginCompany = async (req, res)=>{
         res.json({token})
         
     }catch(error){
-        res.send("encountered "+error)
+        res.status(500).json({ error: error.message || "Internal server error" })
     }
 }
 
