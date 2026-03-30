@@ -70,6 +70,7 @@ export const getAreaByName = async (req, res)=>{
 
 */
 export const insertCompany = async (req, res)=>{
+    console.log(req.body)
     const {name, password} = req.body;
     const hashedPassword = await bcrypt.hash(password, hashRounds);
 
