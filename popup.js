@@ -10,7 +10,7 @@ document.getElementById("sesion").addEventListener("submit", async (e) => {
     e.preventDefault();
 
     const COMPANY_NAME = document.getElementById("companyName").value;
-    const COMPANY_PWD = document.getElementById("pwd").value;
+    const COMPANY_PWD = document.getElementById("").value;
 
     let data = {
         companyName: COMPANY_NAME,
@@ -23,4 +23,22 @@ document.getElementById("sesion").addEventListener("submit", async (e) => {
     });
 
     console.log("Respuesta de la API:", response);
+});
+
+document.getElementById("registro").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const payload = {
+        name: document.getElementById("companyName").value,
+        password: document.getElementById("pwd").value
+    };
+
+    chrome.runtime.sendMessage({ type: "REGISTER_API", payload }, (res) => {
+        if (res.ok) {
+            console.log("empresa creada")
+            e.target.reset(); // Limpia el formulario
+        } else {
+            console.log("Error: " + res.error, true);
+        }
+    });
 });

@@ -12,7 +12,8 @@
     "https://chatgpt.com/*",
     "https://*.openai.com/*",
     "https://gemini.google.com/*", 
-    "https://copilot.microsoft.com/*"
+    "https://copilot.microsoft.com/*",
+    "http://127.0.0.1:3000/*"
   ],
   "background": {
     "service_worker": "background.js"
