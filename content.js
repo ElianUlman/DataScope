@@ -8,8 +8,8 @@ const CONFIG_SITIOS = {
         boton: 'button[aria-label*="Enviar"], .send-button'
     },
     'copilot.microsoft.com': {
-        editor: 'textarea',
-        boton: 'button[id="send-button"]'
+        editor: '#userInput', 
+        boton: 'button[data-testid="submit-button"], button[aria-label*="Submit"]'
     }
 };
 
@@ -78,10 +78,12 @@ if (configActual) {
     const observer = new MutationObserver(() => {
 
         if (location.href !== ultimaUrl && !editor) {
-            editor.removeEventListener('keydown', manejarTeclado)
             console.log("cambio la url")
             ultimaUrl = location.href;
-            editor = null;
+            if (editor) {
+                editor.removeEventListener('keydown', manejarTeclado);
+                editor = null;
+            }
         }
 
         const element = document.querySelector(configActual.editor);
