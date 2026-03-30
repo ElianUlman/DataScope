@@ -14,7 +14,7 @@ document.getElementById("sesion").addEventListener("submit", async (e) => {
 
     let data = {
         companyName: COMPANY_NAME,
-        companyPassword: EMPLEADO
+        companyPassword: COMPANY_PWD
     }
 
     const response = await chrome.runtime.sendMessage({
