@@ -68,15 +68,16 @@ export const getAreaByName = async (req, res)=>{
 }
 
 
-
+*/
 export const insertCompany = async (req, res)=>{
+    console.log(req.body)
     const {name, password} = req.body;
     const hashedPassword = await bcrypt.hash(password, hashRounds);
 
     const {rows} = await pool.query('INSERT INTO public.company (name, password) VALUES ($1, $2) RETURNING *', [name, hashedPassword])
     res.json(rows[0])
 }
-*/
+
 
 export const loginCompany = async (req, res)=>{
     const {companyName, companyPassword} = req.body
@@ -99,7 +100,7 @@ export const loginCompany = async (req, res)=>{
         res.json({token})
         
     }catch(error){
-        res.send("encountered "+error)
+        res.status(500).json({ error: error.message || "Internal server error" })
     }
 }
 

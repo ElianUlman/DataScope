@@ -1,5 +1,12 @@
 
+### 
+PUT http://localhost:3000/company
+Content-Type: application/json
 
+{
+    "name": "hola SA",
+    "password": "password"
+}
 
 ### 
 POST http://localhost:3000/loginCompany

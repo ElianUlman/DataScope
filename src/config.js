@@ -15,3 +15,7 @@ const config = {
     },
     port: 55892
 }
+
+//colegio:
+//user: postgres
+//password: root

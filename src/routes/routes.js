@@ -9,8 +9,8 @@ import {
     getCompanyById, 
     getAreaById,
     getCompanyByName,
-    getAreaByName,
-    insertCompany, */
+    getAreaByName,*/
+    insertCompany, 
     getCompanyByToken,
     loginCompany,
     loginAreaByCompany,
@@ -41,10 +41,10 @@ routes.post('/company/name', getCompanyByName)
 routes.post('/areas/name', getAreaByName)
 
 
-
+*/
 //PUTS
 routes.put('/company', insertCompany)
-*/
+
 
 routes.post('/loginCompany', loginCompany)
 routes.post('/loginArea', onlyCompanyAuth, loginAreaByCompany)
