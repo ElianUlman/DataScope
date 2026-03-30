@@ -10,7 +10,7 @@ document.getElementById("sesion").addEventListener("submit", async (e) => {
     e.preventDefault();
 
     const COMPANY_NAME = document.getElementById("companyName").value;
-    const COMPANY_PWD = document.getElementById("").value;
+    const COMPANY_PWD = document.getElementById("pwd").value;
 
     let data = {
         companyName: COMPANY_NAME,
@@ -36,7 +36,7 @@ document.getElementById("registro").addEventListener("submit", async (e) => {
     chrome.runtime.sendMessage({ type: "REGISTER_API", payload }, (res) => {
         if (res.ok) {
             console.log("empresa creada")
-            e.target.reset(); // Limpia el formulario
+            e.target.reset();
         } else {
             console.log("Error: " + res.error, true);
         }
