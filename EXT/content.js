@@ -8,7 +8,7 @@ const CONFIG_SITES = {
         button: 'button[aria-label*="Enviar"], .send-button'
     },
     'copilot.microsoft.com': {
-        editor: '#userInput', 
+        editor: '#userInput',
         button: 'button[data-testid="submit-button"], button[aria-label*="Submit"]'
     }
 };
@@ -63,6 +63,21 @@ function configEditor(element) {
     }
 }
 
+function scanNode(node) {
+    if (!(node instanceof HTMLElement)) return;
+
+    const candidates = [
+        node,
+        ...node.querySelectorAll("textarea, [contenteditable='true']")
+    ];
+
+    for (const element of candidates) {
+        if (isValidEditor(element)) {
+            possibleEditors.add(element);
+        }
+    }
+}
+
 if (presentConfig) {
 
     document.addEventListener('click', (e) => {
@@ -75,7 +90,32 @@ if (presentConfig) {
         }
     }, true);
 
-    const observer = new MutationObserver(() => {
+    const observer = new MutationObserver((mutationList) => {
+
+        let posibleEditors = new Set()
+
+        for (const mutation of mutationList) {
+            if (mutation.type === "childList") {
+                for (const node of mutation.addedNodes) {
+
+                    if (!(node instanceof HTMLElement)) {
+                        continue;
+                    }
+
+                    if (node.matches("textarea, [contenteditable='true']") && node.offsetParent !== null) {
+                        console.log(node.tagName);
+                        posibleEditors.add(node)
+                    }
+
+                    const children = node.querySelectorAll("textarea, [contenteditable='true']");
+                    for (const child of children) {
+                        if (child.offsetParent !== null) {
+                            posibleEditors.add(child);
+                        }
+                    }
+                }
+            }
+        }
 
         if (location.href !== lastUrl && !editor) {
             console.log("cambio la url")
