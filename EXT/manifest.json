@@ -13,7 +13,8 @@
     "https://*.openai.com/*",
     "https://gemini.google.com/*", 
     "https://copilot.microsoft.com/*",
-    "http://127.0.0.1:3000/*"
+    "http://127.0.0.1:3000/*",
+    "https://www.perplexity.ai/*"
   ],
   "background": {
     "service_worker": "background.js"

@@ -1,18 +1,3 @@
-const CONFIG_SITES = {
-    'chatgpt.com': {
-        editor: 'div[id="prompt-textarea"]',
-        button: 'button[data-testid="send-button"]'
-    },
-    'gemini.google.com': {
-        editor: 'div[role="textbox"]',
-        button: 'button[aria-label*="Enviar"], .send-button'
-    },
-    'copilot.microsoft.com': {
-        editor: '#userInput',
-        button: 'button[data-testid="submit-button"], button[aria-label*="Submit"]'
-    }
-};
-
 function saveData(text) {
     const cleanText = text.trim();
 
@@ -28,50 +13,116 @@ function saveData(text) {
     }
 }
 
-function getConfig() {
-    const host = window.location.hostname;
-    let config = null
-
-    for (const domain in CONFIG_SITES) {
-        if (host.includes(domain)) {
-            config = CONFIG_SITES[domain];
-        }
-    }
-
-    return config;
-}
-
 function checkKeyboard(e) {
     if (e.key === 'Enter' && !e.shiftKey) {
-        const contenido = e.currentTarget.innerText || e.currentTarget.value;
-        console.log("Enter detectado. Contenido:", contenido);
-        saveData(contenido);
+        const el = document.activeElement;
+
+        if (el && el.matches("textarea, [contenteditable='true']")) {
+            const contenido = el.innerText || el.value || "";
+            saveData(contenido);
+        }
     }
 }
 
 function configEditor(element) {
-    if (element.getAttribute('data-extension-configurado') !== 'true') {
-        element.addEventListener('keydown', checkKeyboard);
+    if (element && element.getAttribute('data-extension-configurado') !== 'true') {
+        element.addEventListener('keyup', checkKeyboard);
         element.setAttribute('data-extension-configurado', 'true');
-        console.log("Listener vinculado exitosamente");
     }
+}
+
+function scanButtons(node) {
+    if (!(node instanceof HTMLElement)) return;
+
+    const candidates = [
+        node,
+        ...node.querySelectorAll("button, [role='button']")
+    ];
+
+    for (const elements of candidates) {
+
+        const text = (elements.innerText || elements.getAttribute("aria-label") || "").toLowerCase();
+
+        if (
+            text.includes("send") ||
+            text.includes("enviar") ||
+            text.includes("submit") ||
+            elements.type === "submit"
+        ) {
+            if (elements.offsetParent !== null) {
+                possibleButtons.add(elements);
+            }
+        }
+    }
+}
+
+function pickButton(buttons) {
+
+    let best = null;
+    let bestScore = -Infinity;
+
+    for (const btn of buttons) {
+        let score = 0;
+
+        const rect = btn.getBoundingClientRect();
+        const text = (btn.innerText || btn.getAttribute("aria-label") || "").toLowerCase();
+
+        score += rect.width * rect.height;
+
+        score += (window.innerHeight - rect.top);
+
+        if (text.includes("send") || text.includes("enviar")) score += 500;
+
+        if (btn.offsetParent === null) score -= 1000;
+
+        if (score > bestScore) {
+            bestScore = score;
+            best = btn;
+        }
+    }
+
+    return best;
+}
+
+function scanNode(node) {
+    if (!(node instanceof HTMLElement)) return;
+
+    if (node.matches("textarea, [contenteditable='true']") && node.offsetParent !== null) {
+        possibleEditors.add(node);
+    }
+
+    const children = node.querySelectorAll("textarea, [contenteditable='true']");
+
+    for (const child of children) {
+        if (child.offsetParent !== null) {
+            possibleEditors.add(child);
+        }
+    }
+}
+
+function initialScan() {
+    const nodes = document.querySelectorAll("textarea, [contenteditable='true']");
+
+    for (const node of nodes) {
+        if (node.offsetParent !== null) {
+            possibleEditors.add(node);
+        }
+    }
+
+    return discard(possibleEditors);
 }
 
 function searchEditor(mutationList) {
 
     let posibleEditors = new Set()
-    let editor = null
 
     for (const mutation of mutationList) {
         if (mutation.type === "childList") {
             for (const node of mutation.addedNodes) {
 
-                if (!(node instanceof HTMLElement)) {
-                    continue;
-                }
+                if (!(node instanceof HTMLElement)) continue;
 
                 if (node.matches("textarea, [contenteditable='true']") && node.offsetParent !== null) {
-                    console.log(node.tagName);
                     posibleEditors.add(node)
                 }
 
@@ -85,59 +136,103 @@ function searchEditor(mutationList) {
         }
     }
 
-    editor = discard(posibleEditors)
-    return editor
+    return discard(posibleEditors);
 }
 
 function discard(posibleEditors) {
 
-    let ranking = []
+    let best = null;
+    let bestScore = -Infinity;
 
-    for(const candidato of posibleEditors){
-        let score = 0
+    for (const candidato of posibleEditors) {
+        let score = 0;
+
         const rect = candidato.getBoundingClientRect();
         const text = (candidato.placeholder || candidato.getAttribute("aria-label") || "").toLowerCase();
 
-        if (candidato === document.activeElement){
-            score += 1000
+        if (candidato === document.activeElement) {
+            score += 1000;
         }
 
         score += rect.width * rect.height;
         score += (window.innerHeight - rect.top);
 
-        if (candidato.offsetParent === null){
-            score -= 1000
+        if (candidato.offsetParent === null) {
+            score -= 1000;
         }
 
-        if (text.includes("message") || text.includes("mensaje")){
-            score += 300
+        if (text.includes("message") || text.includes("mensaje")) {
+            score += 300;
         }
 
-        ranking[candidato] = score
+        if (score > bestScore) {
+            bestScore = score;
+            best = candidato;
+        }
     }
+
+    return best;
 }
 
-const presentConfig = getConfig();
+let possibleEditors = new Set();
+let possibleButtons = new Set();
 let editor = null;
-let lastUrl = location.href;
+let sendButton = null;
 let lastText = "";
 
 
+scanNode(document.body);
+
+editor = initialScan();
+configEditor(editor);
+
+scanButtons(document.body)
 
 const observer = new MutationObserver((mutationList) => {
 
-    if (location.href !== lastUrl) {
-        console.log("cambio la url")
-        lastUrl = location.href;
+    for (const mutation of mutationList) {
+        mutation.addedNodes.forEach(node => {
+            scanNode(node);
+            scanButtons(node);
+        });
+    }
 
-        if (!editor) {
-            editor.removeEventListener('keydown', checkKeyboard)
-            editor = searchEditor(mutationList)
+    if (!editor || !document.contains(editor) || editor.offsetParent === null) {
 
-            configEditor(editor)
+        let newEditor = discard(possibleEditors);
 
-            console.log("¡Nuevo elemento encontrado!", element);
+        if (!newEditor) {
+            newEditor = initialScan();
         }
+
+        if (!newEditor) {
+            newEditor = searchEditor(mutationList);
+        }
+
+        if (newEditor) {
+
+            if (editor) {
+                editor.removeEventListener('keydown', checkKeyboard);
+            }
+
+            editor = newEditor;
+            configEditor(editor);
+
+            console.log("Nuevo editor:", editor);
+        }
+    }
+
+    sendButton = pickButton(possibleButtons);
+
+    if (sendButton && !sendButton.dataset.listener) {
+
+        sendButton.addEventListener("click", () => {
+            const el = document.activeElement;
+            const contenido = el?.innerText || el?.value || "";
+            saveData(contenido);
+        });
+
+        sendButton.dataset.listener = "true";
     }
 });
 
