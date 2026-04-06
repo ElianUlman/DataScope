@@ -49,12 +49,6 @@ function checkKeyboard(e) {
     }
 }
 
-const presentConfig = getConfig();
-let editor;
-let lastUrl = location.href;
-let lastText = "";
-
-
 function configEditor(element) {
     if (element.getAttribute('data-extension-configurado') !== 'true') {
         element.addEventListener('keydown', checkKeyboard);
@@ -63,77 +57,88 @@ function configEditor(element) {
     }
 }
 
-function scanNode(node) {
-    if (!(node instanceof HTMLElement)) return;
+function searchEditor(mutationList) {
 
-    const candidates = [
-        node,
-        ...node.querySelectorAll("textarea, [contenteditable='true']")
-    ];
+    let posibleEditors = new Set()
+    let editor = null
 
-    for (const element of candidates) {
-        if (isValidEditor(element)) {
-            possibleEditors.add(element);
-        }
-    }
-}
+    for (const mutation of mutationList) {
+        if (mutation.type === "childList") {
+            for (const node of mutation.addedNodes) {
 
-if (presentConfig) {
+                if (!(node instanceof HTMLElement)) {
+                    continue;
+                }
 
-    document.addEventListener('click', (e) => {
+                if (node.matches("textarea, [contenteditable='true']") && node.offsetParent !== null) {
+                    console.log(node.tagName);
+                    posibleEditors.add(node)
+                }
 
-        const sendButton = e.target.closest(presentConfig.button);
-        if (sendButton) {
-            const content = editor.innerText || editor.value;
-            console.log("Botón presionado. Contenido:", content);
-            saveData(content);
-        }
-    }, true);
-
-    const observer = new MutationObserver((mutationList) => {
-
-        let posibleEditors = new Set()
-
-        for (const mutation of mutationList) {
-            if (mutation.type === "childList") {
-                for (const node of mutation.addedNodes) {
-
-                    if (!(node instanceof HTMLElement)) {
-                        continue;
-                    }
-
-                    if (node.matches("textarea, [contenteditable='true']") && node.offsetParent !== null) {
-                        console.log(node.tagName);
-                        posibleEditors.add(node)
-                    }
-
-                    const children = node.querySelectorAll("textarea, [contenteditable='true']");
-                    for (const child of children) {
-                        if (child.offsetParent !== null) {
-                            posibleEditors.add(child);
-                        }
+                const children = node.querySelectorAll("textarea, [contenteditable='true']");
+                for (const child of children) {
+                    if (child.offsetParent !== null) {
+                        posibleEditors.add(child);
                     }
                 }
             }
         }
+    }
 
-        if (location.href !== lastUrl && !editor) {
-            console.log("cambio la url")
-            lastUrl = location.href;
-            if (editor) {
-                editor.removeEventListener('keydown', checkKeyboard);
-                editor = null;
-            }
-        }
-
-        const element = document.querySelector(presentConfig.editor);
-
-        if (element && editor !== element) {
-            console.log("¡Nuevo elemento encontrado!", element);
-            editor = element;
-            configEditor(editor);
-        }
-    });
-
-    observer.observe(document.body, { childList: true, subtree: true });
+    editor = discard(posibleEditors)
+    return editor
 }
+
+function discard(posibleEditors) {
+
+    let ranking = []
+
+    for(const candidato of posibleEditors){
+        let score = 0
+        const rect = candidato.getBoundingClientRect();
+        const text = (candidato.placeholder || candidato.getAttribute("aria-label") || "").toLowerCase();
+
+        if (candidato === document.activeElement){
+            score += 1000
+        }
+
+        score += rect.width * rect.height;
+        score += (window.innerHeight - rect.top);
+
+        if (candidato.offsetParent === null){
+            score -= 1000
+        }
+
+        if (text.includes("message") || text.includes("mensaje")){
+            score += 300
+        }
+
+        ranking[candidato] = score
+    }
+}
+
+const presentConfig = getConfig();
+let editor = null;
+let lastUrl = location.href;
+let lastText = "";
+
+
+
+const observer = new MutationObserver((mutationList) => {
+
+    if (location.href !== lastUrl) {
+        console.log("cambio la url")
+        lastUrl = location.href;
+
+        if (!editor) {
+            editor.removeEventListener('keydown', checkKeyboard)
+            editor = searchEditor(mutationList)
+
+            configEditor(editor)
+
+            console.log("¡Nuevo elemento encontrado!", element);
+        }
+    }
+});
+
+observer.observe(document.body, { childList: true, subtree: true });
