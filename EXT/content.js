@@ -149,6 +149,7 @@ function discard(posibleEditors) {
 
         const rect = candidato.getBoundingClientRect();
         const text = (candidato.placeholder || candidato.getAttribute("aria-label") || "").toLowerCase();
+        const id = (candidato.id || "").toLowerCase();
 
         if (candidato === document.activeElement) {
             score += 1000;
@@ -163,6 +164,14 @@ function discard(posibleEditors) {
 
         if (text.includes("message") || text.includes("mensaje")) {
             score += 300;
+        }
+
+        if (id.includes("input") || id.includes("prompt")) {
+            score += 500;
+        }
+
+        if (candidato.tagName === "TEXTAREA") {
+            score += 200;
         }
 
         if (score > bestScore) {
@@ -237,3 +246,4 @@ const observer = new MutationObserver((mutationList) => {
 });
 
 observer.observe(document.body, { childList: true, subtree: true });
+console.log("a")
