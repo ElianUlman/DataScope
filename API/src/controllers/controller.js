@@ -7,12 +7,67 @@ export const initialPage = (req, res) => {
     res.send("funciono");
 };
 
+export const createCompany = async (req, res) => {
+    const client = await pool.connect();
+    try{
+        
 
+        const {companyName, companyTier, username, email, password} = req.body;
+        const hashedPassword = await bcrypt.hash(password, hashRounds);
+        //esto es como si fuera un SP
+        await client.query('BEGIN');
+        const companyReturn = await client.query('INSERT INTO public.companies(name, tier) VALUES ($1, $2) RETURNING *', [companyName, companyTier])
+        
+        const userReturn = await client.query('INSERT INTO public.users(name, email, password) VALUES ($1, $2, $3) RETURNING *', [username, email, hashedPassword])
+        
+        await client.query('INSERT INTO public.invites(companyfk, userfk, isadmin, isvalid) VALUES ($1, $2, CAST(1 AS BIT), CAST(1 AS BIT))', [companyReturn.rows[0].id, userReturn.rows[0].id])
 
+        await client.query('COMMIT');
 
+    }catch(error){
+        await client.query('ROLLBACK');
 
+        console.log(error)
+    }
+}
+
+export const loginUser = async (req, res) =>{
+    const {email, password} = req.body
+
+    try{
+        const queryResult = await pool.query('SELECT * FROM public.users WHERE email=$1', [email]);
+        if(queryResult.rowCount === 0) return res.status(401).json({ error: "user does not exist" })
+        
+        const userData = queryResult.rows[0]
+
+        const passwordMatch = await bcrypt.compare(password, userData.password);
+
+        if(!passwordMatch) return res.status(401).json({error: "wrong password"})
+
+        const token = jwt.sign(
+            { id: userData.id, username: userData.name},
+            tokenWholePassword,
+            { expiresIn: "1h" }
+        );
+
+        
+
+        res.json({token})
+        
+    }catch(error){
+        res.status(500).json({ error: error.message || "Internal server error" })
+    }
+}
+
+export const getUserData = async (req, res) => {
+    const user = req.user
+    const company = await pool.query('SELECT * FROM public.users WHERE id=$1', [user.id]);
+    res.json(company.rows[0]);
+}
+
+/*
 export const insertCompany = async (req, res)=>{
-    console.log(req.body)
+    
     const {name, password} = req.body;
     const hashedPassword = await bcrypt.hash(password, hashRounds);
 
@@ -105,3 +160,4 @@ export const getAllByToken = async (req, res) => {
     area: area.rows[0]
 });
 }
+*/

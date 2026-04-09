@@ -1,7 +1,33 @@
+###
+PUT http://localhost:3000/api/createCompany
+Content-Type: application/json
 
+{
+    "companyName": "comrades SC", 
+    "companyTier": "basic", 
+    "username": "Vlad Ulianov", 
+    "email": "thepeoplesparty@gmail.com", 
+    "password": "workers of the world unite"
+}
 
+###notyourbusiness@gmail.com: airplane tree dog window
+###michaelscott@gmail.com: password (?)
+###thepeoplesparty@gmail.com: workers of the world unite
+
+###
+POST http://localhost:3000/api/login
+Content-Type: application/json
+
+{
+    "email": "notyourbusiness@gmail.com", 
+    "password": "airplane tree dog window"
+}
+
+###
+GET http://localhost:3000/api/userdata
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywidXNlcm5hbWUiOiJEcmVhZFBpcmF0ZVJvYmVydHMiLCJpYXQiOjE3NzU3Njg4MzgsImV4cCI6MTc3NTc3MjQzOH0.hk_c9MRMICUwWakd2-p79CYduP3votggOAkZ_7DQd44
 ### 
-POST http://localhost:3000/loginCompany
+POST http://localhost:3000/api/loginCompany
 Content-Type: application/json
 
 {

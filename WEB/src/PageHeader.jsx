@@ -6,6 +6,11 @@ function PageHeader(props){
     let content
     if(props.name !== undefined){
         content = <h3>{props.name}</h3>
+    }else{
+        content = <div>
+               <Link to="/Login">Login</Link> 
+               <Link to="/signup">Sign up</Link>
+            </div>
     }
 
     return (
@@ -18,10 +23,7 @@ function PageHeader(props){
 
             </nav>
 
-            <div>
-               <Link to="/Login">Login</Link> 
-               <Link to="/signup">Sign up</Link>
-            </div>
+            
 
             {content}
             

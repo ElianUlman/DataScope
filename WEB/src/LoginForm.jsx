@@ -4,6 +4,7 @@ const LoginForm = (props) => {
     
     const [text, setText] = useState()
     const [passwordText, setPasswordText] = useState()
+    const [errorMessage, setErrorMessage] = useState()
 
     const changeHandler = (e) => {
         switch(e.target.type){
@@ -18,15 +19,28 @@ const LoginForm = (props) => {
         }
     }
 
-    //props.loginFunc(text, passwordText)
+    const loginResult = async () =>{
+        const error = await props.loginFunc(text, passwordText)
+        if(error === 401){
+            setErrorMessage("incorrect password or username")
+        }
+
+        if(!error){
+            setErrorMessage()
+        }
+        
+    }
+
+    
 
   return (
     <>
-        <p>text is {text} and pass is {passwordText}</p>
+        
         <form action="">
+            <h3>{errorMessage}</h3>
             <input type="text" onChange={changeHandler}/>
             <input type="password" onChange={changeHandler}/>
-            <button type='button' onClick={() => props.loginFunc(text, passwordText)}>login</button>
+            <button type='button' onClick={() => loginResult()}>login</button>
         </form>
     </>
   )

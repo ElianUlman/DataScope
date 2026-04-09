@@ -17,7 +17,7 @@ export const pool=new pg.Pool({
     user: "dbToAPI_user",
     host: "localhost",
     password: "simplepassword",
-    database: "placeholderDataScopeDb",
+    database: "dataScopeDb",
     port: "5432"
 })
 

@@ -4,11 +4,15 @@ import {Router} from "express";
 
 import {
     initialPage, 
+    createCompany,
+    loginUser,
+    getUserData
+    /*
     insertCompany, 
     getCompanyByToken,
     loginCompany,
     loginAreaByCompany,
-    getAllByToken
+    getAllByToken*/
 } from "../controllers/controller.js"
 
 import {
@@ -22,17 +26,25 @@ const routes = Router();
 //GETs
 routes.get("/", initialPage);
 
+routes.get('/userdata', authentication, getUserData)
 
+//PUTS
+routes.put('/createCompany', createCompany)
+
+//POSTS
+routes.post('/login', loginUser)
+
+/*
 //PUTS
 routes.put('/company', insertCompany)
 
-
+//POSTS
 routes.post('/loginCompany', loginCompany)
 routes.post('/loginArea', onlyCompanyAuth, loginAreaByCompany)
 
 routes.get('/companyToken', onlyCompanyAuth, getCompanyByToken)
 routes.get('/allToken', authentication, getAllByToken)
-
+*/
 
 export default routes;
 

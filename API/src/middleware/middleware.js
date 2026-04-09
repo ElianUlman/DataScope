@@ -16,6 +16,7 @@ export const authentication = (req, res, next) => {
     try{
         const user = jwt.verify(token, tokenWholePassword);
         req.user = user
+        
         next()
     }catch(error){
         res.send("encountered "+error)

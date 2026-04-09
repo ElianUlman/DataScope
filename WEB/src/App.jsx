@@ -12,36 +12,39 @@ import Login from './login';
 function App() {
 
   const [token, setToken]=useState();
-  const [companyName, setCompanyName]=useState();
+  const [username, setusername]=useState();
 
 
-  const loginCompany = async (companyName, companyPassword) => {
+  const userLogin = async (email, password) => {
     try {
       const response = await axios.post(
-        "http://localhost:3000/loginCompany",
+        "http://localhost:3000/api/login",
         {
-          companyName: companyName,
-          companyPassword: companyPassword
+          "email": email, 
+          "password": password
         }
       );
-      setToken(response)
-      getCompanyData(response.data.token)
+      setToken(response.data.token)
+
+      getCompanyData(token)
+      
     } catch (error) {
-      console.error(error);
+      return error.response.status
+      
     }
   };
 
   const getCompanyData = async (token) =>{
     try{
-      const response = await axios.get("http://localhost:3000/companyToken", {
+      const response = await axios.get("http://localhost:3000/api/userdata", {
       headers: {
         Authorization: token
       }})
 
-      setCompanyName(response.data.name)
+      setusername(response.data.name)
 
     }catch(error){
-      console.error(error);
+      return error.response.status
     }
   }
 
@@ -49,11 +52,11 @@ function App() {
 
   return (
     <BrowserRouter>
-      < PageHeader name={companyName}/>
+      < PageHeader name={username}/>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
-        <Route path="/login" element={<Login loginFunc={loginCompany}/>} />
+        <Route path="/login" element={<Login loginFunc={userLogin}/>} />
         <Route path="/signup" element={<SignUp />} />
       </Routes>
     </BrowserRouter>
