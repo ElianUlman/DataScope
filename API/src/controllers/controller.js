@@ -23,11 +23,11 @@ export const createCompany = async (req, res) => {
         await client.query('INSERT INTO public.invites(companyfk, userfk, isadmin, isvalid) VALUES ($1, $2, CAST(1 AS BIT), CAST(1 AS BIT))', [companyReturn.rows[0].id, userReturn.rows[0].id])
 
         await client.query('COMMIT');
-
+        res.json("")
     }catch(error){
         await client.query('ROLLBACK');
 
-        console.log(error)
+        res.send(error)
     }
 }
 

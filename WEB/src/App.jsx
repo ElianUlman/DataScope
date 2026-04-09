@@ -14,6 +14,25 @@ function App() {
   const [token, setToken]=useState();
   const [username, setusername]=useState();
 
+  const fullSignUp = async (companyName, companyTier, username, email, password) => {
+    try{
+      const response = await axios.put(
+        "http://localhost:3000/api/createCompany",
+        {
+          "companyName": companyName, 
+          "companyTier": companyTier, 
+          "username": username, 
+          "email": email, 
+          "password": password
+        }
+      )
+      console.log("insert OK")
+      return await userLogin(email, password)
+      
+    }catch(error){
+      return error.response.status
+    }
+  }
 
   const userLogin = async (email, password) => {
     try {
@@ -25,8 +44,9 @@ function App() {
         }
       );
       setToken(response.data.token)
+      console.log("login OK")
 
-      getCompanyData(response.data.token)
+      return await getCompanyData(response.data.token)
       
     } catch (error) {
       return error.response.status
@@ -42,13 +62,15 @@ function App() {
       }})
 
       setusername(response.data.name)
-
+      console.log("get OK")
     }catch(error){
       
       return error.response.status
     }
   }
 
+
+  
   
 
   return (
@@ -58,7 +80,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/login" element={<Login loginFunc={userLogin}/>} />
-        <Route path="/signup" element={<SignUp />} />
+        <Route path="/signup" element={<SignUp signUpFunc={fullSignUp}/>} />
       </Routes>
     </BrowserRouter>
   )

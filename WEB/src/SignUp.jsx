@@ -1,8 +1,11 @@
+import SignupForm from "./SignupForm"
 
 
-const SignUp = () => {
+const SignUp = (props) => {
   return (
-    <div>SignUp</div>
+    <>
+      <SignupForm signUpFunc={props.signUpFunc}/>
+    </>
   )
 }
 

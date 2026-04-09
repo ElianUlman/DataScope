@@ -12,7 +12,7 @@ const LoginForm = (props) => {
     const changeHandler = (e) => {
         switch(e.target.type){
 
-            case "text":
+            case "email":
                 setText(e.target.value)
             break;
 
@@ -25,7 +25,8 @@ const LoginForm = (props) => {
     const loginResult = async () =>{
         const error = await props.loginFunc(text, passwordText)
         if(error === 401){
-            setErrorMessage("incorrect password or username")
+            setErrorMessage("incorrect password or username"+text)
+
         }
 
         if(!error){
@@ -43,8 +44,8 @@ const LoginForm = (props) => {
         
         <form action="">
             <h3>{errorMessage}</h3>
-            <input type="text" onChange={changeHandler}/>
-            <input type="password" onChange={changeHandler}/>
+            <input type="email" onChange={changeHandler} placeholder='email'/>
+            <input type="password" onChange={changeHandler} placeholder='password'/>
             <button type='button' onClick={() => loginResult()}>login</button>
         </form>
     </>
