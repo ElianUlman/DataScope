@@ -3,7 +3,7 @@ console.log("a");
 function saveData(text) {
     const cleanText = text.trim();
 
-    /*if (cleanText !== "" && cleanText !== lastText) {
+    if (cleanText !== "" && cleanText !== lastText) {
         lastText = cleanText;
 
         const DATOS = { type: "PROMPT", content: cleanText };
@@ -12,9 +12,7 @@ function saveData(text) {
                 console.warn("Error enviando:", chrome.runtime.lastError.message);
             }
         });
-    }*/
-
-    console.log("DATOS LISTOS PARA ENVIAR:", cleanText)
+    }
 }
 
 function checkKeyboard(e) {
@@ -58,7 +56,7 @@ let globalCandidates = {
 let heuristics = {
 
     EDITOR: {
-        Id: ["prompt", "textarea", "user", "input"],
+        Id: ["prompt", "textarea", "user", "input", "ask"],
         Class: ["input", "textarea", "user", "input"],
         Role: ["textbox"],
         Arialabel: ["chat", "prompt"],
@@ -66,26 +64,25 @@ let heuristics = {
     },
 
     BUTTON: {
-        Id: [],
-        Class: [],
-        Name: []
+        Id: ["submit", "button",],
+        Class: ["submit", "buton", "btn"],
+        Arialabel: ["send", "message", "prompt"],
     }
 }
-
 function rank(element, type) {
+    let score = 0;
+    let config = heuristics[type];
 
-    let score = 0
-    let config = heuristics[type]
-
-    if (element.offsetParent === null || !element) return -Infinity;
+    if (!element || !(element instanceof HTMLElement) || element.offsetParent === null) return -Infinity;
 
     let elementConfig = {
         Id: element.id || "",
-        Class: element.className || "",
+        Class: typeof element.className === 'string' ? element.className : (element.getAttribute("class") || ""),
         Role: element.getAttribute("role") || "",
         Arialabel: element.getAttribute("aria-label") || "",
-        PlaceHolder: element.getAttribute("placeholder") || ""
-    }
+        PlaceHolder: element.getAttribute("placeholder") || "",
+        Name: element.getAttribute("name") || ""
+    };
 
     if (element === document.activeElement) {
         score += 1000;
@@ -97,17 +94,17 @@ function rank(element, type) {
 
     for (const category in config) {
         const words = config[category];
-        const value = elementConfig[category].toLowerCase();
+        
+        const rawValue = elementConfig[category] || "";
+        const value = rawValue.toLowerCase();
 
-        if (words.length > 0) {
+        if (words && words.length > 0) {
             words.forEach(word => {
                 if (value.includes(word.toLowerCase())) {
-
                     if (category !== "Class") {
-                        score += 50
-                    }
-                    else {
-                        score += 10
+                        score += 50;
+                    } else {
+                        score += 10;
                     }
                 }
             });
