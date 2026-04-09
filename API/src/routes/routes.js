@@ -3,13 +3,7 @@ import {Router} from "express";
 //import fs, { read } from "fs";
 
 import {
-    initialPage, /*
-    getCompanies, 
-    getAreas, 
-    getCompanyById, 
-    getAreaById,
-    getCompanyByName,
-    getAreaByName,*/
+    initialPage, 
     insertCompany, 
     getCompanyByToken,
     loginCompany,
@@ -28,20 +22,7 @@ const routes = Router();
 //GETs
 routes.get("/", initialPage);
 
-/*
-routes.get('/companies', getCompanies)
-routes.get('/areas', getAreas)
 
-//with params
-routes.get('/companies/:id', onlyIntParam, getCompanyById)
-routes.get('/areas/:id', onlyIntParam, getAreaById)
-
-//POSTs
-routes.post('/company/name', getCompanyByName)
-routes.post('/areas/name', getAreaByName)
-
-
-*/
 //PUTS
 routes.put('/company', insertCompany)
 

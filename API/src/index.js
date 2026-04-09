@@ -13,7 +13,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.use("/api", routesPrueba);
+app.use(routesPrueba);
 
 
 app.listen(3000, ()=>{

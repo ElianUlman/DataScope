@@ -1,12 +1,4 @@
 
-### 
-PUT http://localhost:3000/company
-Content-Type: application/json
-
-{
-    "name": "hola SA",
-    "password": "password"
-}
 
 ### 
 POST http://localhost:3000/loginCompany
@@ -19,7 +11,7 @@ Content-Type: application/json
 
 ###
 GET http://localhost:3000/companyToken
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb21wYW55SWQiOiIwIiwiY29tcGFueU5hbWUiOiJwZXBlIFNSTCIsImlhdCI6MTc3NDczNDU4MCwiZXhwIjoxNzc0NzM4MTgwfQ.tl9v7LrJ_rFlcULMGOswqkVYBTGWPFRfFZYgS0PS1aY
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb21wYW55SWQiOiIwIiwiY29tcGFueU5hbWUiOiJwZXBlIFNSTCIsImlhdCI6MTc3NTcwNTU0NywiZXhwIjoxNzc1NzA5MTQ3fQ.hzeX_teUT_pKj3Zes-AgOXUFf-kYvmnURCWgn67EMUo
 
 
 ### 
@@ -35,3 +27,12 @@ Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb21wYW55SWQiOiIwIiwiY29t
 ###
 GET http://localhost:3000/allToken
 Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb21wYW55SWQiOiIwIiwiY29tcGFueU5hbWUiOiJwZXBlIFNSTCIsImFyZWFJZCI6IjEiLCJhcmVhTmFtZSI6IklUIiwiaWF0IjoxNzc0NzM0ODMxLCJleHAiOjE3NzQ3Mzg0MzF9.9uQxGqfExQCnhkXeFLjnkzlWGrfp-83WSxqXcyXP3Tg
+
+### 
+PUT http://localhost:3000/company
+Content-Type: application/json
+
+{
+    "name": "hola SA",
+    "password": "password"
+}
