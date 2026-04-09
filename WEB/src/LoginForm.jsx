@@ -1,7 +1,10 @@
 import React, {useState} from 'react'
+import { useNavigate } from "react-router-dom";
+
 
 const LoginForm = (props) => {
-    
+    const navigate = useNavigate();
+
     const [text, setText] = useState()
     const [passwordText, setPasswordText] = useState()
     const [errorMessage, setErrorMessage] = useState()
@@ -27,7 +30,9 @@ const LoginForm = (props) => {
 
         if(!error){
             setErrorMessage()
+            navigate("/");
         }
+        console.log(error)
         
     }
 

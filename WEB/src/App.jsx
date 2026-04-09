@@ -26,7 +26,7 @@ function App() {
       );
       setToken(response.data.token)
 
-      getCompanyData(token)
+      getCompanyData(response.data.token)
       
     } catch (error) {
       return error.response.status
@@ -44,6 +44,7 @@ function App() {
       setusername(response.data.name)
 
     }catch(error){
+      
       return error.response.status
     }
   }
