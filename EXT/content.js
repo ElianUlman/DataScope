@@ -30,6 +30,7 @@ function checkKeyboard(e) {
 
 //
 function configEditor(element) {
+
     if (element && element.getAttribute('data-extension-configurado') !== 'true') {
         element.addEventListener('keyup', checkKeyboard);
 
@@ -62,7 +63,7 @@ function attachButtonListener(btn, force = false) {
     btn.addEventListener("click", handleButtonClick);
 
     btn.dataset.extensionConfigurado = "true";
-    console.log("🔘 Botón de envío vinculado/actualizado:", btn);
+    console.info("Botón de envío actualizado:", btn);
 }
 
 function handleButtonClick() {
@@ -87,17 +88,16 @@ let globalCandidates = {
 let heuristics = {
 
     EDITOR: {
-        Id: ["prompt", "textarea", "user", "input", "ask"],
-        Class: ["input", "textarea", "user", "input"],
-        Role: ["textbox"],
-        Arialabel: ["chat", "prompt"],
-        PlaceHolder: ["message", "chat", "prompt"]
+        Id: { "prompt": 40, "textarea": 20, "user": 20, "input": 20, "ask": 40 },
+        Class: { "input": 10, "textarea": 10, "user": 10 },
+        Role: { "textbox": 50 },
+        Arialabel: { "chat": 45, "prompt": 45 },
+        PlaceHolder: { "message": 35, "chat": 35, "prompt": 35 }
     },
-
     BUTTON: {
-        Id: ["submit", "button",],
-        Class: ["submit", "buton", "btn"],
-        Arialabel: ["send", "message", "prompt"],
+        Id: { "submit": 30, "button": 10 },
+        Class: { "submit": 20, "button": 10, "btn": 10, "send": 30 }, // Corregido "button"
+        Arialabel: { "send": 50, "message": 45, "enviar": 50, "mensaje": 45 } // Añadido español
     }
 }
 
@@ -108,24 +108,22 @@ function rank(element, type) {
 
     if (!element || !(element instanceof HTMLElement) || element.offsetParent === null) return -Infinity;
 
-    let elementConfig = {
+    let elementAttributes = {
         Id: element.id || "",
         Class: typeof element.className === 'string' ? element.className : (element.getAttribute("class") || ""),
         Role: element.getAttribute("role") || "",
         Arialabel: element.getAttribute("aria-label") || "",
         PlaceHolder: element.getAttribute("placeholder") || "",
-        Name: element.getAttribute("name") || ""
     };
 
     for (const category in config) {
-        const words = config[category];
-        const value = (elementConfig[category] || "").toLowerCase();
-        if (words && words.length > 0) {
-            words.forEach(word => {
-                if (value.includes(word.toLowerCase())) {
-                    score += (category !== "Class") ? 50 : 10;
-                }
-            });
+        const attributeValue = (elementAttributes[category] || "").toLowerCase();
+        const keywords = config[category];
+
+        for (const [word, weight] of Object.entries(keywords)) {
+            if (attributeValue.includes(word.toLowerCase())) {
+                score += weight;
+            }
         }
     }
 
@@ -133,39 +131,32 @@ function rank(element, type) {
 
     if (type === "BUTTON") {
         const ratio = rect.width / rect.height;
-        if (ratio > 0.7 && ratio < 1.4) {
-            score += 60;
-        }
+        if (ratio > 0.7 && ratio < 1.4) score += 60;
 
-        if (rect.width > 120 || rect.height > 80) {
-            score -= 300;
-        }
+        if (rect.width > 200 || rect.height > 100) score -= 100;
 
-        if (editor) {
+        if (typeof editor !== 'undefined' && editor) {
             const editorRect = editor.getBoundingClientRect();
-            const buttonCenter = { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
-            const editorCenter = { x: editorRect.left + editorRect.width / 2, y: editorRect.top + editorRect.height / 2 };
-
-            const distance = Math.hypot(buttonCenter.x - editorCenter.x, buttonCenter.y - editorCenter.y);
+            const distance = Math.hypot(
+                (rect.left + rect.width / 2) - (editorRect.left + editorRect.width / 2),
+                (rect.top + rect.height / 2) - (editorRect.top + editorRect.height / 2)
+            );
 
             if (distance < 100) score += 150;
             else if (distance < 250) score += 50;
 
-            if (rect.top >= editorRect.top && rect.left >= editorRect.left) {
-                score += 40;
-            }
+            if (rect.top >= editorRect.top && rect.left >= editorRect.left) score += 40;
         }
     }
 
-    if (type === "EDITOR" && element.tagName === "TEXTAREA") score += 200;
+    if (type === "EDITOR") {
+        if (element.tagName === "TEXTAREA") score += 200;
+        if (element.getAttribute('contenteditable') === 'true') score += 150;
+    }
+
     if (element === document.activeElement) score += 1000;
 
-    const area = rect.width * rect.height;
-    score += Math.min(area, 5000) / 1000;
-
-    const identifier = `${element.tagName}${element.id ? '#' + element.id : ''}${element.className && typeof element.className === 'string' ? '.' + element.className.split(' ').join('.') : ''}`;
-    console.log(`[Ranking ${type}] Score: ${score.toFixed(2)} | Elemento:`, element);
-
+    score += Math.min(rect.width * rect.height, 5000) / 1000;
 
     return score;
 }

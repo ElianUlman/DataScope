@@ -13,7 +13,8 @@
     "https://www.perplexity.ai/*",
     "https://*.perplexity.ai/*",
     "https://www.meta.ai/*",
-    "https://chat.z.ai/*"
+    "https://chat.z.ai/*",
+    "https://claude.ai/*"
   ],
   "action": {
     "default_popup": "hello.html",
@@ -33,7 +34,8 @@
         "https://www.perplexity.ai/*",
         "https://*.perplexity.ai/*",
         "https://www.meta.ai/*",
-        "https://chat.z.ai/*"
+        "https://chat.z.ai/*",
+        "https://claude.ai/*"
       ],
       "js": ["content.js"],
       "all_frames": true,
