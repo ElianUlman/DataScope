@@ -15,9 +15,11 @@ function saveData(text) {
     }
 }
 
+//
 function checkKeyboard(e) {
     if (e.key === 'Enter' && !e.shiftKey) {
         const el = document.activeElement;
+        editorWasEmpty = true;
 
         if (el && el.matches("textarea, [contenteditable='true']")) {
             const contenido = el.innerText || el.value || "";
@@ -26,26 +28,55 @@ function checkKeyboard(e) {
     }
 }
 
+//
 function configEditor(element) {
     if (element && element.getAttribute('data-extension-configurado') !== 'true') {
         element.addEventListener('keyup', checkKeyboard);
+
+        element.addEventListener('input', () => {
+            const currentContent = element.value || element.innerText || "";
+            const isCurrentlyEmpty = currentContent.trim() === "";
+
+            if (editorWasEmpty && !isCurrentlyEmpty) {
+                const newButton = findElement(document.body, "BUTTON");
+                if (newButton) {
+                    sendButton = newButton;
+                    sendButton._lastScore = rank(newButton, "BUTTON");
+                    attachButtonListener(sendButton, true);
+                }
+            }
+            editorWasEmpty = isCurrentlyEmpty;
+        });
+
         element.setAttribute('data-extension-configurado', 'true');
     }
 }
 
-function attachButtonListener(btn) {
-    if (!btn || btn.dataset.listener === "true") return;
+//
+function attachButtonListener(btn, force = false) {
+    if (!btn) return;
 
-    btn.addEventListener("click", () => {
-        // Usamos el editor que ya tenemos identificado como el mejor
-        const contenido = editor?.innerText || editor?.value || "";
-        if (contenido.trim()) {
-            saveData(contenido);
-        }
-    });
+    if (btn.dataset.extensionConfigurado === "true" && !force) return;
 
-    btn.dataset.listener = "true";
-    console.log("🔘 Botón de envío vinculado:", btn);
+    btn.removeEventListener("click", handleButtonClick);
+    btn.addEventListener("click", handleButtonClick);
+
+    btn.dataset.extensionConfigurado = "true";
+    console.log("🔘 Botón de envío vinculado/actualizado:", btn);
+}
+
+function handleButtonClick() {
+    editorWasEmpty = true;
+    const contenido = editor?.innerText || editor?.value || "";
+    if (contenido.trim()) {
+        saveData(contenido);
+    }
+}
+
+//
+function isButtonValid(btn) {
+    if (!btn) return false;
+    return document.contains(btn) && btn.offsetParent !== null;
 }
 
 let globalCandidates = {
@@ -69,6 +100,8 @@ let heuristics = {
         Arialabel: ["send", "message", "prompt"],
     }
 }
+
+//
 function rank(element, type) {
     let score = 0;
     let config = heuristics[type];
@@ -84,35 +117,55 @@ function rank(element, type) {
         Name: element.getAttribute("name") || ""
     };
 
-    if (element === document.activeElement) {
-        score += 1000;
-    }
-
-    if (type === "EDITOR" && element.tagName === "TEXTAREA") {
-        score += 200;
-    }
-
     for (const category in config) {
         const words = config[category];
-        
-        const rawValue = elementConfig[category] || "";
-        const value = rawValue.toLowerCase();
-
+        const value = (elementConfig[category] || "").toLowerCase();
         if (words && words.length > 0) {
             words.forEach(word => {
                 if (value.includes(word.toLowerCase())) {
-                    if (category !== "Class") {
-                        score += 50;
-                    } else {
-                        score += 10;
-                    }
+                    score += (category !== "Class") ? 50 : 10;
                 }
             });
         }
     }
 
     const rect = element.getBoundingClientRect();
-    score += (rect.width * rect.height) / 1000;
+
+    if (type === "BUTTON") {
+        const ratio = rect.width / rect.height;
+        if (ratio > 0.7 && ratio < 1.4) {
+            score += 60;
+        }
+
+        if (rect.width > 120 || rect.height > 80) {
+            score -= 300;
+        }
+
+        if (editor) {
+            const editorRect = editor.getBoundingClientRect();
+            const buttonCenter = { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
+            const editorCenter = { x: editorRect.left + editorRect.width / 2, y: editorRect.top + editorRect.height / 2 };
+
+            const distance = Math.hypot(buttonCenter.x - editorCenter.x, buttonCenter.y - editorCenter.y);
+
+            if (distance < 100) score += 150;
+            else if (distance < 250) score += 50;
+
+            if (rect.top >= editorRect.top && rect.left >= editorRect.left) {
+                score += 40;
+            }
+        }
+    }
+
+    if (type === "EDITOR" && element.tagName === "TEXTAREA") score += 200;
+    if (element === document.activeElement) score += 1000;
+
+    const area = rect.width * rect.height;
+    score += Math.min(area, 5000) / 1000;
+
+    const identifier = `${element.tagName}${element.id ? '#' + element.id : ''}${element.className && typeof element.className === 'string' ? '.' + element.className.split(' ').join('.') : ''}`;
+    console.log(`[Ranking ${type}] Score: ${score.toFixed(2)} | Elemento:`, element);
+
 
     return score;
 }
@@ -167,14 +220,16 @@ function findElement(root, type) {
 
 let editor = null;
 let sendButton = null;
+let lastText = ""
+let editorWasEmpty = true;
 
 editor = findElement(document.body, "EDITOR");
-if (editor){
+if (editor) {
     configEditor(editor);
-} 
+}
 
 sendButton = findElement(document.body, "BUTTON");
-if(sendButton){
+if (sendButton) {
     attachButtonListener(sendButton);
 }
 
@@ -186,7 +241,7 @@ const observer = new MutationObserver((mutationList) => {
     for (const mutation of mutationList) {
         for (const node of mutation.addedNodes) {
             if (!(node instanceof HTMLElement)) continue;
-            
+
             findElement(node, "EDITOR");
             findElement(node, "BUTTON");
             structureChanged = true;
@@ -199,7 +254,7 @@ const observer = new MutationObserver((mutationList) => {
         if (newEditor && newEditor !== editor) {
 
             if (editor) {
-                editor.removeEventListener('keydown', checkKeyboard);
+                editor.removeEventListener('keyup', checkKeyboard);
             }
 
             editor = newEditor;
@@ -208,11 +263,19 @@ const observer = new MutationObserver((mutationList) => {
         }
     }
 
-    const bestButton = findElement(null, "BUTTON");
 
-    if (bestButton && bestButton !== sendButton) {
+    const bestButton = findElement(document.body, "BUTTON");
+
+    // Si encontramos un mejor botón O si el botón actual ha evolucionado (mejor score)
+    if (bestButton && (bestButton !== sendButton || rank(bestButton, "BUTTON") > (sendButton?._lastScore || -Infinity))) {
+
+        // Guardamos el score actual dentro del elemento para futuras comparaciones
+        bestButton._lastScore = rank(bestButton, "BUTTON");
+
         sendButton = bestButton;
-        attachButtonListener(sendButton);
+
+        // Forzamos el listener ignorando si ya tenía uno (lo manejamos dentro de la función)
+        attachButtonListener(sendButton, true);
     }
 });
 
