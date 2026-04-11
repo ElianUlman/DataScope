@@ -7,15 +7,27 @@ export const initialPage = (req, res) => {
     res.send("funciono");
 };
 
+export const getInvites = async (req,res)=>{
+    try{
+        const companyId= req.targetCompanyId
+
+        const {rows: invites} = await pool.query(`SELECT public.users.name, public.users.email, public.invites.isadmin, public.invites.creationdate, public.invites.isvalid
+	FROM public.invites INNER JOIN public.companies ON public.companies.id = public.invites.companyfk
+    INNER JOIN public.users ON public.users.id = public.invites.userfk
+    WHERE public.companies.id=$1`, [companyId])
+
+            res.json(invites)
+
+    }catch(error){
+        res.send(error)
+    }
+}
+
 export const createInvite = async (req, res) =>{
     try{
-        const user = req.user
-        const {companyName, targetUserMail} = req.body //company name is unique
-        const {rows: [{ id: companyId }]} = await pool.query(`SELECT id FROM public.companies WHERE name=$1`, [companyName])
         
-        const { rows: [{isadmin: isAdmin}] } = await pool.query('SELECT public.invites.isadmin FROM public.invites INNER JOIN public.companies ON public.companies.id=public.invites.companyfk INNER JOIN public.users ON public.users.id=public.invites.userfk WHERE public.companies.id=$1 AND public.users.id=$2', [companyId ,user.id])
-        
-        if(!isAdmin){res.status(403).send({error: "you do not have admin access"})}
+        const {targetUserMail} = req.body
+        const companyId= req.targetCompanyId
         
         const {rows: [{ id: targetUserId}]} = await pool.query(`SELECT id FROM public.users WHERE email=$1`, [targetUserMail])
         

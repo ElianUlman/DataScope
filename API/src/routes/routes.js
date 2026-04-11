@@ -8,7 +8,8 @@ import {
     loginUser,
     getUserData,
     createUser,
-    createInvite
+    createInvite,
+    getInvites
     /*
     insertCompany, 
     getCompanyByToken,
@@ -18,6 +19,7 @@ import {
 } from "../controllers/controller.js"
 
 import {
+    adminAuth,
     authentication, 
     onlyCompanyAuth, 
     onlyIntParam
@@ -29,11 +31,12 @@ const routes = Router();
 routes.get("/", initialPage);
 
 routes.get('/userdata', authentication, getUserData)
+routes.get('/invites', authentication, adminAuth, getInvites)
 
 //PUTS
 routes.put('/createCompany', createCompany)
 routes.put('/createUser', createUser)
-routes.put('/createInvite', authentication, createInvite)
+routes.put('/createInvite', authentication, adminAuth, createInvite)
 
 //POSTS
 routes.post('/login', loginUser)

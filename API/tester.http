@@ -1,6 +1,15 @@
 ###
+GET http://localhost:3000/api/invites
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjAsInVzZXJuYW1lIjoiSm9zZXBoIiwiaWF0IjoxNzc1OTI0Nzk2LCJleHAiOjE3NzU5MjgzOTZ9.e52N_eysgFtsGoFuBF-n3k3HOKljSbGj6OKukOAaDcU
+Content-Type: application/json
+
+{
+  "companyName": "comrades SC"
+}
+
+###
 PUT  http://localhost:3000/api/createInvite
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwidXNlcm5hbWUiOiJWbGFkIFVsaWFub3YiLCJpYXQiOjE3NzU4ODMwNjgsImV4cCI6MTc3NTg4NjY2OH0.A8HyirhXO31hS5OTY-J6gMSAryEjxwyhcEtBysoxAcc
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwidXNlcm5hbWUiOiJWbGFkIFVsaWFub3YiLCJpYXQiOjE3NzU5MjM3MjEsImV4cCI6MTc3NTkyNzMyMX0.SqimmlXDbWUWuRRzEAQ-nJAe6O8q1q_CmI3pIytRnJE
 Content-Type: application/json
 
 {
@@ -33,6 +42,7 @@ Content-Type: application/json
 ###notyourbusiness@gmail.com: airplane tree dog window
 ###michaelscott@gmail.com: password (?)
 ###thepeoplesparty@gmail.com: workers of the world unite
+###2gulag@siberia.ru: t-34
 
 ###
 POST http://localhost:3000/api/login
@@ -41,6 +51,15 @@ Content-Type: application/json
 {
     "email": "thepeoplesparty@gmail.com", 
     "password": "workers of the world unite"
+}
+
+###
+POST http://localhost:3000/api/login
+Content-Type: application/json
+
+{
+    "email": "2gulag@siberia.ru", 
+    "password": "t-34"
 }
 
 ###
