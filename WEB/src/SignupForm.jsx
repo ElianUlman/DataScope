@@ -18,7 +18,7 @@ const SignupForm = (props) => {
     const creditCardLuhnAuth = () =>{
         //this uses the luhn algorithm, which only checks if the credit card might be valid (aka, numbers are Ok)
         try{
-            const noSpaces = creditCardNumber.replaceAll(" ", "")
+            const noSpaces = creditCardNumber.replaceAll(/\s|-/g, "")
             let digits = Array.from(String(noSpaces), Number)
 
             let isSecond = false;

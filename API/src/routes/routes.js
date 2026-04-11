@@ -9,7 +9,8 @@ import {
     getUserData,
     createUser,
     createInvite,
-    getInvites
+    getInvites,
+    getCompanyData
     /*
     insertCompany, 
     getCompanyByToken,
@@ -32,6 +33,7 @@ routes.get("/", initialPage);
 
 routes.get('/userdata', authentication, getUserData)
 routes.get('/invites', authentication, adminAuth, getInvites)
+routes.get('/companiesWithUser', authentication, getCompanyData)
 
 //PUTS
 routes.put('/createCompany', createCompany)

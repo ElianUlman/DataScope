@@ -11,8 +11,8 @@ import Login from './login';
 
 function App() {
   
+  const[username, setUsername] = useState()
   
-  const [username, setusername]=useState();
 
   const fullSignUp = async (companyName, companyTier, username, email, password) => {
     try{
@@ -45,10 +45,8 @@ function App() {
       );
 
       sessionStorage.setItem("token", response.data.token); //esto se guarda hasta que se cierre la ventana
-      
-      
-
-      return await getCompanyData(response.data.token)
+  
+      return await getUserData(response.data.token)
       
     } catch (error) {
       return error.response.status
@@ -56,14 +54,15 @@ function App() {
     }
   };
 
-  const getCompanyData = async (token) =>{
+  const getUserData = async (token) =>{
     try{
       const response = await axios.get("http://localhost:3000/api/userdata", {
       headers: {
         Authorization: token
       }})
+
       sessionStorage.setItem("username", response.data.name)
-      setusername(response.data.name)
+      setUsername(response.data.name)
      
     }catch(error){
       
@@ -72,20 +71,24 @@ function App() {
   }
 
   const GuestRoute = ({ user, children }) => {
-    
-  if (user) {
-      return <Navigate to="/" replace />;
-    }
-    return children;
+    if (user) {
+        return <Navigate to="/" replace />;
+      }
+      return children;
   }
 
-
+  const userRoute = ({user, children}) => {
+    if(!user){
+      return <Navigate to="/" replace />;
+    }
+    return children
+  }
   
   
 
   return (
     <BrowserRouter>
-      < PageHeader name={sessionStorage.getItem("username")}/>
+      < PageHeader name={username || sessionStorage.getItem("username")}/>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />

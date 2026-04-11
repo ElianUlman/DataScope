@@ -112,6 +112,15 @@ export const getUserData = async (req, res) => {
     res.json(company.rows[0]);
 }
 
+export const getCompanyData = async (req,res)=>{
+    const user =req.user
+    const {rows: companiesWithUser} = await pool.query(`SELECT public.companies.name
+        FROM public.companies INNER JOIN public.invites ON public.companies.id = public.invites.companyfk
+        INNER JOIN public.users ON public.users.id = public.invites.userfk
+        WHERE public.users.id = $1`, [user.id])
+    res.json(companiesWithUser)
+}
+
 /*
 export const insertCompany = async (req, res)=>{
     
