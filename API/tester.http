@@ -1,4 +1,14 @@
 ###
+PUT http://localhost:3000/api/createUser
+Content-Type: application/json
+
+{
+    "name": "Joseph",
+    "password": "t-34",
+    "email": "2gulag@siberia.ru"
+}
+
+###
 PUT http://localhost:3000/api/createCompany
 Content-Type: application/json
 

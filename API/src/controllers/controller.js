@@ -7,6 +7,18 @@ export const initialPage = (req, res) => {
     res.send("funciono");
 };
 
+export const createUser = async (req, res) =>{
+    try{
+
+        const {name, password, email} = req.body
+        const hashedPassword = await bcrypt.hash(password, hashRounds);
+        await pool.query('INSERT INTO public.users(name, email, password) VALUES ($1, $2, $3) RETURNING *', [name, email, hashedPassword])
+        
+    }catch(error){
+        res.send(error)
+    }
+}
+
 export const createCompany = async (req, res) => {
     const client = await pool.connect();
     try{
