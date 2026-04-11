@@ -1,4 +1,14 @@
 ###
+PUT  http://localhost:3000/api/createInvite
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwidXNlcm5hbWUiOiJWbGFkIFVsaWFub3YiLCJpYXQiOjE3NzU4ODMwNjgsImV4cCI6MTc3NTg4NjY2OH0.A8HyirhXO31hS5OTY-J6gMSAryEjxwyhcEtBysoxAcc
+Content-Type: application/json
+
+{
+  "companyName": "comrades SC",
+  "targetUserMail": "2gulag@siberia.ru"
+}
+
+###
 PUT http://localhost:3000/api/createUser
 Content-Type: application/json
 
@@ -29,8 +39,8 @@ POST http://localhost:3000/api/login
 Content-Type: application/json
 
 {
-    "email": "notyourbusiness@gmail.com", 
-    "password": "airplane tree dog window"
+    "email": "thepeoplesparty@gmail.com", 
+    "password": "workers of the world unite"
 }
 
 ###

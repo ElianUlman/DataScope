@@ -7,7 +7,8 @@ import {
     createCompany,
     loginUser,
     getUserData,
-    createUser
+    createUser,
+    createInvite
     /*
     insertCompany, 
     getCompanyByToken,
@@ -32,6 +33,7 @@ routes.get('/userdata', authentication, getUserData)
 //PUTS
 routes.put('/createCompany', createCompany)
 routes.put('/createUser', createUser)
+routes.put('/createInvite', authentication, createInvite)
 
 //POSTS
 routes.post('/login', loginUser)

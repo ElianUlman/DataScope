@@ -7,6 +7,29 @@ export const initialPage = (req, res) => {
     res.send("funciono");
 };
 
+export const createInvite = async (req, res) =>{
+    try{
+        const user = req.user
+        const {companyName, targetUserMail} = req.body //company name is unique
+        const {rows: [{ id: companyId }]} = await pool.query(`SELECT id FROM public.companies WHERE name=$1`, [companyName])
+        
+        const { rows: [{isadmin: isAdmin}] } = await pool.query('SELECT public.invites.isadmin FROM public.invites INNER JOIN public.companies ON public.companies.id=public.invites.companyfk INNER JOIN public.users ON public.users.id=public.invites.userfk WHERE public.companies.id=$1 AND public.users.id=$2', [companyId ,user.id])
+        
+        if(!isAdmin){res.status(403).send({error: "you do not have admin access"})}
+        
+        const {rows: [{ id: targetUserId}]} = await pool.query(`SELECT id FROM public.users WHERE email=$1`, [targetUserMail])
+        
+        await pool.query(`INSERT INTO public.invites(
+	        companyfk, userfk, isadmin, isvalid)
+	        VALUES ($1, $2, CAST(0 AS BIT), CAST(1 AS BIT));`, [companyId, targetUserId])
+
+        res.send()
+
+    }catch(error){
+        res.send(error)
+    }
+}
+
 export const createUser = async (req, res) =>{
     try{
 
