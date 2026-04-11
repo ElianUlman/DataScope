@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route , Navigate} from "react-router-dom";
 import axios from "axios";
 import './App.css'
 
@@ -10,8 +10,8 @@ import SignUp from './SignUp';
 import Login from './login';
 
 function App() {
-
-  const [token, setToken]=useState();
+  
+  
   const [username, setusername]=useState();
 
   const fullSignUp = async (companyName, companyTier, username, email, password) => {
@@ -26,7 +26,7 @@ function App() {
           "password": password
         }
       )
-      console.log("insert OK")
+     
       return await userLogin(email, password)
       
     }catch(error){
@@ -43,8 +43,10 @@ function App() {
           "password": password
         }
       );
-      setToken(response.data.token)
-      console.log("login OK")
+
+      sessionStorage.setItem("token", response.data.token); //esto se guarda hasta que se cierre la ventana
+      
+      
 
       return await getCompanyData(response.data.token)
       
@@ -60,13 +62,21 @@ function App() {
       headers: {
         Authorization: token
       }})
-
+      sessionStorage.setItem("username", response.data.name)
       setusername(response.data.name)
-      console.log("get OK")
+     
     }catch(error){
       
       return error.response.status
     }
+  }
+
+  const GuestRoute = ({ user, children }) => {
+    
+  if (user) {
+      return <Navigate to="/" replace />;
+    }
+    return children;
   }
 
 
@@ -75,12 +85,26 @@ function App() {
 
   return (
     <BrowserRouter>
-      < PageHeader name={username}/>
+      < PageHeader name={sessionStorage.getItem("username")}/>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
-        <Route path="/login" element={<Login loginFunc={userLogin}/>} />
-        <Route path="/signup" element={<SignUp signUpFunc={fullSignUp}/>} />
+        <Route
+          path="/login"
+          element={
+            <GuestRoute user={sessionStorage.getItem("token")}>
+              <Login loginFunc={userLogin} />
+            </GuestRoute>
+          }
+        />
+        <Route
+          path="/signup"
+          element={
+            <GuestRoute user={sessionStorage.getItem("token")}>
+              <SignUp signUpFunc={fullSignUp} />
+            </GuestRoute>
+          }
+        />
       </Routes>
     </BrowserRouter>
   )

@@ -4,7 +4,7 @@ import './PageHeader.css'
 
 function PageHeader(props){
     let content
-    if(props.name !== undefined){
+    if(props.name !== null){
         content = <h3>{props.name}</h3>
     }else{
         content = <div>
