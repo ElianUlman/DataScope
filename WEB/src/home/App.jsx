@@ -12,6 +12,7 @@ import userLogin from '../api/userLogin';
 import getUserData from '../api/getUserData';
 import fullSignUp from '../api/fullSignUp';
 import getMyCompanies from '../api/getMyCompanies';
+import displayCompany from '../userRoutes/displayCompany';
 
 function App() {
   
@@ -38,7 +39,7 @@ function App() {
       return children;
   }
 
-  const userRoute = ({user, children}) => {
+  const UserRoute = ({user, children}) => {
     if(!user){
       return <Navigate to="/" replace />;
     }
@@ -49,7 +50,7 @@ function App() {
 
   return (
     <BrowserRouter>
-      < PageHeader name={sessionStorage.getItem("username")} myCompanies={myCompanies || sessionStorage.getItem("myCompany/s")}/>
+      < PageHeader name={sessionStorage.getItem("username")} myCompanies={sessionStorage.getItem("myCompany/s")}/>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
@@ -67,6 +68,14 @@ function App() {
             <GuestRoute user={sessionStorage.getItem("token")}>
               <SignUp signUpFunc={companySignUp} />
             </GuestRoute>
+          }
+        />
+        <Route
+          path="/company"
+          element={
+            <UserRoute user={sessionStorage.getItem("token")}>
+              <displayCompany />
+            </UserRoute>
           }
         />
       </Routes>
