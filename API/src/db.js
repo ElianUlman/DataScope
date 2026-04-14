@@ -1,7 +1,7 @@
 import pg from 'pg';
 
 //funcion para cuando estamos en el colegio con la configuraciones de conexion para su db
-/*
+
 export const pool=new pg.Pool({
     user: "postgres",
     host: "localhost",
@@ -9,10 +9,9 @@ export const pool=new pg.Pool({
     database: "DataScope",
     port: "5432"
 })
-*/
 
 //funcion para la casa de luca, con el usuario local dbToAPI_user
-/**/
+/*
 export const pool=new pg.Pool({
     user: "dbToAPI_user",
     host: "localhost",
@@ -20,7 +19,7 @@ export const pool=new pg.Pool({
     database: "dataScopeDb",
     port: "5432"
 })
-
+*/
 
 
 

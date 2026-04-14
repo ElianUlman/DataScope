@@ -7,14 +7,27 @@ export const initialPage = (req, res) => {
     res.send("funciono");
 };
 
+export const getAdminsCompanies = async (req,res)=>{
+    try{
+        const {rows: companies} = await pool.query(`SELECT public.companies.name 
+        FROM public.invites INNER JOIN public.companies ON public.companies.id = public.invites.companyfk
+        INNER JOIN public.users ON public.users.id = public.invites.userfk
+        WHERE public.users.id=$1 AND public.invites.isadmin=CAST(1 AS BIT)`, [req.user.id])
+
+        res.json(companies)
+    }catch(error){
+        res.send(error)
+    }
+}
+
 export const getInvites = async (req,res)=>{
     try{
         const companyId= req.targetCompanyId
 
         const {rows: invites} = await pool.query(`SELECT public.users.name, public.users.email, public.invites.isadmin, public.invites.creationdate, public.invites.isvalid
-	FROM public.invites INNER JOIN public.companies ON public.companies.id = public.invites.companyfk
-    INNER JOIN public.users ON public.users.id = public.invites.userfk
-    WHERE public.companies.id=$1`, [companyId])
+	    FROM public.invites INNER JOIN public.companies ON public.companies.id = public.invites.companyfk
+        INNER JOIN public.users ON public.users.id = public.invites.userfk
+        WHERE public.companies.id=$1`, [companyId])
 
             res.json(invites)
 
