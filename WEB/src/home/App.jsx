@@ -11,27 +11,23 @@ import Login from '../guestRoute/Login';
 import userLogin from '../api/userLogin';
 import getUserData from '../api/getUserData';
 import fullSignUp from '../api/fullSignUp';
+import getMyCompanies from '../api/getMyCompanies';
 
 function App() {
   
   const[username, setUsername] = useState()
+  const[myCompanies, setmyCompanies] = useState()
 
   const companySignUp = async (companyName, companyTier, username, email, password) =>{
-    
     if(await fullSignUp(companyName, companyTier, username, email, password) === true){
-      
       login(email, password)
     }
-    
   }
 
   const login = async (email, password) =>{
-    
-    
     if((await userLogin(email, password)) === true){
-      
       setUsername(await getUserData(sessionStorage.getItem("token")))
-      
+      setmyCompanies(await getMyCompanies(sessionStorage.getItem("token")))
     }
   }
 
@@ -53,7 +49,7 @@ function App() {
 
   return (
     <BrowserRouter>
-      < PageHeader name={username || sessionStorage.getItem("username")}/>
+      < PageHeader name={sessionStorage.getItem("username")} myCompanies={myCompanies || sessionStorage.getItem("myCompany/s")}/>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />

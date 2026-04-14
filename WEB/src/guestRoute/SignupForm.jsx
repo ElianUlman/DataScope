@@ -52,6 +52,15 @@ const SignupForm = (props) => {
         }
     }
 
+    const emailAuth = () => {
+        
+        if(!/\w+@[a-z]+\.[a-z]+\.?.+/.test(email)){
+            setErrorMessage("invalid email")
+            return false
+        }   
+        return true
+    }
+
     const changeHandler = (e)=>{
         switch(e.target.id){
             case "creditCard":
@@ -87,7 +96,7 @@ const SignupForm = (props) => {
 
     const signupResult = async () =>{
         if(!creditCardLuhnAuth()){return}
-
+        if(!emailAuth()){return}
         const error = await props.signUpFunc(companyName, tier, userName, email, password)
         
 

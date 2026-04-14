@@ -4,8 +4,16 @@ import './PageHeader.css'
 
 function PageHeader(props){
     let content
-    if(props.name !== null){
-        content = <h3>{props.name}</h3>
+    if (props.name !== null) {
+    
+      content=<div>
+        <h3>{props.name}</h3>
+        {props.myCompanies && (
+            <a href="">ver emprsas</a>
+        )}
+      </div>
+    
+        
     }else{
         content = <div>
                <Link to="/Login">Login</Link> 
