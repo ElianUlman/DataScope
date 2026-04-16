@@ -33,7 +33,7 @@ const LoginForm = (props) => {
             setErrorMessage()
             navigate("/");
         }
-        console.log(error)
+        
         
     }
 

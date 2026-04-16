@@ -10,7 +10,7 @@ import SignUp from '../guestRoute/SignUp';
 import Login from '../guestRoute/Login';
 import {userLogin, getUserData, getMyCompanies, fullSignUp} from '../api/userSessionManager'
 
-import displayCompany from '../userRoutes/displayCompany';
+import DisplayCompany from '../userRoute/displayCompany';
 
 function App() {
   
@@ -72,7 +72,7 @@ function App() {
           path="/company"
           element={
             <UserRoute user={sessionStorage.getItem("token")}>
-              <displayCompany />
+              <DisplayCompany />
             </UserRoute>
           }
         />

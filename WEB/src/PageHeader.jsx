@@ -9,7 +9,7 @@ function PageHeader(props){
       content=<div>
         <h3>{props.name}</h3>
         {props.myCompanies && (
-            <a href="">ver emprsas</a>
+            <a href="/company">ver emprsas</a>
         )}
       </div>
     
