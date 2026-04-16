@@ -95,15 +95,16 @@ export const loginUser = async (req, res) =>{
     const {email, password} = req.body
 
     try{
+        
         const queryResult = await pool.query('SELECT * FROM public.users WHERE email=$1', [email]);
         if(queryResult.rowCount === 0) return res.status(401).json({ error: "user does not exist" })
         
         const userData = queryResult.rows[0]
 
         const passwordMatch = await bcrypt.compare(password, userData.password);
-
+        
         if(!passwordMatch) return res.status(401).json({error: "wrong password"})
-
+        
         const token = jwt.sign(
             { id: userData.id, username: userData.name},
             tokenWholePassword,

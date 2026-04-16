@@ -8,10 +8,8 @@ import About from '../guestRoute/About';
 import PageHeader from "../PageHeader"
 import SignUp from '../guestRoute/SignUp';
 import Login from '../guestRoute/Login';
-import userLogin from '../api/userLogin';
-import getUserData from '../api/getUserData';
-import fullSignUp from '../api/fullSignUp';
-import getMyCompanies from '../api/getMyCompanies';
+import {userLogin, getUserData, getMyCompanies, fullSignUp} from '../api/userSessionManager'
+
 import displayCompany from '../userRoutes/displayCompany';
 
 function App() {
