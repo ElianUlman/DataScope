@@ -1,7 +1,10 @@
-/*HAY QUE QUEDARSE CON EL MAT-ICON O LO QUE SEA EL PRIME HALLAZGO DE LA FUNCION DE FINDBUTTON AL ESCRIBIR POR PRIMER VEZ EN EL EDITOR
-DESPUES SOLO HAY QUE VOLVER A ENCONTRARLO LA **SIGUIENTE VEZ QUE SE ESCRIBE EN EL EDITOR** Y AHI BUSCAR EL BOTON
+/*
 
-HAY QUE PONER UN SOLO LISTENER PARA LOS BOTONES **EN EL ANCESTRO COMUN DE TODOS ELLOS**
+- Guardar solo snapshots de los botones
+- Detectar cuando hay un click y el editor queda vacio. Hacer una snapshot
+- volver a buscar botones
+- comparar cuales no estan
+
 */
 
 let editor
@@ -10,8 +13,8 @@ let editorContent
 let oldEditorContent
 
 let sendButton
-let sendButtonCandidates = []
-let sendButtonFingerPrint
+let sendButtonCandidates = new Set
+let sendButtonSnapshot;
 let sendButtonQuery
 let listenersAttached = false
 let messageNumber = 0
@@ -23,8 +26,12 @@ function configEditor() {
         if (!sendButton && !listenersAttached) {
             console.log("chequeando botones")
             findButton(editor, 5)
-            attachListeners()
             listenersAttached = true
+        }
+
+        if (!sendButton && sendButtonQuery) {
+            sendButton = findElementByFingerprint(sendButtonQuery)
+            console.log("BOTON DE ENVIAR ENCONTRADO:", sendButton)
         }
 
         oldEditorContent = editorContent
@@ -35,7 +42,7 @@ function getDigitalPrint(e) {
     return {
         tag: e.tagName || "",
         clases: Array.from(e.classList).join('.') || "",
-        position: Array.from(e.parentNode.children).indexOf(e) || "",
+        position: Array.from(e.parentNode.children).indexOf(e) ?? -1,
         father: e.closest('[id]') ? e.closest('[id]').id : null
     };
 }
@@ -50,41 +57,94 @@ function checkSameElement(element, originalPrint) {
         currentPrint.father === originalPrint.father;
 }
 
-function attachListeners() {
-    sendButtonCandidates.forEach((e) => {
-        e.addEventListener('click', setSendButton)
-        console.log('Event listener listo')
-    })
+function attachListeners(e) {
+
+    e.addEventListener('click', onMouseDown)
+    console.log('Event listener listo')
+
 }
 
 function cleanButtonCandidates() {
-    sendButtonCandidates.forEach((e) => {
-        e.removeEventListener('click', setSendButton)
-        console.log('Event listener listo')
-    })
-
-    sendButtonCandidates = []
+    sendButtonCandidates.clear()
 }
 
 function findButton(start, levels) {
 
     let ancestro = start;
+
     for (let i = 0; i < levels; i++) {
-        if (ancestro) {
-            ancestro = ancestro.parentElement;
+        if (!ancestro || ancestro === document.body) {
+            console.log("Se llegó al body, dejando de subir.")
+            break
+        }
 
-            const botones = ancestro.querySelectorAll('button');
+        const botones = ancestro.querySelectorAll('button')
 
-            if (botones.length > 0) {
-                sendButtonCandidates.push(...botones);
-            } else {
-                console.log("No tiene botones.");
-            }
+        botones.forEach((boton) => {
+            attachListeners(boton)
+            sendButtonCandidates.add(botonAClave(getDigitalPrint(boton)))
+        })
+
+        if (botones.length < 1) {
+            console.log("Este nivel no tiene botones, subiendo un nivel.")
+        }
+
+        ancestro = ancestro.parentElement;
+    }
+
+}
+
+function sendbuttonSnapshot() {
+    sendButtonSnapshot = new Set([...sendButtonCandidates])
+}
+
+function botonAClave(datosBoton) {
+    return `${datosBoton.tag}|${datosBoton.clases}|${datosBoton.position}|${datosBoton.father}`
+}
+
+function findElementByFingerprint(fingerprint) {
+    const parts = fingerprint.split('|')
+    const [tag, clases, position, father] = parts
+
+    const todosLosElementos = document.querySelectorAll(tag)
+    let mejorElemento = null
+    let mejorPuntaje = 0
+
+    for (const elemento of todosLosElementos) {
+        let puntaje = 0
+
+        if (elemento.closest('[id]')?.id === father) puntaje += 3
+        if (Array.from(elemento.parentNode.children).indexOf(elemento) === parseInt(position)) puntaje += 2
+
+        const clasesElemento = Array.from(elemento.classList)
+        const clasesFingerprint = clases.split('.')
+        const clasesComunes = clasesElemento.filter(c => clasesFingerprint.includes(c))
+        puntaje += clasesComunes.length
+
+        if (puntaje > mejorPuntaje) {
+            mejorPuntaje = puntaje
+            mejorElemento = elemento
         }
     }
 
-    console.log(sendButtonCandidates)
+    return mejorElemento
 }
+
+function checkButton() {
+    let botonDesaparecido;
+
+    sendButtonSnapshot.forEach((btn) => {
+        if (!sendButtonCandidates.has(btn)) {
+            botonDesaparecido = btn
+        }
+    })
+
+    sendButtonQuery = botonDesaparecido
+    console.log("Query encontrada:", sendButtonQuery)
+}
+
+console.log(sendButtonCandidates)
+
 
 const setEditor = (e) => {
 
@@ -99,23 +159,25 @@ const setEditor = (e) => {
     }
 }
 
-const setSendButton = (e) => {
+const onMouseDown = (e) => {
 
+    sendbuttonSnapshot()
     let buttonCandidate = e.target
 
     if (buttonCandidate.tagName != 'BUTTON') {
-        cleanButtonCandidates()
         findButton(buttonCandidate, 5)
-        buttonCandidate = sendButtonCandidates[0]
+        buttonCandidate = Array.from(sendButtonCandidates)[0]
     }
 
     console.log("CLICK DETECTADO EN: ", buttonCandidate)
+    console.log(sendButtonCandidates)
 
+    cleanButtonCandidates()
     setTimeout(() => {
         if (editor && editor.textContent === "") {
-            sendButtonFingerPrint = getDigitalPrint(buttonCandidate)
-            console.log("FINGUERPRINT:", sendButtonQuery)
-            cleanButtonCandidates()
+            findButton(editor, 5)
+            checkButton()
+            console.log(sendButtonCandidates)
         }
     }, 100)
 
