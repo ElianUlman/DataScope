@@ -23,13 +23,30 @@ function configEditor() {
     editor.addEventListener('input', (e) => {
         editorContent = e.target.textContent
 
-        if (!sendButton && !listenersAttached) {
+        console.log("INPUT detectado. Estado actual:", {
+            sendButton: sendButton,
+            listenersAttached: listenersAttached,
+            sendButtonQuery: sendButtonQuery,
+            candidatesSize: sendButtonCandidates.size
+        })
+
+        // busca botones en cada input hasta encontrar el de enviar
+        if (!sendButton) {
             console.log("chequeando botones")
-            findButton(editor, 5)
-            listenersAttached = true
+            cleanButtonCandidates()
+            findButton(editor, 10)
+
+            if (sendButtonCandidates.size > 0 && !listenersAttached) {
+                listenersAttached = true
+                console.log("Listeners adjuntados, botones encontrados:", sendButtonCandidates.size)
+                console.log("Candidatos:", Array.from(sendButtonCandidates))
+            }
         }
 
+        console.log("Antes de buscar boton. sendButtonQuery vale:", sendButtonQuery, "sendButton vale:", sendButton)
+
         if (!sendButton && sendButtonQuery) {
+            console.log("Intentando encontrar boton con query:", sendButtonQuery)
             sendButton = findElementByFingerprint(sendButtonQuery)
             console.log("BOTON DE ENVIAR ENCONTRADO:", sendButton)
         }
@@ -78,7 +95,8 @@ function findButton(start, levels) {
             break
         }
 
-        const botones = ancestro.querySelectorAll('button')
+        // busca tanto <button> como elementos con role="button"
+        const botones = ancestro.querySelectorAll('button, [role="button"]')
 
         botones.forEach((boton) => {
             attachListeners(boton)
@@ -147,15 +165,16 @@ console.log(sendButtonCandidates)
 
 
 const setEditor = (e) => {
-
     let candidate = e.target
     if (candidate.isContentEditable || candidate.tagName === 'TEXTAREA') {
+
+        // si es el mismo editor, no hacer nada
+        if (candidate === editor) return
+
         editor = candidate
+        listenersAttached = false  // resetear para que vuelva a buscar botones
         configEditor()
         console.log("NUEVO EDITOR: ", editor)
-
-        document.removeEventListener('focusin', setEditor)
-
     }
 }
 
@@ -165,7 +184,7 @@ const onMouseDown = (e) => {
     let buttonCandidate = e.target
 
     if (buttonCandidate.tagName != 'BUTTON') {
-        findButton(buttonCandidate, 5)
+        findButton(buttonCandidate, 10)
         buttonCandidate = Array.from(sendButtonCandidates)[0]
     }
 
@@ -175,7 +194,7 @@ const onMouseDown = (e) => {
     cleanButtonCandidates()
     setTimeout(() => {
         if (editor && editor.textContent === "") {
-            findButton(editor, 5)
+            findButton(editor, 10)
             checkButton()
             console.log(sendButtonCandidates)
         }
@@ -204,4 +223,9 @@ const observer = new MutationObserver((mutationList) => {
             });
         }
     }
+})
+
+observer.observe(document.body, {
+    childList: true,
+    subtree: true
 })
