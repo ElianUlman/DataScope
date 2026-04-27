@@ -1,7 +1,7 @@
 import pg from 'pg';
 
 //funcion para cuando estamos en el colegio con la configuraciones de conexion para su db
-/*
+
 export const pool=new pg.Pool({
     user: "postgres",
     host: "localhost",
@@ -9,8 +9,8 @@ export const pool=new pg.Pool({
     database: "DataScope",
     port: "5432"
 })
-*/
-//funcion para la casa de luca, con el usuario local dbToAPI_user
+
+/*
 
 export const pool=new pg.Pool({
     user: "dbToAPI_user",
@@ -19,10 +19,16 @@ export const pool=new pg.Pool({
     database: "dataScopeDb",
     port: "5432"
 })
-
+*/
 
 
 
 //colegio:
 //user: postgres
 //password: root
+
+
+//re-create a backup (4 school)
+//"C:\Program Files\PostgreSQL\16\bin\psql.exe" -U postgres -h localhost
+///q
+//"C:\Program Files\PostgreSQL\16\bin\psql.exe" -U postgres -d DataScope -f "C:\Users\49008593\Desktop\g\DataScope\API\src\database\newBackup.sql"

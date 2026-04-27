@@ -9,19 +9,6 @@ const LoginForm = (props) => {
     const [passwordText, setPasswordText] = useState()
     const [errorMessage, setErrorMessage] = useState()
 
-    const changeHandler = (e) => {
-        switch(e.target.type){
-
-            case "email":
-                setText(e.target.value)
-            break;
-
-            case "password":
-                setPasswordText(e.target.value);
-            break;
-        }
-    }
-
     const loginResult = async () =>{
         const error = await props.loginFunc(text, passwordText)
         if(error === 401){
@@ -44,8 +31,8 @@ const LoginForm = (props) => {
         
         <form action="">
             <h3>{errorMessage}</h3>
-            <input type="email" onChange={changeHandler} placeholder='email'/>
-            <input type="password" onChange={changeHandler} placeholder='password'/>
+            <input type="email" onChange={(e)=>setText(e.target.value)} placeholder='email'/>
+            <input type="password" onChange={(e)=>setPasswordText(e.target.value)} placeholder='password'/>
             <button type='button' onClick={() => loginResult()}>login</button>
         </form>
     </>
