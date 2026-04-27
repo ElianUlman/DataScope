@@ -73,3 +73,7 @@ export const fullSignUp = async (companyName, companyTier, username, email, pass
       return error.response.status
     }
   }
+
+export const logOut = () =>{
+  sessionStorage.clear();
+}

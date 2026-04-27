@@ -4,10 +4,10 @@ import './App.css'
 
 import Home from './Home';
 import About from '../guestRoute/About';
-import PageHeader from "../PageHeader"
+import PageHeader from "../components/PageHeader"
 import SignUp from '../guestRoute/SignUp';
 import Login from '../guestRoute/Login';
-import {userLogin, getUserData, getMyCompanies, fullSignUp} from '../api/userSessionManager'
+import {userLogin, getUserData, getMyCompanies, fullSignUp, logOut} from '../api/userSessionManager'
 
 import DisplayCompany from '../userRoute/displayCompany';
 

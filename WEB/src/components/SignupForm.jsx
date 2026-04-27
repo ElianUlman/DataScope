@@ -26,7 +26,7 @@ const SignupForm = (props) => {
 
 
     const signupResult = async () =>{
-        if(!creditCardLuhnAuth()){return}
+        //if(!creditCardLuhnAuth()){return}
         if(!emailAuth()){return}
         const error = await props.signUpFunc(companyName, tier, userName, email, password)
         
