@@ -30,7 +30,6 @@ function configEditor() {
             candidatesSize: sendButtonCandidates.size
         })
 
-        // busca botones en cada input hasta encontrar el de enviar
         if (!sendButton) {
             console.log("chequeando botones")
             cleanButtonCandidates()
@@ -54,11 +53,11 @@ function configEditor() {
         oldEditorContent = editorContent
     })
 }
-
 function getDigitalPrint(e) {
     return {
         tag: e.tagName || "",
-        clases: Array.from(e.classList).join('.') || "",
+        ariaLabel: e.getAttribute('aria-label') || "",
+        dataTestId: e.dataset.testid || "",  // minúscula
         position: Array.from(e.parentNode.children).indexOf(e) ?? -1,
         father: e.closest('[id]') ? e.closest('[id]').id : null
     };
@@ -68,10 +67,14 @@ function checkSameElement(element, originalPrint) {
     if (!element || !originalPrint) return false
     const currentPrint = getDigitalPrint(element)
 
+    const ariaLabelMatch = originalPrint.ariaLabel && currentPrint.ariaLabel === originalPrint.ariaLabel
+    const dataTestIdMatch = originalPrint.dataTestId && currentPrint.dataTestId === originalPrint.dataTestId
+
+    if (ariaLabelMatch || dataTestIdMatch) return true
+
     return currentPrint.tag === originalPrint.tag &&
-        currentPrint.clases === originalPrint.clases &&
         currentPrint.position === originalPrint.position &&
-        currentPrint.father === originalPrint.father;
+        currentPrint.father === originalPrint.father
 }
 
 function attachListeners(e) {
@@ -117,12 +120,12 @@ function sendbuttonSnapshot() {
 }
 
 function botonAClave(datosBoton) {
-    return `${datosBoton.tag}|${datosBoton.clases}|${datosBoton.position}|${datosBoton.father}`
+    return `${datosBoton.tag}|${datosBoton.ariaLabel}|${datosBoton.dataTestId}|${datosBoton.position}|${datosBoton.father}`
 }
 
 function findElementByFingerprint(fingerprint) {
     const parts = fingerprint.split('|')
-    const [tag, clases, position, father] = parts
+    const [tag, ariaLabel, dataTestId, position, father] = parts
 
     const todosLosElementos = document.querySelectorAll(tag)
     let mejorElemento = null
@@ -131,13 +134,10 @@ function findElementByFingerprint(fingerprint) {
     for (const elemento of todosLosElementos) {
         let puntaje = 0
 
+        if (ariaLabel && elemento.getAttribute('aria-label') === ariaLabel) puntaje += 5
+        if (dataTestId && elemento.dataset.testid === dataTestId) puntaje += 5
         if (elemento.closest('[id]')?.id === father) puntaje += 3
         if (Array.from(elemento.parentNode.children).indexOf(elemento) === parseInt(position)) puntaje += 2
-
-        const clasesElemento = Array.from(elemento.classList)
-        const clasesFingerprint = clases.split('.')
-        const clasesComunes = clasesElemento.filter(c => clasesFingerprint.includes(c))
-        puntaje += clasesComunes.length
 
         if (puntaje > mejorPuntaje) {
             mejorPuntaje = puntaje
@@ -145,7 +145,7 @@ function findElementByFingerprint(fingerprint) {
         }
     }
 
-    return mejorElemento
+    return mejorPuntaje >= 3 ? mejorElemento : null
 }
 
 function checkButton() {

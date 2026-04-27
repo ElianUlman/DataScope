@@ -14,7 +14,8 @@
     "https://*.perplexity.ai/*",
     "https://www.meta.ai/*",
     "https://chat.z.ai/*",
-    "https://claude.ai/*"
+    "https://claude.ai/*",
+    "https://chat.deepseek.com/*"
   ],
   "action": {
     "default_popup": "hello.html",
@@ -35,7 +36,8 @@
         "https://*.perplexity.ai/*",
         "https://www.meta.ai/*",
         "https://chat.z.ai/*",
-        "https://claude.ai/*"
+        "https://claude.ai/*",
+        "https://chat.deepseek.com/*"
       ],
       "js": ["content.js"],
       "all_frames": true,
