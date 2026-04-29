@@ -27,6 +27,8 @@ const routes = Router();
 
 //GETs
 routes.get("/", initialPage);
+routes.post('/', initialPage)
+
 
 /*
 routes.get('/companies', getCompanies)

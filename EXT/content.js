@@ -8,7 +8,11 @@ let sendButtonCandidates = new Set
 let sendButtonSnapshot;
 let sendButtonQuery
 let listenersAttached = false
-let messageNumber = 0
+
+function sendData(type) {
+    console.log("sendData ejecutado con tipo:", type)
+    chrome.runtime.sendMessage({ type: type, content: oldEditorContent });
+}
 
 function configEditor() {
     editor.addEventListener('input', (e) => {
@@ -85,12 +89,11 @@ function findButton(start, levels) {
             break
         }
 
-        // busca tanto <button> como elementos con role="button"
         const botones = ancestro.querySelectorAll('button, [role="button"]')
 
         botones.forEach((boton) => {
             attachListeners(boton)
-            sendButtonCandidates.add(botonAClave(getDigitalPrint(boton)))
+            sendButtonCandidates.add(buttonToString(getDigitalPrint(boton)))
         })
 
         if (botones.length < 1) {
@@ -106,7 +109,7 @@ function sendbuttonSnapshot() {
     sendButtonSnapshot = new Set([...sendButtonCandidates])
 }
 
-function botonAClave(datosBoton) {
+function buttonToString(datosBoton) {
     return `${datosBoton.tag}|${datosBoton.clases}|${datosBoton.position}|${datosBoton.father}`
 }
 
@@ -183,13 +186,13 @@ const onMouseDown = (e) => {
     cleanButtonCandidates()
     setTimeout(() => {
         if (editor && editor.textContent === "") {
+            console.log("llamando sendData")
             findButton(editor, 10)
             checkButton()
             console.log(sendButtonCandidates)
+            sendData("USER_MESSAGE")
         }
     }, 100)
-
-    messageNumber += 1
 }
 
 document.addEventListener('focusin', setEditor)
