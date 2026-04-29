@@ -1,8 +1,6 @@
 import React, {useState} from 'react'
-import { useNavigate } from "react-router-dom";
 
 const SignupForm = (props) => {
-    const navigate = useNavigate();
 
     const [errorMessage, setErrorMessage] = useState("valid credit card n: 4539148803436467")
 
@@ -33,10 +31,8 @@ const SignupForm = (props) => {
 
         if(!error){
             setErrorMessage()
-            navigate("/");
         }
         setErrorMessage(error)
-        console.log(error)
         
     }
 

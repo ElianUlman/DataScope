@@ -7,7 +7,9 @@ import About from '../guestRoute/About';
 import PageHeader from "../components/PageHeader"
 import SignUp from '../guestRoute/SignUp';
 import Login from '../guestRoute/Login';
+import Settings from '../userRoute/settings';
 import {userLogin, getUserData, getMyCompanies, fullSignUp, logOut} from '../api/userSessionManager'
+import { useUser } from '../features/userContext.jsx';
 
 import DisplayCompany from '../userRoute/displayCompany';
 
@@ -26,7 +28,15 @@ function App() {
     if((await userLogin(email, password)) === true){
       setUsername(await getUserData(sessionStorage.getItem("token")))
       setmyCompanies(await getMyCompanies(sessionStorage.getItem("token")))
+      navigate("/");
+
     }
+  }
+
+  const logout = async () =>{
+    
+    await logOut();
+    navigate("/");
   }
 
   const GuestRoute = ({ user, children }) => {
@@ -72,6 +82,14 @@ function App() {
           element={
             <UserRoute user={sessionStorage.getItem("token")}>
               <DisplayCompany />
+            </UserRoute>
+          }
+        />
+        <Route
+          path="/settings"
+          element={
+            <UserRoute user={sessionStorage.getItem("token")}>
+              <Settings logOut={logout}/>
             </UserRoute>
           }
         />

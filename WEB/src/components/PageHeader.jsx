@@ -7,7 +7,7 @@ function PageHeader(props){
     if (props.name !== null) {
     
       content=<div>
-        <h3>{props.name}</h3>
+        <a href="/settings">{props.name}</a>
         {props.myCompanies && (
             <a href="/company">ver emprsas</a>
         )}
