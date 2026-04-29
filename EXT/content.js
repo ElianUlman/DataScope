@@ -1,12 +1,3 @@
-/*
-
-- Guardar solo snapshots de los botones
-- Detectar cuando hay un click y el editor queda vacio. Hacer una snapshot
-- volver a buscar botones
-- comparar cuales no estan
-
-*/
-
 let editor
 let editorQuery
 let editorContent
@@ -30,7 +21,6 @@ function configEditor() {
             candidatesSize: sendButtonCandidates.size
         })
 
-        // busca botones en cada input hasta encontrar el de enviar
         if (!sendButton) {
             console.log("chequeando botones")
             cleanButtonCandidates()
@@ -168,11 +158,10 @@ const setEditor = (e) => {
     let candidate = e.target
     if (candidate.isContentEditable || candidate.tagName === 'TEXTAREA') {
 
-        // si es el mismo editor, no hacer nada
         if (candidate === editor) return
 
         editor = candidate
-        listenersAttached = false  // resetear para que vuelva a buscar botones
+        listenersAttached = false
         configEditor()
         console.log("NUEVO EDITOR: ", editor)
     }
