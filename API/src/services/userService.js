@@ -1,4 +1,7 @@
 import userRepository from "../repositories/userRepository.js"
+import bcrypt from "bcrypt";
+import {hashRounds, tokenCompanyPassword, tokenWholePassword} from "../config.js"
+import jwt from "jsonwebtoken";
 
 class userService {
   async getUsers() {
@@ -7,16 +10,62 @@ class userService {
 
   async createUser(data) {
     if (!data.email) {
-      throw new Error("Email requerido");
+      throw new Error("Email needed");
+    }
+
+    if (!data.name) {
+      throw new Error("Name needed");
+    }
+
+    if (!data.password) {
+      throw new Error("Password needed");
     }
 
     const existing = await userRepository.findByEmail(data.email);
     if (existing) {
-      throw new Error("El usuario ya existe");
+      throw new Error("User already exists");
     }
+    data.password = await bcrypt.hash(data.password, hashRounds);
 
     return await userRepository.create(data);
+  }
+
+  async login(data) {
+    if (!data.email) {
+      throw new Error("Email needed");
+    }
+
+    if (!data.password) {
+      throw new Error("Password needed");
+    }
+
+    const user = await userRepository.findByEmail(data.email);
+    if(!user){throw new Error("User does not exist")}
+
+    if(!(await bcrypt.compare(data.password, user.password))){throw new Error("wrong password")}
+
+    return jwt.sign(
+        { id: user.id, username: user.name},
+        tokenWholePassword,
+        { expiresIn: "1h" }
+    );
+  }
+
+  //?
+  async getUserData(data){
+    return await userRepository.getById(data.id)
   }
 }
 
 export default new userService();
+
+
+/*
+
+
+export const getUserData = async (req, res) => {
+    const user = req.user
+    const company = await pool.query('SELECT * FROM public.users WHERE id=$1', [user.id]);
+    res.json(company.rows[0]);
+}
+*/ 
