@@ -135,99 +135,20 @@ export const getCompanyData = async (req,res)=>{
     res.json(companiesWithUser)
 }
 
-/*
-export const insertCompany = async (req, res)=>{
+
+export const uploadMessage = async (req,res)=>{
+    const user=req.user
     
-    const {name, password} = req.body;
-    const hashedPassword = await bcrypt.hash(password, hashRounds);
-
-    const {rows} = await pool.query('INSERT INTO public.company (name, password) VALUES ($1, $2) RETURNING *', [name, hashedPassword])
-    res.json(rows[0])
-}
-
-
-export const loginCompany = async (req, res)=>{
-    const {companyName, companyPassword} = req.body
     try{
-        const companyQueryResult = await pool.query('SELECT * FROM public.company WHERE name=$1', [companyName]);
-        if(companyQueryResult.rowCount === 0) return res.status(401).json({ error: "company doesnt exist" })
-        
-        const company = companyQueryResult.rows[0]
-
-        const matchCompany = await bcrypt.compare(companyPassword, company.password);
-
-        if(!matchCompany) return res.status(401).json({error: "wrong password"})
-
-        const token = jwt.sign(
-            { companyId: company.id, companyName: company.name},
-            tokenCompanyPassword,
-            { expiresIn: "1h" }
-        );
-
-        res.json({token})
+        const answer = await pool.query(`INSERT INTO public.messages(
+	    user_id, content, sender)
+	    VALUES ($1, $2, $3)
+        `, [user.id, req.body.message, req.body.sender])
+        res.json("")
         
     }catch(error){
-        res.status(500).json({ error: error.message || "Internal server error" })
+
+        if(req.body.sender != ("user", "chatgpt", "gemini", "claude", "copilot", "other")) res.send("invalid sender"); return
+        res.send(error)
     }
 }
-
-export const loginAreaByCompany = async (req, res)=>{ 
-    const user = req.user
-    const {areaName, areaPassword} = req.body
-
-    try{
-       
-        const areaQueryResult = await pool.query('SELECT * FROM public."operationalAreas" WHERE name=$1 AND "companyId"=$2', [areaName, user.companyId]);
-        if(areaQueryResult.rowCount === 0) return res.status(401).json({ error: "area doesnt exist" })
-        
-        const area = areaQueryResult.rows[0]
-
-        const matchArea = await bcrypt.compare(areaPassword, area.password);
-
-        if(!matchArea) return res.status(401).json({error: "wrong password"})
-
-        const token = jwt.sign(
-            { companyId: user.companyId, companyName: user.companyName, areaId: area.id, areaName: area.name },
-            tokenWholePassword,
-            { expiresIn: "1h" }
-        );
-
-        res.json({token})
-        
-    }catch(error){
-        res.send("encountered "+error)
-    }
-}
-
-
-
-// export const companySignUp = async (req, res)=>{
-//     const {name, password}=req.body
-//     const hashedPassword = await bcrypt.hash(password, hashRounds);
-
-//     const {rows} = await pool.query('INSERT INTO public.company (name, password) VALUES ($1, $2) RETURNING *', [name, hashedPassword])
-//     res.json(rows[0])
-// }
-
-// export const areaSignUpByCompany = async (req, res) => {
-//     const {companyName, companyPassword, areaName, areaPassword} = req.body
-// }
-
-
-
-export const getCompanyByToken = async (req, res) => {
-    const user = req.user
-    const company = await pool.query('SELECT * FROM public.company WHERE id=$1', [user.companyId]);
-    res.json(company.rows[0]);
-}
-
-export const getAllByToken = async (req, res) => {
-    const user = req.user
-    const company = await pool.query('SELECT * FROM public.company WHERE id=$1', [user.companyId]);
-    const area = await pool.query('SELECT * FROM public."operationalAreas" WHERE id=$1', [user.areaId]);
-    res.json({
-    company: company.rows[0],
-    area: area.rows[0]
-});
-}
-*/

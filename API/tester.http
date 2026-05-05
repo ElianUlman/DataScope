@@ -1,4 +1,23 @@
 ###
+POST http://localhost:3000/api/message
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwidXNlcm5hbWUiOiJWbGFkIFVsaWFub3YiLCJpYXQiOjE3Nzc2NjE3NTksImV4cCI6MTc3NzY2NTM1OX0.MXFvD0mLjQJEFzlOgKVDNKiSdS_nVK9-WUGDzLsIjc4
+Content-Type: application/json
+
+{
+    "message": "proletariat of the world, unite!",
+    "sender": "gemini"
+}
+
+###
+POST http://localhost:3000/api/login
+Content-Type: application/json
+
+{
+    "email": "thepeoplesparty@gmail.com", 
+    "password": "workers of the world unite"
+}
+
+###
 GET http://localhost:3000/api/companiesWithUser
 Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjAsInVzZXJuYW1lIjoiSm9zZXBoIiwiaWF0IjoxNzc1OTMyOTk3LCJleHAiOjE3NzU5MzY1OTd9.24WTPKkLky5nvFhLbUEUvtzshuMRU7dI6kZWrYoFBuU
 
@@ -48,14 +67,7 @@ Content-Type: application/json
 ###thepeoplesparty@gmail.com: workers of the world unite
 ###2gulag@siberia.ru: t-34
 
-###
-POST http://localhost:3000/api/login
-Content-Type: application/json
 
-{
-    "email": "thepeoplesparty@gmail.com", 
-    "password": "workers of the world unite"
-}
 
 ###
 POST http://localhost:3000/api/login
