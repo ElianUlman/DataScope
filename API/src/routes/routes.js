@@ -26,6 +26,7 @@ import {
     onlyCompanyAuth, 
     onlyIntParam
 } from "../middleware/middleware.js"
+import { getUsers } from "../controllers/user.controller.js";
 
 const routes = Router();
 
@@ -37,6 +38,8 @@ routes.get('/invites', authentication, adminAuth, getInvites)
 routes.get('/companiesWithUser', authentication, getCompanyData)
 
 routes.get('/mycompanies', authentication, getAdminsCompanies)
+
+routes.get('/users', getUsers)
 
 //PUTS
 routes.put('/createCompany', createCompany)
