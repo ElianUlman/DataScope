@@ -8,7 +8,7 @@ class userRepository extends BaseRepository {
 
   async findByEmail(email){
 
-    const [rows] = await this.query('SELECT * FROM public.users WHERE email=$1', [email]);
+    const {rows} = await this.query('SELECT * FROM public.users WHERE email=$1', [email]);
     return rows[0]
     
   } 

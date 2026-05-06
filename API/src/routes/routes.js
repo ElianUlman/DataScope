@@ -3,9 +3,6 @@ import {Router} from "express";
 import {
     initialPage, 
     createCompany,
-    loginUser,
-    getUserData,
-    createUser,
     createInvite,
     getInvites,
     getCompanyData,
@@ -20,7 +17,14 @@ import {
     onlyCompanyAuth, 
     onlyIntParam
 } from "../middleware/middleware.js"
-import { getUsers } from "../controllers/user.controller.js";
+
+
+import { 
+    getUsers, 
+    getUserData,
+    loginUser,
+    createUser
+} from "../controllers/user.controller.js";
 
 const routes = Router();
 

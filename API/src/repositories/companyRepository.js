@@ -2,6 +2,7 @@ import BaseRepository from "./baseRepository.js"
 
 
 class companyRepository extends BaseRepository {
+  
   constructor() {
     super("public.companies");
   }

@@ -45,6 +45,7 @@ class userService {
 
   //?
   async getUserData(data){
+    if(!data.id){throw new Error("missing user id")}
     return await userRepository.getById(data.id)
   }
 }

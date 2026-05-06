@@ -24,6 +24,7 @@ export const authentication = (req, res, next) => {
     }
 }
 
+//probablemente haya que rehacer esta func
 export const adminAuth = async (req, res, next) =>{
     const user = req.user
     if(!user){return res.status(401).send("no login data")}

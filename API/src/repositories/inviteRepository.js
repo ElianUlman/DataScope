@@ -5,14 +5,13 @@ class inviteRepository extends BaseRepository {
     super("public.invites");
   }
 
-    /*
-  async findByEmail(email){
-
-    const [rows] = await this.query('SELECT * FROM public.users WHERE email=$1', [email]);
-    return rows[0]
-    
-  } 
-  */
+  async getInvitesByCompanyId(id){
+    const [rows] = await this.query(`SELECT public.users.name, public.users.email, public.invites.isadmin, public.invites.creationdate, public.invites.isvalid
+        FROM public.invites INNER JOIN public.users ON public.users.id = public.invites.userfk
+        WHERE public.invites.companyfk=$1`, [id])
+    return rows
+  }
 }
+
 
 export default new inviteRepository();

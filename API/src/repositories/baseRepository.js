@@ -3,6 +3,7 @@ import {pool} from "../db.js";
 
 
 export default class BaseRepository {
+  
   constructor(table) {
     this.table = table;
   }
