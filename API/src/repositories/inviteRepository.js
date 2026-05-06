@@ -12,10 +12,11 @@ class inviteRepository extends BaseRepository {
     return rows
   }
 
-  async isAdminOfCompany(id, companyId){
-    const {rows: [{isadmin: isAdmin}]} = await this.query(`SELECT public.invites.isadmin FROM public.invites
+
+  async getInvite(id, companyId){
+    const {rows} = await this.query(`SELECT * FROM public.invites
         WHERE public.invites.companyfk=$1 AND public.invites.userfk=$2`, [companyId , id])
-    return isAdmin
+    return rows[0]
   }
 }
 
