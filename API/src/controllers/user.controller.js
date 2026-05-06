@@ -28,8 +28,8 @@ export const loginUser = async (req,res)=>{
 
 export const getUserData = async (req,res) => { 
     try{
-        const user = req.user
-        res.status(500).json(await userService.getUserData(user.id))
+        const id = req.user.id
+        res.status(200).json(await userService.getUserData({id}))
     }catch(error){
         console.log(error)
         res.status(500).json({error: "error ocurred"})

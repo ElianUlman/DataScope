@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 import {hashRounds, tokenCompanyPassword, tokenWholePassword} from "../config.js"
 import jwt from "jsonwebtoken";
 
-//delete later. logic goes to company repo/service
+
 
 export const getInvites = async (req,res)=>{
     try{

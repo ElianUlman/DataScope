@@ -19,7 +19,7 @@ Content-Type: application/json
 
 ###
 GET http://localhost:3000/api/companiesWithUser
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjAsInVzZXJuYW1lIjoiSm9zZXBoIiwiaWF0IjoxNzc1OTMyOTk3LCJleHAiOjE3NzU5MzY1OTd9.24WTPKkLky5nvFhLbUEUvtzshuMRU7dI6kZWrYoFBuU
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwidXNlcm5hbWUiOiJWbGFkIFVsaWFub3YiLCJpYXQiOjE3NzgwODY3OTMsImV4cCI6MTc3ODA5MDM5M30.nF7J3r4vtxE701SvP6GaytmFYjKU7KPAJ7zWb4HW8dY
 
 ###
 GET http://localhost:3000/api/invites
@@ -80,7 +80,7 @@ Content-Type: application/json
 
 ###
 GET http://localhost:3000/api/userdata
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywidXNlcm5hbWUiOiJEcmVhZFBpcmF0ZVJvYmVydHMiLCJpYXQiOjE3NzU3Njg4MzgsImV4cCI6MTc3NTc3MjQzOH0.hk_c9MRMICUwWakd2-p79CYduP3votggOAkZ_7DQd44
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjAsInVzZXJuYW1lIjoiSm9zZXBoIiwiaWF0IjoxNzc4MDg2NzQ5LCJleHAiOjE3NzgwOTAzNDl9.M5bCqYDjJrIE0lkrkVL67A3UtWFsjqaV0lSPfMGYIeM
 ### 
 POST http://localhost:3000/api/loginCompany
 Content-Type: application/json

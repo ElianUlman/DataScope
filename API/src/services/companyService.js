@@ -30,7 +30,9 @@ class companyService {
 
             await inviteRepository.create({"companyfk": newCompany.id, "userfk": userCreator.id, "isadmin": true, "isvalid": true},client)
             await client.query('COMMIT')
-            
+
+            return newCompany;
+
         }catch(error){
 
             await client.query('ROLLBACK')
@@ -50,4 +52,4 @@ class companyService {
 
 }
 
-export default companyService
+export default new companyService();
