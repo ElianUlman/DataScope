@@ -3,6 +3,8 @@ import bcrypt from "bcrypt";
 import {hashRounds, tokenCompanyPassword, tokenWholePassword} from "../config.js"
 import jwt from "jsonwebtoken";
 
+//old original controller
+
 export const initialPage = (req, res) => {
     res.send("funciono");
 };

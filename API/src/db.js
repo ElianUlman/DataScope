@@ -30,4 +30,4 @@ export const pool=new pg.Pool({
 //re-create a backup (4 school)
 //"C:\Program Files\PostgreSQL\16\bin\psql.exe" -U postgres -h localhost
 ///q
-//"C:\Program Files\PostgreSQL\16\bin\psql.exe" -U postgres -d DataScope -f "C:\Users\49008593\Desktop\g\DataScope\API\src\database\newBackup.sql"
+//"C:\Program Files\PostgreSQL\16\bin\psql.exe" -U postgres -d DataScope -f "C:\Users\49008593\Desktop\DataScope\API\src\database\newBackup.sql"
