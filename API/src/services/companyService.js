@@ -5,7 +5,7 @@ import {pool} from "../db.js";
 
 class companyService {
 
-    async getCompaniesByAdmin (data){
+    async getCompaniesByAdminId (data){
         if(!data.id){throw new Error("id needed")}
 
         return companyRepository.getCompaniesByAdmin(data.id)
@@ -16,13 +16,17 @@ class companyService {
         const client = await pool.connect();
 
         try{
+            await client.query('BEGIN')
+
             for (const field of requiredFields) {
                 if (!data[field]) {
                     throw new Error(`${field} is required`);
                 }
             }
-
-            await client.query('BEGIN')
+            
+            const existing = await companyRepository.findByName(data.companyName);
+            if (existing) {throw new Error("Company already exists")}
+            
             const newCompany = await companyRepository.create({"name": data.companyName, "tier": data.companyTier},client)
 
             const userCreator = await userRepository.getById(data.userId, client)

@@ -13,7 +13,10 @@ class userRepository extends BaseRepository {
     
   } 
 
+  
+
 }
+
 
 export default new userRepository();
 

@@ -23,7 +23,12 @@ class companyRepository extends BaseRepository {
     return companies
   }
 
+  async findByName(name){
 
+    const {rows} = await this.query('SELECT * FROM public.companies WHERE name=$1', [name]);
+    return rows[0]
+    
+  } 
  
 }
 

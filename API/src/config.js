@@ -1,8 +1,7 @@
 export const PORT=3000
 export const hashRounds = 10;
-export const tokenCompanyPassword = "In god we trust";
 export const tokenWholePassword = "horse lamp plane fart";
-
+/*
 const config = {
     user: 'dbo',
     password: 'dbo',
@@ -19,3 +18,4 @@ const config = {
 //colegio:
 //user: postgres
 //password: root
+*/

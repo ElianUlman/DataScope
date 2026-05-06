@@ -1,3 +1,16 @@
+
+### test token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjEsInVzZXJuYW1lIjoidGVzdCIsImlhdCI6MTc3ODA5MDQ5NiwiZXhwIjoxNzc4MDk0MDk2fQ.ig5N5E4vpHayt0bv3PwY3NCyYhyIy1kJt2QJEnRbkUc
+### employee test token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjIsInVzZXJuYW1lIjoidGVzdEVtcGxveWVlIiwiaWF0IjoxNzc4MDkwNTc0LCJleHAiOjE3NzgwOTQxNzR9.30tutfoWDg2gfaC3swu2HZx-SG7bTFJet6UxgHncRUI
+### eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJNaWNoYWVsU2NvdHQiLCJpYXQiOjE3NzgwOTAwNzgsImV4cCI6MTc3ODA5MzY3OH0.0sUWWmwxdXMiomTGTWJsPI05K58XR4jeoOopZWlmDEo
+GET http://localhost:3000/api/companiesWithUser
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjIsInVzZXJuYW1lIjoidGVzdEVtcGxveWVlIiwiaWF0IjoxNzc4MDkwNTc0LCJleHAiOjE3NzgwOTQxNzR9.30tutfoWDg2gfaC3swu2HZx-SG7bTFJet6UxgHncRUI
+Content-Type: application/json
+
+{
+    "companyId": "33",
+    "targetUserMail": "testEmployee"
+}
+
 ###
 POST http://localhost:3000/api/message
 Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwidXNlcm5hbWUiOiJWbGFkIFVsaWFub3YiLCJpYXQiOjE3Nzc2NjE3NTksImV4cCI6MTc3NzY2NTM1OX0.MXFvD0mLjQJEFzlOgKVDNKiSdS_nVK9-WUGDzLsIjc4
@@ -8,59 +21,6 @@ Content-Type: application/json
     "sender": "gemini"
 }
 
-###
-POST http://localhost:3000/api/login
-Content-Type: application/json
-
-{
-    "email": "thepeoplesparty@gmail.com", 
-    "password": "workers of the world unite"
-}
-
-###
-GET http://localhost:3000/api/companiesWithUser
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwidXNlcm5hbWUiOiJWbGFkIFVsaWFub3YiLCJpYXQiOjE3NzgwODY3OTMsImV4cCI6MTc3ODA5MDM5M30.nF7J3r4vtxE701SvP6GaytmFYjKU7KPAJ7zWb4HW8dY
-
-###
-GET http://localhost:3000/api/invites
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwidXNlcm5hbWUiOiJWbGFkIFVsaWFub3YiLCJpYXQiOjE3NzU5MjUwMTIsImV4cCI6MTc3NTkyODYxMn0.HEesKNXiEFWUjh7jgKsyq3Hmd3GiyfYjZGBCOwANuIo
-Content-Type: application/json
-
-{
-  "companyName": "comrades SC"
-}
-
-###
-PUT  http://localhost:3000/api/createInvite
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwidXNlcm5hbWUiOiJWbGFkIFVsaWFub3YiLCJpYXQiOjE3NzU5MjM3MjEsImV4cCI6MTc3NTkyNzMyMX0.SqimmlXDbWUWuRRzEAQ-nJAe6O8q1q_CmI3pIytRnJE
-Content-Type: application/json
-
-{
-  "companyName": "comrades SC",
-  "targetUserMail": "2gulag@siberia.ru"
-}
-
-###
-PUT http://localhost:3000/api/createUser
-Content-Type: application/json
-
-{
-    "name": "Joseph",
-    "password": "t-34",
-    "email": "2gulag@siberia.ru"
-}
-
-###
-PUT http://localhost:3000/api/createCompany
-Content-Type: application/json
-
-{
-    "companyName": "comrades SC", 
-    "companyTier": "basic", 
-    "username": "Vlad Ulianov", 
-    "email": "thepeoplesparty@gmail.com", 
-    "password": "workers of the world unite"
-}
 
 ###notyourbusiness@gmail.com: airplane tree dog window
 ###michaelscott@gmail.com: password (?)
@@ -68,52 +28,3 @@ Content-Type: application/json
 ###2gulag@siberia.ru: t-34
 
 
-
-###
-POST http://localhost:3000/api/login
-Content-Type: application/json
-
-{
-    "email": "2gulag@siberia.ru", 
-    "password": "t-34"
-}
-
-###
-GET http://localhost:3000/api/userdata
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjAsInVzZXJuYW1lIjoiSm9zZXBoIiwiaWF0IjoxNzc4MDg2NzQ5LCJleHAiOjE3NzgwOTAzNDl9.M5bCqYDjJrIE0lkrkVL67A3UtWFsjqaV0lSPfMGYIeM
-### 
-POST http://localhost:3000/api/loginCompany
-Content-Type: application/json
-
-{
-    "companyName": "pepe SRL",
-    "companyPassword": "hardPassword1234"
-}
-
-###
-GET http://localhost:3000/companyToken
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb21wYW55SWQiOiIwIiwiY29tcGFueU5hbWUiOiJwZXBlIFNSTCIsImlhdCI6MTc3NTcwNTU0NywiZXhwIjoxNzc1NzA5MTQ3fQ.hzeX_teUT_pKj3Zes-AgOXUFf-kYvmnURCWgn67EMUo
-
-
-### 
-POST http://localhost:3000/loginArea
-Content-Type: application/json
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb21wYW55SWQiOiIwIiwiY29tcGFueU5hbWUiOiJwZXBlIFNSTCIsImlhdCI6MTc3NDczNDU4MCwiZXhwIjoxNzc0NzM4MTgwfQ.tl9v7LrJ_rFlcULMGOswqkVYBTGWPFRfFZYgS0PS1aY
-
-{
-    "areaName": "IT",
-    "areaPassword": "fuckHR"
-}
-
-###
-GET http://localhost:3000/allToken
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb21wYW55SWQiOiIwIiwiY29tcGFueU5hbWUiOiJwZXBlIFNSTCIsImFyZWFJZCI6IjEiLCJhcmVhTmFtZSI6IklUIiwiaWF0IjoxNzc0NzM0ODMxLCJleHAiOjE3NzQ3Mzg0MzF9.9uQxGqfExQCnhkXeFLjnkzlWGrfp-83WSxqXcyXP3Tg
-
-### 
-PUT http://localhost:3000/company
-Content-Type: application/json
-
-{
-    "name": "hola SA",
-    "password": "password"
-}

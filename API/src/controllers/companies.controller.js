@@ -1,8 +1,3 @@
-import {pool} from "../db.js";
-import bcrypt from "bcrypt";
-import {hashRounds, tokenCompanyPassword, tokenWholePassword} from "../config.js"
-import jwt from "jsonwebtoken";
-
 import companyService from "../services/companyService.js";
 
 export const getCompaniesByAdminId = async (req,res)=>{
@@ -18,7 +13,8 @@ export const getCompaniesByAdminId = async (req,res)=>{
 
 export const createCompany = async (req, res) => {
     try{
-        const {companyName, companyTier, userId} = req.body
+        const {companyName, companyTier} = req.body
+        const userId = req.user.id
         const newCompany = await companyService.createCompany({companyName, companyTier, userId})
         res.status(201).json(newCompany)
     }catch(e){

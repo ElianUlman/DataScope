@@ -1,5 +1,5 @@
-import inviteRepository from "../repositories/inviteRepository";
-import userRepository from "../repositories/userRepository";
+import inviteRepository from "../repositories/inviteRepository.js";
+import userRepository from "../repositories/userRepository.js";
 
 class inviteService {
   async getInvitesByCompanyId(data){
@@ -15,7 +15,14 @@ class inviteService {
 
     return await inviteRepository.create({"companyfk": data.companyId, "userfk": targetUser.id, "isadmin": false, "isvalid": true})
   }
-  
+
+  async isAdminOfCompany(data){
+    if(!data.companyId){throw new Error("company id missing")}
+    if(!data.id){throw new Error("id missing")}
+
+    return await inviteRepository.isAdminOfCompany(data.id, data.companyId)
+
+  }
 }
 
 export default new inviteService();

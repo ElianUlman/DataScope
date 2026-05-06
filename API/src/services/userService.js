@@ -1,12 +1,10 @@
 import userRepository from "../repositories/userRepository.js"
 import bcrypt from "bcrypt";
-import {hashRounds, tokenCompanyPassword, tokenWholePassword} from "../config.js"
+import {hashRounds, tokenWholePassword} from "../config.js"
 import jwt from "jsonwebtoken";
 
 class userService {
-  async getUsers() {
-    return await userRepository.getAll();
-  }
+  
 
   async createUser(data) {
     const requiredFields = ['email', 'name', 'password'];

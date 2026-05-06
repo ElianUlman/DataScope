@@ -34,9 +34,5 @@ export const getUserData = async (req,res) => {
         console.log(error)
         res.status(500).json({error: "error ocurred"})
     }
- }
+}
 
-export const getUsers = async (req, res) => {
-  const users = await userService.getUsers();
-  res.json(users);
-};
