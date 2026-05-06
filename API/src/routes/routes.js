@@ -1,10 +1,8 @@
 import {Router} from "express";
 
-//old
 import {
     uploadMessage
-    
-} from "../controllers/controller.js"
+} from "../controllers/messages.controller.js"
 
 import {
     adminAuth,
@@ -44,7 +42,7 @@ routes.get('/mycompanies', authentication, getCompaniesByAdminId)
 //PUTS
 routes.put('/company', authentication, createCompany)
 routes.put('/user', createUser)
-routes.put('/invite', authentication, adminAuth, createInvite) //gotta solve issue where you can invite same person multiple times
+routes.put('/invite', authentication, adminAuth, createInvite)
 
 //POSTS
 routes.post('/login', loginUser)
