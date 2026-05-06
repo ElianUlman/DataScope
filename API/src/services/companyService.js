@@ -15,24 +15,36 @@ class companyService {
         const requiredFields = ['companyName', 'companyTier', 'userId'];
         const client = await pool.connect();
 
-
-        for (const field of requiredFields) {
-            if (!data[field]) {
-                throw new Error(`${field} is required`);
-            }
-        }
-
         try{
-            client.query('BEGIN')
-            const newCompany = await companyRepository.create({"name": data.companyName, "tier": data.companyTier},client).rows[0]
+            for (const field of requiredFields) {
+                if (!data[field]) {
+                    throw new Error(`${field} is required`);
+                }
+            }
+
+            await client.query('BEGIN')
+            const newCompany = await companyRepository.create({"name": data.companyName, "tier": data.companyTier},client)
+
             const userCreator = await userRepository.getById(data.userId, client)
-            await inviteRepository.create({},client)
-            client.query('COMMIT')
-        }catch{
-            client.query('ROLLBACK')
-            throw new Error('something went wrong')
+            if(!userCreator){throw new Error("user not found")}
+
+            await inviteRepository.create({"companyfk": newCompany.id, "userfk": userCreator.id, "isadmin": true, "isvalid": true},client)
+            await client.query('COMMIT')
+            
+        }catch(error){
+
+            await client.query('ROLLBACK')
+            throw new Error(error)
+
+        }finally {
+        client.release();
         }
         
+    }
+
+    async getCompaniesByUserId(data){
+        if(!data.id){throw new Error("id needed")}
+        return await companyRepository.getCompaniesByUserId(data.id)
     }
 
 
@@ -41,30 +53,6 @@ class companyService {
 export default companyService
 /*
 
-
-export const createCompany = async (req, res) => {
-    const client = await pool.connect();
-    try{
-        
-
-        const {companyName, companyTier, username, email, password} = req.body;
-        const hashedPassword = await bcrypt.hash(password, hashRounds);
-        //esto es como si fuera un SP
-        await client.query('BEGIN');
-        v const companyReturn = await client.query('INSERT INTO public.companies(name, tier) VALUES ($1, $2) RETURNING *', [companyName, companyTier])
-        
-        const userReturn = await client.query('INSERT INTO public.users(name, email, password) VALUES ($1, $2, $3) RETURNING *', [username, email, hashedPassword])
-        
-        await client.query('INSERT INTO public.invites(companyfk, userfk, isadmin, isvalid) VALUES ($1, $2, CAST(1 AS BIT), CAST(1 AS BIT))', [companyReturn.rows[0].id, userReturn.rows[0].id])
-
-        await client.query('COMMIT');
-        res.json("")
-    }catch(error){
-        await client.query('ROLLBACK');
-
-        res.send(error)
-    }
-}
 
 export const getCompanyData = async (req,res)=>{
     const user =req.user
