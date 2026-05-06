@@ -1,4 +1,4 @@
-import {BaseRepository} from "./baseRepository.js"
+import BaseRepository from "./baseRepository.js"
 
 class inviteRepository extends BaseRepository {
   constructor() {

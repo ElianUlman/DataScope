@@ -1,14 +1,15 @@
 // repositories/BaseRepository.js
 import {pool} from "../db.js";
 
-export class BaseRepository {
+
+export default class BaseRepository {
   constructor(table) {
     this.table = table;
   }
 
-
-  async query(sql, params) {
-    return pool.query(sql, params);
+  async query(sql, params, client) {
+    const executor = client || pool;
+    return executor.query(sql, params);
   }
 
   async getAll() {
@@ -16,15 +17,16 @@ export class BaseRepository {
     return result.rows;
   }
 
-  async getById(id) {
+  async getById(id, client) {
     const result = await this.query(
       `SELECT * FROM ${this.table} WHERE id = $1`,
-      [id]
+      [id],
+      client
     );
     return result.rows[0];
   }
 
-  async create(data) {
+  async create(data, client) {
     const keys = Object.keys(data);
     const values = Object.values(data);
 
@@ -35,10 +37,9 @@ export class BaseRepository {
       INSERT INTO ${this.table} (${columns})
       VALUES (${placeholders})
       RETURNING *;
-    `; 
-    //la query termina viendose estilo "... (name, email, password) values ($1, $2, $3) returning *"
+    `;
 
-    const result = await this.query(sql, values);//aca van los values, lo que hace que se asignen a los $
+    const result = await this.query(sql, values, client);
     return result.rows[0];
   }
 

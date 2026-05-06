@@ -14,7 +14,7 @@ export const getAdminsCompanies = async (req,res)=>{
         const {rows: companies} = await pool.query(`SELECT public.companies.name 
         FROM public.invites INNER JOIN public.companies ON public.companies.id = public.invites.companyfk
         INNER JOIN public.users ON public.users.id = public.invites.userfk
-        WHERE public.users.id=$1 AND public.invites.isadmin=CAST(1 AS BIT)`, [req.user.id])
+        WHERE public.users.id=$1 AND public.invites.isadmin=TRUE`, [req.user.id])
 
         res.json(companies)
     }catch(error){
@@ -48,7 +48,7 @@ export const createInvite = async (req, res) =>{
         
         await pool.query(`INSERT INTO public.invites(
 	        companyfk, userfk, isadmin, isvalid)
-	        VALUES ($1, $2, CAST(0 AS BIT), CAST(1 AS BIT));`, [companyId, targetUserId])
+	        VALUES ($1, $2, FALSE, TRUE);`, [companyId, targetUserId])
 
         res.send()
 
@@ -82,7 +82,7 @@ export const createCompany = async (req, res) => {
         
         const userReturn = await client.query('INSERT INTO public.users(name, email, password) VALUES ($1, $2, $3) RETURNING *', [username, email, hashedPassword])
         
-        await client.query('INSERT INTO public.invites(companyfk, userfk, isadmin, isvalid) VALUES ($1, $2, CAST(1 AS BIT), CAST(1 AS BIT))', [companyReturn.rows[0].id, userReturn.rows[0].id])
+        await client.query('INSERT INTO public.invites(companyfk, userfk, isadmin, isvalid) VALUES ($1, $2, TRUE, TRUE)', [companyReturn.rows[0].id, userReturn.rows[0].id])
 
         await client.query('COMMIT');
         res.json("")

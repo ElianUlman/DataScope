@@ -9,35 +9,27 @@ class userService {
   }
 
   async createUser(data) {
-    if (!data.email) {
-      throw new Error("Email needed");
+    const requiredFields = ['email', 'name', 'password'];
+
+    for (const field of requiredFields) {
+      if (!data[field]) {
+        throw new Error(`${field} is required`);
+      }
     }
 
-    if (!data.name) {
-      throw new Error("Name needed");
-    }
-
-    if (!data.password) {
-      throw new Error("Password needed");
-    }
 
     const existing = await userRepository.findByEmail(data.email);
-    if (existing) {
-      throw new Error("User already exists");
-    }
-    data.password = await bcrypt.hash(data.password, hashRounds);
 
+    if (existing) {throw new Error("User already exists")}
+
+    data.password = await bcrypt.hash(data.password, hashRounds);
     return await userRepository.create(data);
   }
 
   async login(data) {
-    if (!data.email) {
-      throw new Error("Email needed");
-    }
+    if (!data.email) {throw new Error("Email needed");}
+    if (!data.password) {throw new Error("Password needed");}
 
-    if (!data.password) {
-      throw new Error("Password needed");
-    }
 
     const user = await userRepository.findByEmail(data.email);
     if(!user){throw new Error("User does not exist")}
