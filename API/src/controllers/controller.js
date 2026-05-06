@@ -2,12 +2,16 @@ import { pool } from "../db.js";
 import bcrypt from "bcrypt";
 import { hashRounds, tokenCompanyPassword, tokenWholePassword } from "../config.js"
 import jwt from "jsonwebtoken";
-import { analyzeSpanishText } from "../utils/analizer.js"
+import { setPrompt, getWords, tokenize, calcularComplejidad, clasificate } from "../utils/analizer.js"
 
-export const initialPage = (req, res) => {
+export const initialPage = async (req, res) => {
     console.log("Contenido recibido:", req.body.content);
-    let analisis = analyzeSpanishText(req.body.content)
-    console.log(analisis.readability.level)
+    setPrompt(req.body.content)
+    getWords()
+    tokenize()
+    const complejidad = calcularComplejidad()
+    const clasificacion = await clasificate()
+    //clasificate()
     res.send("funciono");
 };
 
