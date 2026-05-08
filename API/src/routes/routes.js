@@ -1,57 +1,53 @@
 import {Router} from "express";
-//import {pool} from "../db.js";
-//import fs, { read } from "fs";
 
 import {
-    initialPage, /*
-    getCompanies, 
-    getAreas, 
-    getCompanyById, 
-    getAreaById,
-    getCompanyByName,
-    getAreaByName,*/
-    insertCompany, 
-    getCompanyByToken,
-    loginCompany,
-    loginAreaByCompany,
-    getAllByToken
-} from "../controllers/controller.js"
+    uploadMessage
+} from "../controllers/messages.controller.js"
 
 import {
+    adminAuth,
     authentication, 
-    onlyCompanyAuth, 
     onlyIntParam
 } from "../middleware/middleware.js"
+
+
+import { 
+    getUserData,
+    loginUser,
+    createUser
+} from "../controllers/user.controller.js";
+
+import {
+    getCompaniesByAdminId, 
+    createCompany, 
+    getCompanyData
+} from "../controllers/companies.controller.js"
+
+import {
+    createInvite, 
+    getInvites
+} from "../controllers/invites.controller.js"
 
 const routes = Router();
 
 //GETs
-routes.get("/", initialPage);
 
-/*
-routes.get('/companies', getCompanies)
-routes.get('/areas', getAreas)
+routes.get('/userdata', authentication, getUserData)
+routes.get('/invites', authentication, adminAuth, getInvites)
+routes.get('/companiesWithUser', authentication, getCompanyData)
 
-//with params
-routes.get('/companies/:id', onlyIntParam, getCompanyById)
-routes.get('/areas/:id', onlyIntParam, getAreaById)
-
-//POSTs
-routes.post('/company/name', getCompanyByName)
-routes.post('/areas/name', getAreaByName)
+routes.get('/mycompanies', authentication, getCompaniesByAdminId)
 
 
-*/
 //PUTS
-routes.put('/company', insertCompany)
+routes.put('/company', authentication, createCompany)
+routes.put('/user', createUser)
+routes.put('/invite', authentication, adminAuth, createInvite)
 
+//POSTS
+routes.post('/login', loginUser)
 
-routes.post('/loginCompany', loginCompany)
-routes.post('/loginArea', onlyCompanyAuth, loginAreaByCompany)
-
-routes.get('/companyToken', onlyCompanyAuth, getCompanyByToken)
-routes.get('/allToken', authentication, getAllByToken)
-
+routes.post('/message', authentication, uploadMessage)
 
 export default routes;
 
@@ -64,32 +60,3 @@ export default routes;
 
 
 
-
-
-
-// routes.get("/usuarios", (req, res)=>{
-//     res.send(JSON.stringify(readData()))
-// })
-
-
-// routes.get('/prueba/:num', (req, res) => {
-//     const {num}=req.params;
-//     res.send("tu vieja se traga "+num+" porongas");
-// })
-
-
-// const readData=()=>{
-//     try{
-//       const data= fs.readFileSync("placeholderDB.json");
-//         return JSON.parse(data);  
-//     }catch (error){
-//         console.log("error")
-//     }
-// };
-// const writeData=(data)=>{
-//     try{
-//         fs.writeFileSync("placeholderDB.json", JSON.stringify(data))
-//     }catch (error){
-//         console.log("error")
-//     }
-// }
