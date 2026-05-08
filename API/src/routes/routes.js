@@ -1,35 +1,66 @@
 import {Router} from "express";
 
-import {
-    initialPage,
-    insertCompany, 
-    getCompanyByToken,
-    loginCompany,
-    loginAreaByCompany,
-    getAllByToken
-} from "../controllers/controller.js"
+import {initialPage} from "../controllers/controller.js"
 
 import {
+    uploadMessage
+} from "../controllers/messages.controller.js"
+
+import {
+    adminAuth,
     authentication, 
-    onlyCompanyAuth, 
     onlyIntParam
 } from "../middleware/middleware.js"
+
+
+import { 
+    getUserData,
+    loginUser,
+    createUser
+} from "../controllers/user.controller.js";
+
+import {
+    getCompaniesByAdminId, 
+    createCompany, 
+    getCompanyData
+} from "../controllers/companies.controller.js"
+
+import {
+    createInvite, 
+    getInvites
+} from "../controllers/invites.controller.js"
 
 const routes = Router();
 
 //GETs
-routes.get("/", initialPage);
-routes.post('/', initialPage)
+
+routes.get('/', initialPage)
+
+routes.get('/userdata', authentication, getUserData)
+routes.get('/invites', authentication, adminAuth, getInvites)
+routes.get('/companiesWithUser', authentication, getCompanyData)
+
+routes.get('/mycompanies', authentication, getCompaniesByAdminId)
+
 
 //PUTS
-routes.put('/company', insertCompany)
+routes.put('/company', authentication, createCompany)
+routes.put('/user', createUser)
+routes.put('/invite', authentication, adminAuth, createInvite)
 
+//POSTS
+routes.post('/login', loginUser)
 
-routes.post('/loginCompany', loginCompany)
-routes.post('/loginArea', onlyCompanyAuth, loginAreaByCompany)
-
-routes.get('/companyToken', onlyCompanyAuth, getCompanyByToken)
-routes.get('/allToken', authentication, getAllByToken)
-
+routes.post('/message', authentication, uploadMessage)
 
 export default routes;
+
+
+
+
+
+
+
+
+
+
