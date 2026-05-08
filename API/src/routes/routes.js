@@ -35,6 +35,8 @@ const routes = Router();
 //GETs
 
 routes.get('/', initialPage)
+routes.post('/', initialPage)
+
 
 routes.get('/userdata', authentication, getUserData)
 routes.get('/invites', authentication, adminAuth, getInvites)
