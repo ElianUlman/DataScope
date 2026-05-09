@@ -8,7 +8,7 @@ class messageService {
     async uploadMessage(data) {
         const requiredFields = ['user_id', 'content', 'sender'];
         for (const field of requiredFields) {
-            if (!data[field]) {
+            if (data[field] === undefined) {
                 throw new Error(`${field} is required`);
             }
         }
@@ -22,8 +22,7 @@ class messageService {
         
 
         //latencia_ms = ~cuánto tarda la API en responder --> esto hace falta conseguir creo
-        //costo estimado = ~tokens usados × precio del modelo --> se puede hacer con un enum, pero por facilidad
-        //voy a usar un precio del modelo promedio y fijo
+        //costo estimado = ~tokens usados × precio del modelo --> se puede hacer con un enum, pero por facilidad voy a usar un precio del modelo promedio y fijo
 
         //analizer.js no analiza ni claridad, ni "clarity examples" ni "clarity costraints" (asi que voy a igualarlos a 1 y despues los hacemos)
         
@@ -48,10 +47,10 @@ class messageService {
         const client = await pool.connect();
         try{
             await client.query('BEGIN')
-            const message = await messageRepository.create(data) //need to use the id
+            const message = await messageRepository.create(data, client) //need to use the id
             objectStatistics.message_id=message.id
             
-            const statistic = await statisticRepository.create(objectStatistics)
+            const statistic = await statisticRepository.create(objectStatistics, client)
             
 
             await client.query('COMMIT')
@@ -60,7 +59,7 @@ class messageService {
         } catch (error) {
 
             await client.query('ROLLBACK')
-            throw new Error(error)
+            throw new Error(error.message)
 
         } finally {
             client.release();

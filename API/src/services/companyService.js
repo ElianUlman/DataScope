@@ -46,7 +46,7 @@ class companyService {
         } catch (error) {
 
             await client.query('ROLLBACK')
-            throw new Error(error)
+            throw new Error(error.message)
 
         } finally {
             client.release();

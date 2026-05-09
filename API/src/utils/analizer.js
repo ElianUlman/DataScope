@@ -3,6 +3,9 @@ import natural from 'natural'
 import { pipeline } from '@xenova/transformers'
 
 let clasificador = null
+
+//btw chatgpt me dijo que es mejor no hacer variables globales por si le llegan muchos
+//request a la API (porque entonces se podria llegar a sobrescribir el valor)
 let texto
 let analisis = {
     tokens: [],
@@ -51,7 +54,8 @@ export function tokenize() {
     return analisis.tokens.length
 }
 
-export function averageComplexity(){ //bandaid function
+//bandaid function
+export function averageComplexity(){ 
     const complexity = calcularComplejidad()
 
     let averageComplexity=0

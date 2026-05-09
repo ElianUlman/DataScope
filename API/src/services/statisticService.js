@@ -5,6 +5,9 @@ class statisticService {
         
     }
 
+    async getAllByUser(data){
+        
+    }
 
 }
 
