@@ -8,7 +8,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
         //no tiene un login bien hecho, va a estar fijado (y ya que la token expira, para que esta mierdita
         //funcione bien, hace falta conseguir una nueva token llamando a /api/login)
 
-        fetch("http://127.0.0.1:3000/api/message/", {
+        fetch("http://127.0.0.1:3000/api/", {
             method: "POST",
             
             headers: { "Content-Type": "application/json", "Authorization": autorizacionFijada},

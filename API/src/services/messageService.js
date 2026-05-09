@@ -1,9 +1,11 @@
 import messageRepository from "../repositories/messageRepository.js"
+import { pool } from "../db.js";
+import { setPrompt, getWords, tokenize, calcularComplejidad, clasificate, initClasificador, averageComplexity } from "../utils/analizer.js"
 
 class messageService {
+    
     async uploadMessage(data) {
         const requiredFields = ['user_id', 'content', 'sender'];
-
         for (const field of requiredFields) {
             if (!data[field]) {
                 throw new Error(`${field} is required`);
@@ -15,8 +17,45 @@ class messageService {
             throw new Error("Invalid emisor");
         }
 
-        const message = await messageRepository.create(data)
-        return message
+
+        
+        await initClasificador();
+        const clasificador = await clasificate();
+
+        //latencia_ms = ~cuánto tarda la API en responder --> esto hace falta conseguir creo
+        //costo estimado = ~tokens usados × precio del modelo --> se puede hacer con un enum, pero por facilidad
+        //voy a usar un precio del modelo promedio y fijo
+
+        //analizer.js no analiza ni claridad, ni "clarity examples" ni "clarity costraints" (asi que voy a igualarlos a 1 y despues los hacemos)
+        
+        setPrompt(data.content)
+        const cantTokens = tokenize()
+        const complexity = averageComplexity()
+
+        await initClasificador();
+        const {categoria: category} = await clasificate();
+
+        const client = await pool.connect();
+        try{
+            await client.query('BEGIN')
+            const message = await messageRepository.create(data) //need to use the id
+
+
+
+            await client.query('COMMIT')
+            return message
+
+        } catch (error) {
+
+            await client.query('ROLLBACK')
+            throw new Error(error)
+
+        } finally {
+            client.release();
+        }
+        
+
+        
     }
 
 

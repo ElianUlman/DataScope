@@ -47,6 +47,23 @@ export function tokenize() {
     console.log("Tokens:", analisis.tokens)
     console.log("Cantidad:", analisis.tokens.length)
     console.log("Únicos:", analisis.tokensUnicos)
+
+    return analisis.tokens.length
+}
+
+export function averageComplexity(){ //bandaid function
+    const complexity = calcularComplejidad()
+
+    let averageComplexity=0
+    let atributeCounter=0
+    for(let atribute of Object.values(complexity)){
+        if(typeof(atribute) === typeof(1) || typeof(atribute) === typeof(1.1)){
+            averageComplexity+=atribute;
+            atributeCounter++;
+        }
+    }
+    averageComplexity=(Math.floor((averageComplexity/atributeCounter)*100))/100
+    return averageComplexity
 }
 
 export function calcularComplejidad() {

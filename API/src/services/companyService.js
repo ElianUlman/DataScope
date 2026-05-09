@@ -13,21 +13,22 @@ class companyService {
 
     async createCompany(data) {
         const requiredFields = ['companyName', 'companyTier', 'userId'];
-        const client = await pool.connect();
+        for (const field of requiredFields) {
+            if (!data[field]) {
+                throw new Error(`${field} is required`);
+            }
+        }
 
+        const allowedTiers = ["basic", "standard", "advanced"];
+        if (!allowedTiers.includes(data.companyTier)) {
+            throw new Error("Invalid company tier");
+        }
+        
+        const client = await pool.connect();
         try {
             await client.query('BEGIN')
 
-            for (const field of requiredFields) {
-                if (!data[field]) {
-                    throw new Error(`${field} is required`);
-                }
-            }
-
-            const allowedTiers = ["basic", "standard", "advanced"];
-            if (!allowedTiers.includes(data.companyTier)) {
-                throw new Error("Invalid company tier");
-            }
+            
 
             const existing = await companyRepository.findByName(data.companyName);
             if (existing) { throw new Error("Company already exists") }

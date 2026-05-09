@@ -12,7 +12,7 @@ export function onlyIntParam(req, res, next){
 
 
 export const authentication = (req, res, next) => {
-    console.log("estas en autenticacion.")
+    
 
     const token = req.headers.authorization;;
 
