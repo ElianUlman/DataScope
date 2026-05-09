@@ -2,8 +2,11 @@
 import { setPrompt, getWords, tokenize, calcularComplejidad, clasificate, initClasificador } from "../utils/analizer.js"
 
 export const initialPage = async (req, res) => {
-    console.log("Contenido recibido:", req.body.content);
-    setPrompt(req.body.content)
+    console.log(req.body);
+    console.log(req.headers.authorization)
+    console.log("hasta aca me interesa la wea")
+
+    setPrompt(req.body.message)
     getWords()
     tokenize()
     const complejidad = calcularComplejidad()

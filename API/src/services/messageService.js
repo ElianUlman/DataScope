@@ -2,7 +2,7 @@ import messageRepository from "../repositories/messageRepository.js"
 
 class messageService {
     async uploadMessage(data) {
-        const requiredFields = ['user_id', 'content', 'emisor'];
+        const requiredFields = ['user_id', 'content', 'sender'];
 
         for (const field of requiredFields) {
             if (!data[field]) {
@@ -11,7 +11,7 @@ class messageService {
         }
 
         const allowedEmisors = ["user", "chatgpt", "gemini", "claude", "copilot", "other"];
-        if (!allowedEmisors.includes(data.emisor)) {
+        if (!allowedEmisors.includes(data.sender)) {
             throw new Error("Invalid emisor");
         }
 
