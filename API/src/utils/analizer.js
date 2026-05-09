@@ -105,11 +105,11 @@ export async function clasificate() {
     }
 
     const categorias = [
-        "technical programming question",
-        "creative writing",
-        "data analysis",
+        "technical_programming_question",
+        "creative_writing",
+        "data_analysis",
         "translation",
-        "general question"
+        "general_question"
     ]
 
     const resultado = await clasificador(texto, categorias)
