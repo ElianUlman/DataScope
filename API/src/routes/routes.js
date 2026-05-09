@@ -1,5 +1,7 @@
 import {Router} from "express";
 
+import {initialPage} from "../controllers/controller.js"
+
 import {
     uploadMessage
 } from "../controllers/messages.controller.js"
@@ -31,6 +33,10 @@ import {
 const routes = Router();
 
 //GETs
+
+routes.get('/', initialPage)
+routes.post('/', initialPage)
+
 
 routes.get('/userdata', authentication, getUserData)
 routes.get('/invites', authentication, adminAuth, getInvites)

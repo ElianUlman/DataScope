@@ -1,99 +1,223 @@
-const CONFIG_SITES = {
-    'chatgpt.com': {
-        editor: 'div[id="prompt-textarea"]',
-        button: 'button[data-testid="send-button"]'
-    },
-    'gemini.google.com': {
-        editor: 'div[role="textbox"]',
-        button: 'button[aria-label*="Enviar"], .send-button'
-    },
-    'copilot.microsoft.com': {
-        editor: '#userInput', 
-        button: 'button[data-testid="submit-button"], button[aria-label*="Submit"]'
-    }
-};
+let editor
+let editorQuery
+let editorContent
+let oldEditorContent
 
-function saveData(text) {
-    const cleanText = text.trim();
+let sendButton
+let sendButtonCandidates = new Set
+let sendButtonSnapshot;
+let sendButtonQuery
+let listenersAttached = false
 
-    if (cleanText !== "" && cleanText !== lastText) {
-        lastText = cleanText;
-
-        const DATOS = { type: "PROMPT", content: cleanText };
-        chrome.runtime.sendMessage(DATOS, (res) => {
-            if (chrome.runtime.lastError) {
-                console.warn("Error enviando:", chrome.runtime.lastError.message);
-            }
-        });
-    }
+function sendData(type) {
+    console.log("sendData ejecutado con tipo:", type)
+    chrome.runtime.sendMessage({ type: type, content: oldEditorContent });
 }
 
-function getConfig() {
-    const host = window.location.hostname;
-    let config = null
+function configEditor() {
+    editor.addEventListener('input', (e) => {
+        editorContent = e.target.textContent
 
-    for (const domain in CONFIG_SITES) {
-        if (host.includes(domain)) {
-            config = CONFIG_SITES[domain];
-        }
-    }
+        console.log("INPUT detectado. Estado actual:", {
+            sendButton: sendButton,
+            listenersAttached: listenersAttached,
+            sendButtonQuery: sendButtonQuery,
+            candidatesSize: sendButtonCandidates.size
+        })
 
-    return config;
-}
+        if (!sendButton) {
+            console.log("chequeando botones")
+            cleanButtonCandidates()
+            findButton(editor, 10)
 
-function checkKeyboard(e) {
-    if (e.key === 'Enter' && !e.shiftKey) {
-        const contenido = e.currentTarget.innerText || e.currentTarget.value;
-        console.log("Enter detectado. Contenido:", contenido);
-        saveData(contenido);
-    }
-}
-
-const presentConfig = getConfig();
-let editor;
-let lastUrl = location.href;
-let lastText = "";
-
-
-function configEditor(element) {
-    if (element.getAttribute('data-extension-configurado') !== 'true') {
-        element.addEventListener('keydown', checkKeyboard);
-        element.setAttribute('data-extension-configurado', 'true');
-        console.log("Listener vinculado exitosamente");
-    }
-}
-
-if (presentConfig) {
-
-    document.addEventListener('click', (e) => {
-
-        const sendButton = e.target.closest(presentConfig.button);
-        if (sendButton) {
-            const content = editor.innerText || editor.value;
-            console.log("Botón presionado. Contenido:", content);
-            saveData(content);
-        }
-    }, true);
-
-    const observer = new MutationObserver(() => {
-
-        if (location.href !== lastUrl && !editor) {
-            console.log("cambio la url")
-            lastUrl = location.href;
-            if (editor) {
-                editor.removeEventListener('keydown', checkKeyboard);
-                editor = null;
+            if (sendButtonCandidates.size > 0 && !listenersAttached) {
+                listenersAttached = true
+                console.log("Listeners adjuntados, botones encontrados:", sendButtonCandidates.size)
+                console.log("Candidatos:", Array.from(sendButtonCandidates))
             }
         }
 
-        const element = document.querySelector(presentConfig.editor);
+        console.log("Antes de buscar boton. sendButtonQuery vale:", sendButtonQuery, "sendButton vale:", sendButton)
 
-        if (element && editor !== element) {
-            console.log("¡Nuevo elemento encontrado!", element);
-            editor = element;
-            configEditor(editor);
+        if (!sendButton && sendButtonQuery) {
+            console.log("Intentando encontrar boton con query:", sendButtonQuery)
+            sendButton = findElementByFingerprint(sendButtonQuery)
+            console.log("BOTON DE ENVIAR ENCONTRADO:", sendButton)
         }
-    });
 
-    observer.observe(document.body, { childList: true, subtree: true });
+        oldEditorContent = editorContent
+    })
 }
+
+function getDigitalPrint(e) {
+    return {
+        tag: e.tagName || "",
+        clases: Array.from(e.classList).join('.') || "",
+        position: Array.from(e.parentNode.children).indexOf(e) ?? -1,
+        father: e.closest('[id]') ? e.closest('[id]').id : null
+    };
+}
+
+function checkSameElement(element, originalPrint) {
+    if (!element || !originalPrint) return false
+    const currentPrint = getDigitalPrint(element)
+
+    return currentPrint.tag === originalPrint.tag &&
+        currentPrint.clases === originalPrint.clases &&
+        currentPrint.position === originalPrint.position &&
+        currentPrint.father === originalPrint.father;
+}
+
+function attachListeners(e) {
+
+    e.addEventListener('click', onMouseDown)
+    console.log('Event listener listo')
+
+}
+
+function cleanButtonCandidates() {
+    sendButtonCandidates.clear()
+}
+
+function findButton(start, levels) {
+
+    let ancestro = start;
+
+    for (let i = 0; i < levels; i++) {
+        if (!ancestro || ancestro === document.body) {
+            console.log("Se llegó al body, dejando de subir.")
+            break
+        }
+
+        const botones = ancestro.querySelectorAll('button, [role="button"]')
+
+        botones.forEach((boton) => {
+            attachListeners(boton)
+            sendButtonCandidates.add(buttonToString(getDigitalPrint(boton)))
+        })
+
+        if (botones.length < 1) {
+            console.log("Este nivel no tiene botones, subiendo un nivel.")
+        }
+
+        ancestro = ancestro.parentElement;
+    }
+
+}
+
+function sendbuttonSnapshot() {
+    sendButtonSnapshot = new Set([...sendButtonCandidates])
+}
+
+function buttonToString(datosBoton) {
+    return `${datosBoton.tag}|${datosBoton.clases}|${datosBoton.position}|${datosBoton.father}`
+}
+
+function findElementByFingerprint(fingerprint) {
+    const parts = fingerprint.split('|')
+    const [tag, clases, position, father] = parts
+
+    const todosLosElementos = document.querySelectorAll(tag)
+    let mejorElemento = null
+    let mejorPuntaje = 0
+
+    for (const elemento of todosLosElementos) {
+        let puntaje = 0
+
+        if (elemento.closest('[id]')?.id === father) puntaje += 3
+        if (Array.from(elemento.parentNode.children).indexOf(elemento) === parseInt(position)) puntaje += 2
+
+        const clasesElemento = Array.from(elemento.classList)
+        const clasesFingerprint = clases.split('.')
+        const clasesComunes = clasesElemento.filter(c => clasesFingerprint.includes(c))
+        puntaje += clasesComunes.length
+
+        if (puntaje > mejorPuntaje) {
+            mejorPuntaje = puntaje
+            mejorElemento = elemento
+        }
+    }
+
+    return mejorElemento
+}
+
+function checkButton() {
+    let botonDesaparecido;
+
+    sendButtonSnapshot.forEach((btn) => {
+        if (!sendButtonCandidates.has(btn)) {
+            botonDesaparecido = btn
+        }
+    })
+
+    sendButtonQuery = botonDesaparecido
+    console.log("Query encontrada:", sendButtonQuery)
+}
+
+console.log(sendButtonCandidates)
+
+
+const setEditor = (e) => {
+    let candidate = e.target
+    if (candidate.isContentEditable || candidate.tagName === 'TEXTAREA') {
+
+        if (candidate === editor) return
+
+        editor = candidate
+        listenersAttached = false
+        configEditor()
+        console.log("NUEVO EDITOR: ", editor)
+    }
+}
+
+const onMouseDown = (e) => {
+
+    sendbuttonSnapshot()
+    let buttonCandidate = e.target
+
+    if (buttonCandidate.tagName != 'BUTTON') {
+        findButton(buttonCandidate, 10)
+        buttonCandidate = Array.from(sendButtonCandidates)[0]
+    }
+
+    console.log("CLICK DETECTADO EN: ", buttonCandidate)
+    console.log(sendButtonCandidates)
+
+    cleanButtonCandidates()
+    setTimeout(() => {
+        if (editor && editor.textContent === "") {
+            console.log("llamando sendData")
+            findButton(editor, 10)
+            checkButton()
+            console.log(sendButtonCandidates)
+            sendData("USER_MESSAGE")
+        }
+    }, 100)
+}
+
+document.addEventListener('focusin', setEditor)
+
+const observer = new MutationObserver((mutationList) => {
+
+    if (sendButtonQuery) {
+        for (const mutation of mutationList) {
+            mutation.addedNodes.forEach((node) => {
+                if (node.nodeType === 1) {
+                    if (checkSameElement(node, sendButtonQuery)) {
+                        sendButton = node;
+                        console.log("NUEVO BOTON DE ENVIO:", sendButton);
+                    }
+                    const childMatch = node.querySelector(`*`);
+                    if (childMatch && checkSameElement(childMatch, sendButtonQuery)) {
+                        sendButton = childMatch;
+                    }
+                }
+            });
+        }
+    }
+})
+
+observer.observe(document.body, {
+    childList: true,
+    subtree: true
+})
