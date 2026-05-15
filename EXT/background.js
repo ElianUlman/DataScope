@@ -1,5 +1,5 @@
 //BACKEND DE LA EXTENSION
-const autorizacionFijada = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJNaWNoYWVsU2NvdHQiLCJpYXQiOjE3NzgzNTEyNjcsImV4cCI6MTc3ODM1NDg2N30.xd5pF70vRRzKdDHzOsWLPv_OnO9lEAs4n6nSTR6LX0E"
+const autorizacionFijada = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJNaWNoYWVsU2NvdHQiLCJpYXQiOjE3Nzg4NDI2NjQsImV4cCI6MTc3ODg0NjI2NH0.UGQDEmpC2aM1Unc6NUNONyDaSz4xxkM-jsnbjYgZP3Y"
 
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 
