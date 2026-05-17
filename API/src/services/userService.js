@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 import {hashRounds, tokenWholePassword} from "../config.js"
 import jwt from "jsonwebtoken";
 
-import { validateFields } from "../utils/validationUtils.js";
+import { validateFields, blockFields } from "../utils/validationUtils.js";
 
 class userService {
   
@@ -11,6 +11,7 @@ class userService {
   async createUser(data) {
 
     validateFields(['email', 'name', 'password'], data)
+    blockFields(['creationdate'], data)
 
     const existing = await userRepository.findByEmail(data.email);
 
@@ -32,18 +33,22 @@ class userService {
     if(!(await bcrypt.compare(data.password, user.password))){throw new Error("wrong password")}
 
     return jwt.sign(
-        { id: user.id, username: user.name},
+        { id: user.id, username: user.name, email: user.email, allowed_ais: user.allowed_ais},
         tokenWholePassword,
         { expiresIn: "1h" }
     );
   }
 
-  //?
-  async getUserData(data){
-    validateFields(['id'], data)
+
+  async changeUserData(data, userId){
     
-    return await userRepository.getById(data.id)
+    blockFields(['creationdate', 'id'], data)
+    return await userRepository.update(userId, data)
+    
+    
+
   }
+
 }
 
 export default new userService();

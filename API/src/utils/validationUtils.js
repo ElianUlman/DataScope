@@ -9,3 +9,14 @@ export const validateFields = (requiredFields, object) => {
 
     return true
 }
+
+export const blockFields = (blockedFields, object) => {
+    
+    for (const field of blockedFields) {
+        if (object[field]) {
+            throw new Error(`${field} cannot be included in this request`);
+        }
+    }
+
+    return true
+}

@@ -29,11 +29,19 @@ export const loginUser = async (req,res)=>{
 
 export const getUserData = async (req,res) => { 
     try{
-        const id = req.user.id
-        res.status(200).json(await userService.getUserData({id}))
+        res.status(200).json({ "id": req.user.id, "username": req.user.name, "email": req.user.email, "allowed_ais": req.user.allowed_ais})
     }catch(error){
         console.log(error)
         res.status(500).json({error: "error ocurred"})
     }
 }
 
+export const updateUserData = async (req,res) => {
+    try{
+        await userService.changeUserData(req.body, req.user.id)
+        res.status(204).send()
+    }catch(error){
+        console.log(error)
+        res.status(500).json({error: "error ocurred"})
+    }
+}

@@ -10,6 +10,8 @@ class messageService {
     async uploadMessage(data) {
         
         validateFields(['user_id', 'content', 'sender'], data)
+        blockFields(['creation_datetime'], data)
+        
 
         const allowedEmisors = ["user", "chatgpt", "gemini", "claude", "copilot", "other"];
         if (!allowedEmisors.includes(data.sender)) {

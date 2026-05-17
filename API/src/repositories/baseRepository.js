@@ -44,7 +44,7 @@ export default class BaseRepository {
     return result.rows[0];
   }
 
-  async update(id, data) {
+  async update(id, data, client) {
     const keys = Object.keys(data);
     const values = Object.values(data);
 
@@ -59,14 +59,14 @@ export default class BaseRepository {
       RETURNING *;
     `;
 
-    const result = await this.query(sql, [...values, id]);
+    const result = await this.query(sql, [...values, id], client);
     return result.rows[0];
   }
 
-  async delete(id) {
+  async delete(id, client) {
     const result = await this.query(
       `DELETE FROM ${this.table} WHERE id = $1 RETURNING *`,
-      [id]
+      [id], client
     );
     return result.rows[0];
   }

@@ -16,6 +16,7 @@ class companyService {
     async createCompany(data) {
 
         validateFields(['companyName', 'companyTier', 'userId'], data)
+        blockFields(['creationdate'], data)
 
         const allowedTiers = ["basic", "standard", "advanced"];
         if (!allowedTiers.includes(data.companyTier)) {

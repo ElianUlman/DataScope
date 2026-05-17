@@ -14,6 +14,7 @@ class inviteService {
   async createInvite(data){
    
     validateFields(['companyId', 'targetUserMail'], data)
+    blockFields(['creationdate'], data)
 
     const targetUser = await userRepository.findByEmail(data.targetUserMail)
     const existing = await inviteRepository.getInvite(targetUser.id, data.companyId)
