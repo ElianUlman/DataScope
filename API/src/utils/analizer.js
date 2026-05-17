@@ -3,6 +3,9 @@ import natural from 'natural'
 import { pipeline } from '@xenova/transformers'
 
 let clasificador = null
+
+//btw chatgpt me dijo que es mejor no hacer variables globales por si le llegan muchos
+//request a la API (porque entonces se podria llegar a sobrescribir el valor)
 let texto
 let analisis = {
     tokens: [],
@@ -47,6 +50,24 @@ export function tokenize() {
     console.log("Tokens:", analisis.tokens)
     console.log("Cantidad:", analisis.tokens.length)
     console.log("Únicos:", analisis.tokensUnicos)
+
+    return analisis.tokens.length
+}
+
+//bandaid function
+export function averageComplexity(){ 
+    const complexity = calcularComplejidad()
+
+    let averageComplexity=0
+    let atributeCounter=0
+    for(let atribute of Object.values(complexity)){
+        if(typeof(atribute) === typeof(1) || typeof(atribute) === typeof(1.1)){
+            averageComplexity+=atribute;
+            atributeCounter++;
+        }
+    }
+    averageComplexity=(Math.floor((averageComplexity/atributeCounter)*100))/100
+    return averageComplexity
 }
 
 export function calcularComplejidad() {
@@ -88,11 +109,11 @@ export async function clasificate() {
     }
 
     const categorias = [
-        "technical programming question",
-        "creative writing",
-        "data analysis",
+        "technical_programming_question",
+        "creative_writing",
+        "data_analysis",
         "translation",
-        "general question"
+        "general_question"
     ]
 
     const resultado = await clasificador(texto, categorias)

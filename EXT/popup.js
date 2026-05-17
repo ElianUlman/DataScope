@@ -7,8 +7,8 @@ document.getElementById("sesion").addEventListener("submit", async (e) => {
     const COMPANY_PWD = document.getElementById("pwd").value;
 
     let data = {
-        user: USER,
-        companyPassword: COMPANY_PWD
+        areaName: USER,
+        areaPassword: COMPANY_PWD
     }
 
     const response = await chrome.runtime.sendMessage({
