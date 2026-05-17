@@ -9,11 +9,21 @@
 <section>
     <div>
         <h1 id="mensaje">Data Scope</h1>
+
         <form id="sesion">
-            <input type="text" name="user" placeholder="Tu usuario" id="user">
+            <input type="text" name="companyName" placeholder="Nombre de la compania" id="companyName">
             <input type="password" name="pwd" placeholder="contraseña" id="pwd">
             <button type="submit">Enviar</button>
         </form>
+
+        <form id="registro">
+            <input type="text"     name="name"     placeholder="Nombre"     id="regName">
+            <input type="email"    name="email"    placeholder="Email"      id="regEmail">
+            <input type="password" name="password" placeholder="Contraseña" id="regPwd">
+            <button type="submit">Registrarse</button>
+        </form>
+
+        <p id="reg-feedback"></p>
     </div>
     <script src="popup.js"></script>
     <script src="content.js"></script>

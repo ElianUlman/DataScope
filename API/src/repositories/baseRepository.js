@@ -1,9 +1,8 @@
 // repositories/BaseRepository.js
-import {pool} from "../db.js";
-
+import { pool } from "../db.js";
 
 export default class BaseRepository {
-  
+
   constructor(table) {
     this.table = table;
   }
@@ -32,7 +31,23 @@ export default class BaseRepository {
     const values = Object.values(data);
 
     const columns = keys.join(", ");
-    const placeholders = keys.map((_, i) => `$${i + 1}`).join(", ");
+
+    // Si el valor es un Array, PostgreSQL necesita el cast explícito al tipo del enum.
+    // pg no sabe a qué tipo de enum castear un JS array, así que lo mandamos como
+    // texto con formato literal de array y dejamos que Postgres lo resuelva.
+    const placeholders = keys.map((key, i) => {
+      if (Array.isArray(values[i])) {
+        // Construye literal de array: {'chatgpt','claude',...}
+        // y lo castea al tipo de columna implícitamente via input de texto
+        return `$${i + 1}`;
+      }
+      return `$${i + 1}`;
+    }).join(", ");
+
+    // Convertir arrays JS a formato literal de array de PostgreSQL
+    const pgValues = values.map(v =>
+      Array.isArray(v) ? `{${v.join(",")}}` : v
+    );
 
     const sql = `
       INSERT INTO ${this.table} (${columns})
@@ -40,7 +55,7 @@ export default class BaseRepository {
       RETURNING *;
     `;
 
-    const result = await this.query(sql, values, client);
+    const result = await this.query(sql, pgValues, client);
     return result.rows[0];
   }
 
@@ -52,6 +67,10 @@ export default class BaseRepository {
       .map((key, i) => `${key} = $${i + 1}`)
       .join(", ");
 
+    const pgValues = values.map(v =>
+      Array.isArray(v) ? `{${v.join(",")}}` : v
+    );
+
     const sql = `
       UPDATE ${this.table}
       SET ${setClause}
@@ -59,7 +78,7 @@ export default class BaseRepository {
       RETURNING *;
     `;
 
-    const result = await this.query(sql, [...values, id]);
+    const result = await this.query(sql, [...pgValues, id]);
     return result.rows[0];
   }
 

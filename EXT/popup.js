@@ -1,35 +1,53 @@
-//FRONTEND DE LA EXTENSION
+// FRONTEND DE LA EXTENSION
 
+chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+    if (msg.type === "Prompt Enviado") {
+        document.getElementById("mensaje").textContent = msg.data;
+    }
+});
+
+// --- LOGIN ---
 document.getElementById("sesion").addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const USER = document.getElementById("user").value;
-    const COMPANY_PWD = document.getElementById("pwd").value;
+    const COMPANY_NAME = document.getElementById("companyName").value;
+    const COMPANY_PWD  = document.getElementById("pwd").value;
 
-    let data = {
-        areaName: USER,
-        areaPassword: COMPANY_PWD
-    }
+    const data = {
+        companyName:     COMPANY_NAME,
+        companyPassword: COMPANY_PWD
+    };
 
     const response = await chrome.runtime.sendMessage({
-        type: "SEND_API",
+        type:    "SEND_API",
         payload: data
     });
 
     console.log("Respuesta de la API:", response);
-
-    // Guardar el token si el inicio de sesión es exitoso
-    if (response && response.ok && response.data.token) {
-        chrome.storage.local.set({ auth_token: response.data.token });
-        console.log("TODO SALIO BIEEEEEEN")
-    }
-    else{
-        console.log("TODO SALIO MAAAAAAAAL")
-    }
 });
 
-/*
-document.getElementById("registro").addEventListener("click", () => {
-    chrome.tabs.create({ url: "https://tu-sitio-web.com/registro" });
+// --- REGISTRO ---
+document.getElementById("registro").addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const feedback = document.getElementById("reg-feedback");
+
+    const payload = {
+        name:     document.getElementById("regName").value,
+        email:    document.getElementById("regEmail").value,
+        password: document.getElementById("regPwd").value
+    };
+
+    chrome.runtime.sendMessage({ type: "REGISTER_API", payload }, (res) => {
+        if (res && res.ok) {
+            feedback.textContent = "Usuario creado correctamente";
+            feedback.style.color = "#4caf50";
+            console.log("Token recibido:", res.token);
+            e.target.reset();
+        } else {
+            feedback.textContent = "Error: " + (res?.error || "sin respuesta");
+            feedback.style.color = "#f44336";
+            console.error("Error en registro:", res?.error);
+        }
+    });
 });
-*/

@@ -1,42 +1,44 @@
-//BACKEND DE LA EXTENSION
-const autorizacionFijada = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJNaWNoYWVsU2NvdHQiLCJpYXQiOjE3Nzg4NDI2NjQsImV4cCI6MTc3ODg0NjI2NH0.UGQDEmpC2aM1Unc6NUNONyDaSz4xxkM-jsnbjYgZP3Y"
+// BACKEND DE LA EXTENSION
+
+const API_BASE = "http://127.0.0.1:3000/api";
 
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 
-    if(msg.type === "USER_MESSAGE"){
-        //http://127.0.0.1:3000/api/message necesita un authorization, que ya que todavia la EXTENSION
-        //no tiene un login bien hecho, va a estar fijado (y ya que la token expira, para que esta mierdita
-        //funcione bien, hace falta conseguir una nueva token llamando a /api/login)
-
-        fetch("http://127.0.0.1:3000/api/message/", {
+    if (msg.type === "USER_MESSAGE") {
+        fetch(`${API_BASE}/`, {
             method: "POST",
-            
-            headers: { "Content-Type": "application/json", "Authorization": autorizacionFijada},
-            body: JSON.stringify({ 
-                content: msg.content,
-                sender: "user"
-
-             })
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ content: msg.content })
         })
         .then(res => res.text())
         .then(data => console.log("Respuesta de la API:", data))
         .catch(err => console.log("Error al conectar con la API:", err.message));
     }
 
-    if (msg.type === "SEND_API") {
-        // Usamos el endpoint POST /loginCompany configurado en routes.js
-        fetch("http://127.0.0.1:3000/loginCompany", {
-            method: "POST",
+    if (msg.type === "REGISTER_API") {
+        fetch(`${API_BASE}/user`, {
+            method: "PUT",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(msg.payload)
+            body: JSON.stringify({
+                name: msg.payload.name,
+                email: msg.payload.email,
+                password: msg.payload.password
+            })
         })
         .then(res => res.json())
-        .then(data => sendResponse({ ok: true, data: data }))
+        .then(data => {
+            if (data.token) {
+                // Guardar el token para uso posterior
+                chrome.storage.local.set({ token: data.token });
+                sendResponse({ ok: true, token: data.token });
+            } else {
+                sendResponse({ ok: false, error: data.error || "Error desconocido" });
+            }
+        })
         .catch(err => sendResponse({ ok: false, error: err.message }));
 
-        return true;
+        return true; // necesario para que sendResponse funcione de forma async
     }
 
     return true;
-    
-}); 
+});
