@@ -10,6 +10,15 @@ Content-Type: application/json
     "email": "michaelscott@gmail.com",
     "password": "password"
 }
+###
+PUT http://localhost:3000/api/user
+Content-Type: application/json
+
+{
+    "email": "testingsession@hotmail.com",
+    "password": "this_is_the_password",
+    "name": "this_is_the_password"
+}
 
 ###
 POST http://localhost:3000/api/message

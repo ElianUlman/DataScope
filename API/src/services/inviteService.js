@@ -1,15 +1,19 @@
 import inviteRepository from "../repositories/inviteRepository.js";
 import userRepository from "../repositories/userRepository.js";
 
+import { validateFields } from "../utils/validationUtils.js";
+
 class inviteService {
   async getInvitesByCompanyId(data){
-    if(!data.id){throw new Error("id missing")}
+    
+    validateFields(['id'], data)
+
     return await inviteRepository.getInvitesByCompanyId(data.id)
   }
 
   async createInvite(data){
-    if(!data.targetUserMail){throw new Error("missing targetUserMail")}
-    if(!data.companyId){throw new Error("missing companyId")}
+   
+    validateFields(['companyId', 'targetUserMail'], data)
 
     const targetUser = await userRepository.findByEmail(data.targetUserMail)
     const existing = await inviteRepository.getInvite(targetUser.id, data.companyId)
@@ -19,8 +23,9 @@ class inviteService {
   }
 
   async isAdminOfCompany(data){
-    if(!data.companyId){throw new Error("company id missing")}
-    if(!data.id){throw new Error("id missing")}
+    
+    validateFields(['id', 'companyId'], data)
+
     const invite = await inviteRepository.getInvite(data.id, data.companyId)
     if(!invite){return false}
 

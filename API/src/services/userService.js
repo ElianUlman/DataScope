@@ -3,31 +3,28 @@ import bcrypt from "bcrypt";
 import {hashRounds, tokenWholePassword} from "../config.js"
 import jwt from "jsonwebtoken";
 
+import { validateFields } from "../utils/validationUtils.js";
+
 class userService {
   
 
   async createUser(data) {
-    const requiredFields = ['email', 'name', 'password'];
 
-    for (const field of requiredFields) {
-      if (!data[field]) {
-        throw new Error(`${field} is required`);
-      }
-    }
-
+    validateFields(['email', 'name', 'password'], data)
 
     const existing = await userRepository.findByEmail(data.email);
 
     if (existing) {throw new Error("User already exists")}
 
+    data.allowed_ais = ["chatgpt","claude","gemini","other"]
     data.password = await bcrypt.hash(data.password, hashRounds);
+    
     return await userRepository.create(data);
   }
 
   async login(data) {
-    if (!data.email) {throw new Error("Email needed");}
-    if (!data.password) {throw new Error("Password needed");}
 
+    validateFields(['password', 'email'], data)
 
     const user = await userRepository.findByEmail(data.email);
     if(!user){throw new Error("User does not exist")}
@@ -43,7 +40,8 @@ class userService {
 
   //?
   async getUserData(data){
-    if(!data.id){throw new Error("missing user id")}
+    validateFields(['id'], data)
+    
     return await userRepository.getById(data.id)
   }
 }
