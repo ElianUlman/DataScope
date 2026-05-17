@@ -1,20 +1,14 @@
 //FRONTEND DE LA EXTENSION
 
-chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
-    if (msg.type === "Prompt Enviado") {
-        document.getElementById("mensaje").textContent = msg.data;
-    }
-});
-
 document.getElementById("sesion").addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const COMPANY_NAME = document.getElementById("companyName").value;
+    const USER = document.getElementById("user").value;
     const COMPANY_PWD = document.getElementById("pwd").value;
 
     let data = {
-        companyName: COMPANY_NAME,
-        companyPassword: COMPANY_PWD
+        areaName: USER,
+        areaPassword: COMPANY_PWD
     }
 
     const response = await chrome.runtime.sendMessage({
@@ -23,22 +17,19 @@ document.getElementById("sesion").addEventListener("submit", async (e) => {
     });
 
     console.log("Respuesta de la API:", response);
+
+    // Guardar el token si el inicio de sesión es exitoso
+    if (response && response.ok && response.data.token) {
+        chrome.storage.local.set({ auth_token: response.data.token });
+        console.log("TODO SALIO BIEEEEEEN")
+    }
+    else{
+        console.log("TODO SALIO MAAAAAAAAL")
+    }
 });
 
-document.getElementById("registro").addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const payload = {
-        name: document.getElementById("regName").value,
-        password: document.getElementById("regPwd").value
-    };
-
-    chrome.runtime.sendMessage({ type: "REGISTER_API", payload }, (res) => {
-        if (res.ok) {
-            console.log("empresa creada")
-            e.target.reset();
-        } else {
-            console.log("Error: " + res.error, true);
-        }
-    });
+/*
+document.getElementById("registro").addEventListener("click", () => {
+    chrome.tabs.create({ url: "https://tu-sitio-web.com/registro" });
 });
+*/
