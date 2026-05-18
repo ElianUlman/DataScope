@@ -18,34 +18,32 @@ function configEditor() {
     editor.addEventListener('input', (e) => {
         editorContent = e.target.textContent
 
-        console.log("INPUT detectado. Estado actual:", {
-            sendButton: sendButton,
-            listenersAttached: listenersAttached,
-            sendButtonQuery: sendButtonQuery,
-            candidatesSize: sendButtonCandidates.size
-        })
+        console.log("[INPUT] Editor detectó escritura. textContent:", editorContent)
 
         if (!sendButton) {
-            console.log("chequeando botones")
             cleanButtonCandidates()
             findButton(editor, 10)
+            console.log("[INPUT] Candidatos encontrados:", sendButtonCandidates.size, Array.from(sendButtonCandidates))
 
             if (sendButtonCandidates.size > 0 && !listenersAttached) {
                 listenersAttached = true
-                console.log("Listeners adjuntados, botones encontrados:", sendButtonCandidates.size)
-                console.log("Candidatos:", Array.from(sendButtonCandidates))
             }
         }
 
-        console.log("Antes de buscar boton. sendButtonQuery vale:", sendButtonQuery, "sendButton vale:", sendButton)
-
         if (!sendButton && sendButtonQuery) {
-            console.log("Intentando encontrar boton con query:", sendButtonQuery)
             sendButton = findElementByFingerprint(sendButtonQuery)
-            console.log("BOTON DE ENVIAR ENCONTRADO:", sendButton)
+            console.log("[INPUT] sendButton resuelto por fingerprint:", sendButton)
         }
 
         oldEditorContent = editorContent
+    })
+
+    editor.addEventListener("keydown", (e) => {
+        console.log("[KEYDOWN] Tecla presionada:", e.key, "| shiftKey:", e.shiftKey, "| textContent:", editor.textContent.trim())
+        if (e.key === 'Enter' && !e.shiftKey && oldEditorContent?.trim() !== "") {
+            console.log("[KEYDOWN] Enter detectado, llamando handleSend()")
+            handleSend()
+        }
     })
 }
 
@@ -69,10 +67,7 @@ function checkSameElement(element, originalPrint) {
 }
 
 function attachListeners(e) {
-
     e.addEventListener('click', onMouseDown)
-    console.log('Event listener listo')
-
 }
 
 function cleanButtonCandidates() {
@@ -80,12 +75,11 @@ function cleanButtonCandidates() {
 }
 
 function findButton(start, levels) {
-
     let ancestro = start;
 
     for (let i = 0; i < levels; i++) {
         if (!ancestro || ancestro === document.body) {
-            console.log("Se llegó al body, dejando de subir.")
+            console.log("[findButton] Se llegó al body, dejando de subir.")
             break
         }
 
@@ -97,16 +91,16 @@ function findButton(start, levels) {
         })
 
         if (botones.length < 1) {
-            console.log("Este nivel no tiene botones, subiendo un nivel.")
+            console.log("[findButton] Nivel sin botones, subiendo. Elemento actual:", ancestro.tagName, ancestro.className)
         }
 
         ancestro = ancestro.parentElement;
     }
-
 }
 
 function sendbuttonSnapshot() {
     sendButtonSnapshot = new Set([...sendButtonCandidates])
+    console.log("[SNAPSHOT] Snapshot tomado:", Array.from(sendButtonSnapshot))
 }
 
 function buttonToString(datosBoton) {
@@ -144,6 +138,9 @@ function findElementByFingerprint(fingerprint) {
 function checkButton() {
     let botonDesaparecido;
 
+    console.log("[checkButton] Snapshot:", Array.from(sendButtonSnapshot))
+    console.log("[checkButton] Candidates actuales:", Array.from(sendButtonCandidates))
+
     sendButtonSnapshot.forEach((btn) => {
         if (!sendButtonCandidates.has(btn)) {
             botonDesaparecido = btn
@@ -151,61 +148,62 @@ function checkButton() {
     })
 
     sendButtonQuery = botonDesaparecido
-    console.log("Query encontrada:", sendButtonQuery)
+    console.log("[checkButton] Query encontrada:", sendButtonQuery)
 }
-
-console.log(sendButtonCandidates)
-
 
 const setEditor = (e) => {
     let candidate = e.target
-    if (candidate.isContentEditable || candidate.tagName === 'TEXTAREA') {
+    console.log("[setEditor] focusin en:", candidate.tagName, "| isContentEditable:", candidate.isContentEditable)
 
+    if (candidate.isContentEditable || candidate.tagName === 'TEXTAREA') {
         if (candidate === editor) return
 
         editor = candidate
         listenersAttached = false
         configEditor()
-        console.log("NUEVO EDITOR: ", editor)
+        console.log("[setEditor] NUEVO EDITOR:", editor)
     }
 }
 
-const onMouseDown = (e) => {
+const handleSend = () => {
+    console.log("[handleSend] Iniciando. Candidates antes del snapshot:", Array.from(sendButtonCandidates))
 
     sendbuttonSnapshot()
-    let buttonCandidate = e.target
+    findButton(editor, 10)
 
-    if (buttonCandidate.tagName != 'BUTTON') {
-        findButton(buttonCandidate, 10)
-        buttonCandidate = Array.from(sendButtonCandidates)[0]
-    }
-
-    console.log("CLICK DETECTADO EN: ", buttonCandidate)
-    console.log(sendButtonCandidates)
+    console.log("[handleSend] Candidates después de findButton:", Array.from(sendButtonCandidates))
 
     cleanButtonCandidates()
+
     setTimeout(() => {
+        console.log("[handleSend setTimeout] editor.textContent:", JSON.stringify(editor.textContent))
+
         if (editor && editor.textContent === "") {
-            console.log("llamando sendData")
+            console.log("[handleSend setTimeout] Editor vacío, procediendo a sendData")
             findButton(editor, 10)
             checkButton()
-            console.log(sendButtonCandidates)
             sendData("USER_MESSAGE")
+        } else {
+            console.warn("[handleSend setTimeout] Editor NO está vacío, sendData no se ejecuta. Contenido:", JSON.stringify(editor.textContent))
         }
     }, 100)
+}
+
+const onMouseDown = (e) => {
+    console.log("[onMouseDown] CLICK en:", e.target.tagName, e.target.className)
+    handleSend()
 }
 
 document.addEventListener('focusin', setEditor)
 
 const observer = new MutationObserver((mutationList) => {
-
     if (sendButtonQuery) {
         for (const mutation of mutationList) {
             mutation.addedNodes.forEach((node) => {
                 if (node.nodeType === 1) {
                     if (checkSameElement(node, sendButtonQuery)) {
                         sendButton = node;
-                        console.log("NUEVO BOTON DE ENVIO:", sendButton);
+                        console.log("[MutationObserver] Nuevo botón de envío encontrado:", sendButton);
                     }
                     const childMatch = node.querySelector(`*`);
                     if (childMatch && checkSameElement(childMatch, sendButtonQuery)) {

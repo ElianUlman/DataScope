@@ -50,13 +50,3 @@ class userService {
 
 export default new userService();
 
-
-/*
-
-
-export const getUserData = async (req, res) => {
-    const user = req.user
-    const company = await pool.query('SELECT * FROM public.users WHERE id=$1', [user.id]);
-    res.json(company.rows[0]);
-}
-*/ 

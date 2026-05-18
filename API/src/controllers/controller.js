@@ -1,14 +1,21 @@
 
-import { setPrompt, getWords, tokenize, calcularComplejidad, clasificate, initClasificador } from "../utils/analizer.js"
+import { setPrompt, getWords, tokenize, calcularComplejidad, clasificate, initClasificador, averageComplexity } from "../utils/analizer.js"
 
 export const initialPage = async (req, res) => {
-    console.log("Contenido recibido:", req.body.content);
+    console.log(req.body);
+    console.log(req.headers.authorization)
+    console.log("hasta aca me interesa la wea")
+
     setPrompt(req.body.content)
     getWords()
     tokenize()
-    const complejidad = calcularComplejidad()
+    const complexity = calcularComplejidad()
+    console.log("complejidad average: "+averageComplexity())
     await initClasificador();
-    const clasificador = await clasificate();
+    const {categoria: category} = await clasificate();
+    console.log("category but again :D "+category)
+    
+    
 
     //clasificate()
     res.send("funciono");
