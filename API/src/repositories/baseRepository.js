@@ -78,11 +78,7 @@ export default class BaseRepository {
       RETURNING *;
     `;
 
-<<<<<<< HEAD
-    const result = await this.query(sql, [...pgValues, id]);
-=======
     const result = await this.query(sql, [...values, id], client);
->>>>>>> luca
     return result.rows[0];
   }
 
