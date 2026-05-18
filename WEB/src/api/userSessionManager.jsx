@@ -1,9 +1,9 @@
-import axios from "axios";
+import axiosClient from "./axiosClient";
 
 export const userLogin = async (email, password) => {
     try {
-      const response = await axios.post(
-        "http://localhost:3000/api/login",
+      const response = await axiosClient.post(
+        "/login",
         {
           "email": email, 
           "password": password
@@ -24,7 +24,7 @@ export const userLogin = async (email, password) => {
 
 export const getUserData = async (token) =>{
     try{
-      const response = await axios.get("http://localhost:3000/api/userdata", {
+      const response = await axiosClient.get("/userdata", {
       headers: {
         Authorization: token
       }})
@@ -40,7 +40,7 @@ export const getUserData = async (token) =>{
 
 export const getMyCompanies = async (token) => {
   try{
-    const response = await axios.get("http://localhost:3000/api/mycompanies", {
+    const response = await axiosClient.get("/mycompanies", {
       headers: {
         Authorization: token
     }})
@@ -56,8 +56,8 @@ export const getMyCompanies = async (token) => {
 
 export const fullSignUp = async (companyName, companyTier, username, email, password) => {
     try{
-      const response = await axios.put(
-        "http://localhost:3000/api/createCompany",
+      const response = await axiosClient.put(
+        "/createCompany",
         {
           "companyName": companyName, 
           "companyTier": companyTier, 
