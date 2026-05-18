@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import "./LandingPage.css";
+import LoginModal from "../popup/LoginModal";
+import RegisterModal from "../popup/RegisterModal";
 
 // — Imágenes: reemplazá estas rutas por tus archivos en src/assets/ —
 // Ejemplo: import imgFondo from "../assets/hero-bg.png"
@@ -30,6 +32,8 @@ const FOOTER_LINKS = ["Privacidad", "Términos", "Contacto", "LinkedIn", "Twitte
 
 export default function LandingPage() {
   const [scrolled, setScrolled] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
+  const [showRegister, setShowRegister] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
@@ -54,8 +58,20 @@ export default function LandingPage() {
             <li><a href="#">Tutorial</a></li>
           </ul>
         </nav>
-        <a href="#" className="btn btn--login">Login</a>
+        <button onClick={() => setShowLogin(true)} className="btn btn--login">Login</button>
       </header>
+
+      {showLogin && (
+        <div className="modal-root">
+          <LoginModal onClose={() => setShowLogin(false)} />
+        </div>
+      )}
+
+      {showRegister && (
+        <div className="modal-root">
+          <RegisterModal onClose={() => setShowRegister(false)} />
+        </div>
+      )}
 
       {/* ── HERO ── */}
       <section className="hero">
@@ -203,7 +219,7 @@ export default function LandingPage() {
             Únete a los líderes que ya están midiendo el ROI real de la
             inteligencia artificial.
           </p>
-          <a href="#" className="btn btn--cta">Registrarse</a>
+          <button onClick={() => setShowRegister(true)} className="btn btn--cta">Registrarse</button>
         </div>
       </section>
 
