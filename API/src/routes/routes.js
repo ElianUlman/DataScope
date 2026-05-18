@@ -31,6 +31,8 @@ import {
     getInvites
 } from "../controllers/invites.controller.js"
 
+import { getStatsByUser, getUserAvg } from "../controllers/statistic.controller.js";
+
 const routes = Router();
 
 //GETs
@@ -42,6 +44,8 @@ routes.post('/', initialPage)
 routes.get('/userdata', authentication, getUserData)
 routes.get('/invites', authentication, adminAuth, getInvites)
 routes.get('/companiesWithUser', authentication, getCompanyData)
+routes.get('/stats', authentication, getStatsByUser)
+routes.get('/statsAvg', authentication, getUserAvg)
 
 routes.get('/mycompanies', authentication, getCompaniesByAdminId)
 

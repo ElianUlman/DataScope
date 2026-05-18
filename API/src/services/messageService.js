@@ -50,7 +50,7 @@ class messageService {
             const message = await messageRepository.create(data, client) //need to use the id
             objectStatistics.message_id=message.id
             
-            const statistic = await statisticRepository.create(objectStatistics, client)
+            await statisticRepository.create(objectStatistics, client)
             
 
             await client.query('COMMIT')
