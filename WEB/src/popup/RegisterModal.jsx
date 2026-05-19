@@ -2,54 +2,48 @@ import "./RegisterModal.css";
 import { Eye, AtSign } from "lucide-react";
 
 export default function RegisterModal({ onClose, onOpenLogin }) {
-
-  const handleOpenLogin = () => {
-    onClose && onClose();
-    onOpenLogin && onOpenLogin();
-  }
-
   return (
     <>
       <div className="modal-backdrop" onClick={onClose} />
       <div className="register-modal">
         <button className="register-modal__close" onClick={onClose} aria-label="Cerrar">×</button>
-      <h1>REGISTRO</h1>
+        <h1>REGISTRO</h1>
 
-      <div className="input-group">
-        <label>USERNAME</label>
-        <input type="text" placeholder="Nombre de usuario" />
-      </div>
-
-      <div className="input-group">
-        <label>EMAIL ADDRESS</label>
-
-        <div className="input-icon">
-          <input type="email" placeholder="nombre@compania.com" />
-          <AtSign size={18} className="icon" />
+        <div className="input-group">
+          <label>USERNAME</label>
+          <input type="text" placeholder="Nombre de usuario" />
         </div>
-      </div>
 
-      <div className="input-group">
-        <label>PASSWORD</label>
+        <div className="input-group">
+          <label>EMAIL ADDRESS</label>
 
-        <div className="input-icon">
-          <input type="password" placeholder="••••••••" />
-          <Eye size={18} className="icon" />
+          <div className="input-icon">
+            <input type="email" placeholder="nombre@compania.com" />
+            <AtSign size={18} className="icon" />
+          </div>
         </div>
-      </div>
 
-      <div className="remember">
-        <input type="checkbox" />
-        <span>Recordar mi cuenta</span>
-      </div>
+        <div className="input-group">
+          <label>PASSWORD</label>
 
-      <button className="register-btn">Registrarme</button>
+          <div className="input-icon">
+            <input type="password" placeholder="••••••••" />
+            <Eye size={18} className="icon" />
+          </div>
+        </div>
 
-      <p className="bottom-text">
-        ¿Ya tenes una cuenta? <span onClick={handleOpenLogin}>Inicia sesion</span>
-      </p>
+        <div className="remember">
+          <input type="checkbox" />
+          <span>Recordar mi cuenta</span>
+        </div>
 
-      <p className="copyright">© 2026 DataScope</p>
+        <button className="register-btn">Registrarme</button>
+
+        <p className="bottom-text">
+          ¿Ya tenes una cuenta? <span onClick={() => { onOpenLogin(); onClose(); }}>Inicia sesion</span>
+        </p>
+
+        <p className="copyright">© 2026 DataScope</p>
       </div>
     </>
   );

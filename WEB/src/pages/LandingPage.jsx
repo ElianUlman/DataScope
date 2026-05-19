@@ -63,13 +63,13 @@ export default function LandingPage() {
 
       {showLogin && (
         <div className="modal-root">
-          <LoginModal onClose={() => setShowLogin(false)} />
+          <LoginModal onClose={() => setShowLogin(false)} onOpenRegister={() => setShowRegister(true)} />
         </div>
       )}
 
       {showRegister && (
         <div className="modal-root">
-          <RegisterModal onClose={() => setShowRegister(false)} />
+          <RegisterModal onClose={() => setShowRegister(false)} onOpenLogin={() => setShowLogin(true)} />
         </div>
       )}
 

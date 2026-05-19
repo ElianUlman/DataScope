@@ -1,7 +1,7 @@
 import "./LoginModal.css";
 import { Eye, AtSign } from "lucide-react";
 
-export default function LoginModal({ onClose }) {
+export default function LoginModal({ onClose, onOpenRegister }) {
   return (
     <>
       <div className="modal-backdrop" onClick={onClose} />
@@ -35,7 +35,7 @@ export default function LoginModal({ onClose }) {
       <button className="login-btn">Iniciar</button>
 
       <p className="bottom-text">
-        ¿No tenes una cuenta? <span>Registrate</span>
+        ¿No tenes una cuenta? <span onClick={() => { onOpenRegister(); onClose(); }}>Registrate</span>
       </p>
 
       <p className="copyright">© 2026 DataScope</p>
