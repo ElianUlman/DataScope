@@ -70,6 +70,52 @@
   color: #999;
 }
 
+.remember input {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  background: #000;
+  border: 2px solid #fff;
+  border-radius: 4px;
+  display: inline-block;
+  vertical-align: middle;
+  cursor: pointer;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.remember input::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 6px;
+  height: 10px;
+  transform: translate(-50%, -50%) rotate(45deg);
+  border: solid transparent;
+  border-width: 0 2px 2px 0;
+  opacity: 0;
+  transition: opacity 120ms ease, transform 120ms ease;
+  box-sizing: border-box;
+  pointer-events: none;
+}
+
+.remember input:checked {
+  background: #2ee88a;
+  border-color: #2ee88a;
+}
+
+.remember input:checked::after {
+  border-color: #fff;
+  opacity: 1;
+  border-width: 0 3px 3px 0;
+}
+
+.remember input:focus {
+  outline: none;
+}
+
 .login-btn {
   width: 100%;
   border: none;
@@ -118,4 +164,12 @@
 
 .login-modal__close:hover {
   opacity: 0.85;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0; /* top:0; right:0; bottom:0; left:0 */
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(2px); /* Aplica un desenfoque al contenido que está detrás del backdrop. */
+  z-index: 900;
 }

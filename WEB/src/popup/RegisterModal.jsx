@@ -1,10 +1,18 @@
 import "./RegisterModal.css";
 import { Eye, AtSign } from "lucide-react";
 
-export default function RegisterModal({ onClose }) {
+export default function RegisterModal({ onClose, onOpenLogin }) {
+
+  const handleOpenLogin = () => {
+    onClose && onClose();
+    onOpenLogin && onOpenLogin();
+  }
+
   return (
-    <div className="register-modal">
-      <button className="register-modal__close" onClick={onClose} aria-label="Cerrar">×</button>
+    <>
+      <div className="modal-backdrop" onClick={onClose} />
+      <div className="register-modal">
+        <button className="register-modal__close" onClick={onClose} aria-label="Cerrar">×</button>
       <h1>REGISTRO</h1>
 
       <div className="input-group">
@@ -38,10 +46,11 @@ export default function RegisterModal({ onClose }) {
       <button className="register-btn">Registrarme</button>
 
       <p className="bottom-text">
-        ¿Ya tenes una cuenta? <span>Inicia sesion</span>
+        ¿Ya tenes una cuenta? <span onClick={handleOpenLogin}>Inicia sesion</span>
       </p>
 
       <p className="copyright">© 2026 DataScope</p>
-    </div>
+      </div>
+    </>
   );
 }

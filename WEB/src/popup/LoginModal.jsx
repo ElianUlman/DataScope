@@ -3,8 +3,10 @@ import { Eye, AtSign } from "lucide-react";
 
 export default function LoginModal({ onClose }) {
   return (
-    <div className="login-modal">
-      <button className="login-modal__close" onClick={onClose} aria-label="Cerrar">×</button>
+    <>
+      <div className="modal-backdrop" onClick={onClose} />
+      <div className="login-modal">
+        <button className="login-modal__close" onClick={onClose} aria-label="Cerrar">×</button>
       <h1>INICIO DE SESION</h1>
 
       <div className="input-group">
@@ -37,6 +39,7 @@ export default function LoginModal({ onClose }) {
       </p>
 
       <p className="copyright">© 2026 DataScope</p>
-    </div>
+      </div>
+    </>
   );
 }
