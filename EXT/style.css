@@ -1,19 +1,35 @@
 html, body {
     margin: 0;
     padding: 0;
-    background: transparent;
+    background: #0E0E0E;
     overflow: hidden;
-    
 }
 
 div {
     width: 400px;
     height: 250px;
-    background-color: #172e53;
+    background-color: #0E0E0E;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     overflow: hidden;
 }
 
 h1 {
     text-align: center;
+    color: #B4B4B4;
+    margin: 0;
+}
+
+input {
+    background-color: #000000;
     color: white;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+input::placeholder {
+    color: rgba(180, 180, 180, 0.5);
 }
