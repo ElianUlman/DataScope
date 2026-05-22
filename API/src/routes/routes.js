@@ -16,7 +16,8 @@ import {
 import { 
     getUserData,
     loginUser,
-    createUser
+    createUser,
+    updateUserData
 } from "../controllers/user.controller.js";
 
 import {
@@ -49,6 +50,9 @@ routes.get('/mycompanies', authentication, getCompaniesByAdminId)
 routes.put('/company', authentication, createCompany)
 routes.put('/user', createUser)
 routes.put('/invite', authentication, adminAuth, createInvite)
+
+//PATCHS
+routes.patch('/user', authentication, updateUserData)
 
 //POSTS
 routes.post('/login', loginUser)
