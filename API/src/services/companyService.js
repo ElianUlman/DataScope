@@ -3,21 +3,20 @@ import userRepository from "../repositories/userRepository.js"
 import inviteRepository from "../repositories/inviteRepository.js";
 import { pool } from "../db.js";
 
+import { validateFields } from "../utils/validationUtils.js";
+
 class companyService {
 
     async getCompaniesByAdminId(data) {
-        if (!data.id) { throw new Error("id needed") }
+        validateFields(['id'], data)
 
         return companyRepository.getCompaniesByAdmin(data.id)
     }
 
     async createCompany(data) {
-        const requiredFields = ['companyName', 'companyTier', 'userId'];
-        for (const field of requiredFields) {
-            if (!data[field]) {
-                throw new Error(`${field} is required`);
-            }
-        }
+
+        validateFields(['companyName', 'companyTier', 'userId'], data)
+        blockFields(['creationdate'], data)
 
         const allowedTiers = ["basic", "standard", "advanced"];
         if (!allowedTiers.includes(data.companyTier)) {
@@ -55,7 +54,7 @@ class companyService {
     }
 
     async getCompaniesByUserId(data) {
-        if (!data.id) { throw new Error("id needed") }
+        validateFields(['id'], data)
         return await companyRepository.getCompaniesByUserId(data.id)
     }
 

@@ -3,15 +3,15 @@ import statisticRepository from "../repositories/statisticRepository.js"
 import { pool } from "../db.js";
 import { setPrompt, getWords, tokenize, calcularComplejidad, clasificate, initClasificador, averageComplexity } from "../utils/analizer.js"
 
+import { validateFields } from "../utils/validationUtils.js";
+
 class messageService {
     
     async uploadMessage(data) {
-        const requiredFields = ['user_id', 'content', 'sender'];
-        for (const field of requiredFields) {
-            if (data[field] === undefined) {
-                throw new Error(`${field} is required`);
-            }
-        }
+        
+        validateFields(['user_id', 'content', 'sender'], data)
+        blockFields(['creation_datetime'], data)
+        
 
         const allowedEmisors = ["user", "chatgpt", "gemini", "claude", "copilot", "other"];
         if (!allowedEmisors.includes(data.sender)) {

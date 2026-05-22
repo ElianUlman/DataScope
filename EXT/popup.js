@@ -1,32 +1,76 @@
 // FRONTEND DE LA EXTENSION
 
-chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
-    if (msg.type === "Prompt Enviado") {
-        document.getElementById("mensaje").textContent = msg.data;
-    }
-});
+chrome.storage.local.clear(() => console.log("🛠️ Storage borrado en apertura de popup"));
 
-// --- LOGIN ---
 document.getElementById("sesion").addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const COMPANY_NAME = document.getElementById("companyName").value;
+    const MAIL = document.getElementById("mail").value;
     const COMPANY_PWD  = document.getElementById("pwd").value;
 
     const data = {
-        companyName:     COMPANY_NAME,
-        companyPassword: COMPANY_PWD
+        password: COMPANY_PWD,
+        email: MAIL
     };
 
     const response = await chrome.runtime.sendMessage({
-        type:    "SEND_API",
+        type:    "LOGIN_API",
         payload: data
     });
 
-    console.log("Respuesta de la API:", response);
+    console.log("Respuesta de la API recibida en popup:", response);
+
+    if (response && response.ok) {
+        console.log("¡Login aprobado!");
+        
+        chrome.storage.local.set({ token: response.token }, () => {
+            console.log("Token escrito con éxito.");
+            verificarPantalla(); 
+        });
+        
+    } else {
+        const feedback = document.getElementById("reg-feedback");
+        if (feedback) {
+            feedback.textContent = "Error: " + (response?.error || "Credenciales incorrectas");
+            feedback.style.color = "#f44336";
+        }
+    }
 });
 
-// --- REGISTRO ---
+function verificarPantalla() {
+    chrome.storage.local.get(["token"], (result) => {
+        const seccionAuth = document.getElementById("sinSesion");       
+        const seccionPrincipal = document.getElementById("conSesion");
+
+        if (result.token) {
+            console.log("Vista activa: CON SESIÓN");
+            if(seccionAuth) seccionAuth.style.display = "none";      
+            if(seccionPrincipal) seccionPrincipal.style.display = "block"; 
+        } else {
+            console.log("Vista activa: SIN SESIÓN");
+            if(seccionAuth) seccionAuth.style.display = "block";     
+            if(seccionPrincipal) seccionPrincipal.style.display = "none";  
+        }
+    });
+}
+
+// 1. Al abrir la extensión, chequeamos el estado
+document.addEventListener("DOMContentLoaded", () => {
+    verificarPantalla();
+});
+
+//logout
+const btnLogout = document.getElementById("btn-logout");
+if (btnLogout) {
+    btnLogout.addEventListener("click", () => {
+        chrome.storage.local.remove(["token"], () => {
+            console.log("Sesión eliminada.");
+            verificarPantalla(); 
+        });
+    });
+}
+
+/* 
 document.getElementById("registro").addEventListener("submit", (e) => {
     e.preventDefault();
 
@@ -51,3 +95,4 @@ document.getElementById("registro").addEventListener("submit", (e) => {
         }
     });
 });
+*/

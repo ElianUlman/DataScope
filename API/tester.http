@@ -7,8 +7,17 @@ Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjIsInVzZXJuYW1lIjoi
 Content-Type: application/json
 
 {
-    "email": "michaelscott@gmail.com",
-    "password": "password"
+    "email": "testingsession@hotmail.com",
+    "password": "this_is_the_password"
+}
+###
+PATCH http://localhost:3000/api/user
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OCwidXNlcm5hbWUiOiJ0aGlzX2lzX3RoZV9wYXNzd29yZCIsImVtYWlsIjoidGVzdGluZ3Nlc3Npb25AaG90bWFpbC5jb20iLCJhbGxvd2VkX2FpcyI6IntjaGF0Z3B0LGNsYXVkZSxnZW1pbmksb3RoZXJ9IiwiaWF0IjoxNzc5MDQ5MzU4LCJleHAiOjE3NzkwNTI5NTh9.tnpqUtTqXBNl-mVhUWQTG36_cH2qItVkfl029Na5HCQ
+Content-Type: application/json
+
+{
+    "email": "this_is_the_password",
+    "name": "updated_name_again!"
 }
 
 ###
