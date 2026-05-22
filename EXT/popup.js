@@ -10,20 +10,30 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 document.getElementById("sesion").addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const COMPANY_NAME = document.getElementById("companyName").value;
-    const COMPANY_PWD  = document.getElementById("pwd").value;
+    const feedback = document.getElementById("login-feedback");
 
-    const data = {
-        companyName:     COMPANY_NAME,
-        companyPassword: COMPANY_PWD
+    const payload = {
+        companyName:     document.getElementById("companyName").value,
+        companyPassword: document.getElementById("pwd").value
     };
 
-    const response = await chrome.runtime.sendMessage({
-        type:    "SEND_API",
-        payload: data
-    });
+    try {
+        const response = await chrome.runtime.sendMessage({ type: "SEND_API", payload });
 
-    console.log("Respuesta de la API:", response);
+        if (response && response.ok) {
+            feedback.textContent = "Login exitoso";
+            feedback.style.color = "#4caf50";
+            console.log("Login exitoso. Token:", response.token);
+        } else {
+            feedback.textContent = "Error: " + (response?.error || "sin respuesta");
+            feedback.style.color = "#f44336";
+            console.error("Error en login:", response?.error);
+        }
+    } catch (err) {
+        feedback.textContent = "Error de conexión";
+        feedback.style.color = "#f44336";
+        console.error("Error de conexión en login:", err.message);
+    }
 });
 
 // --- REGISTRO ---
@@ -42,7 +52,7 @@ document.getElementById("registro").addEventListener("submit", (e) => {
         if (res && res.ok) {
             feedback.textContent = "Usuario creado correctamente";
             feedback.style.color = "#4caf50";
-            console.log("Token recibido:", res.token);
+            console.log("Registro exitoso. Token:", res.token);
             e.target.reset();
         } else {
             feedback.textContent = "Error: " + (res?.error || "sin respuesta");
