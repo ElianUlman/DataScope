@@ -1,35 +1,8 @@
 // FRONTEND DE LA EXTENSION
 
-chrome.storage.local.clear(() => console.log("🛠️ Storage borrado en apertura de popup"));
-
 document.getElementById("sesion").addEventListener("submit", async (e) => {
     e.preventDefault();
 
-<<<<<<< HEAD
-    const feedback = document.getElementById("login-feedback");
-
-    const payload = {
-        companyName:     document.getElementById("companyName").value,
-        companyPassword: document.getElementById("pwd").value
-    };
-
-    try {
-        const response = await chrome.runtime.sendMessage({ type: "SEND_API", payload });
-
-        if (response && response.ok) {
-            feedback.textContent = "Login exitoso";
-            feedback.style.color = "#4caf50";
-            console.log("Login exitoso. Token:", response.token);
-        } else {
-            feedback.textContent = "Error: " + (response?.error || "sin respuesta");
-            feedback.style.color = "#f44336";
-            console.error("Error en login:", response?.error);
-        }
-    } catch (err) {
-        feedback.textContent = "Error de conexión";
-        feedback.style.color = "#f44336";
-        console.error("Error de conexión en login:", err.message);
-=======
     const MAIL = document.getElementById("mail").value;
     const COMPANY_PWD  = document.getElementById("pwd").value;
 
@@ -59,7 +32,6 @@ document.getElementById("sesion").addEventListener("submit", async (e) => {
             feedback.textContent = "Error: " + (response?.error || "Credenciales incorrectas");
             feedback.style.color = "#f44336";
         }
->>>>>>> 5349e987fb510cc91b02467e4c433508762e7393
     }
 });
 

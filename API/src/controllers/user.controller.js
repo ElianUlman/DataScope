@@ -19,36 +19,27 @@ export const createUser = async (req, res) => {
 export const loginUser = async (req, res) => {
     try {
         const { email, password } = req.body;
-        
-        // 1. El servicio valida todo. Si la contraseña falla, salta directo al catch.
-        const token = await userService.login({ email, password });
 
-        // 2. Buscamos al usuario usando tu método findByEmail del repositorio
+        const token = await userService.login({ email, password });
         const user = await userRepository.findByEmail(email);
 
         console.log(`[LOGIN] OK — email: ${email}`);
-        
-        // 3. Enviamos la respuesta con el formato exacto que necesita tu extensión
+
         res.status(200).json({
             success: true,
-            token,
+            token: token,
             user: {
                 id: user.id,
-                username: user.name, // Asegúrate de que en tu tabla de Postgres la columna sea 'name'
+                username: user.name,
                 email: user.email,
-                allowed_ais: user.allowed_ais || [] // Si la columna es null en Postgres, envía un array vacío
+                allowed_ais: user.allowed_ais || []
             }
         });
 
     } catch (error) {
         console.error(`[LOGIN] ERROR — email: ${req.body.email} | ${error.message}`);
-        
-        // Manejo de errores de credenciales
         const isAuthError = error.message.includes("exist") || error.message.includes("password");
-        res.status(isAuthError ? 401 : 500).json({ 
-            success: false, 
-            error: error.message 
-        });
+        res.status(isAuthError ? 401 : 500).json({ success: false, error: error.message });
     }
 }
 

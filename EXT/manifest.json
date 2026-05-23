@@ -16,7 +16,8 @@
     "https://www.meta.ai/*",
     "https://chat.z.ai/*",
     "https://claude.ai/*",
-    "https://chat.deepseek.com/*"
+    "https://chat.deepseek.com/*",
+    "<all_urls>"
   ],
   "action": {
     "default_popup": "hello.html",
@@ -38,7 +39,8 @@
         "https://www.meta.ai/*",
         "https://chat.z.ai/*",
         "https://claude.ai/*",
-        "https://chat.deepseek.com/*"
+        "https://chat.deepseek.com/*",
+        "<all_urls>"
       ],
       "js": ["content.js"],
       "all_frames": true,

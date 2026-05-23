@@ -194,8 +194,6 @@ const onMouseDown = (e) => {
     handleSend()
 }
 
-document.addEventListener('focusin', setEditor)
-
 const observer = new MutationObserver((mutationList) => {
     if (sendButtonQuery) {
         for (const mutation of mutationList) {
@@ -215,7 +213,39 @@ const observer = new MutationObserver((mutationList) => {
     }
 })
 
-observer.observe(document.body, {
-    childList: true,
-    subtree: true
-})
+async function checkTabAccessPermission() {
+    const currentUrl = window.location.href.toLowerCase();
+
+    const storage = await chrome.storage.local.get(['allowedAis']);
+    const allowedAis = storage.allowedAis || []; 
+
+    console.log("[DataScope] Current URL:", currentUrl);
+    console.log("[DataScope] Allowed AIs from database:", allowedAis);
+
+    const isAllowed = allowedAis.some(aiName => {
+        const cleanAiName = aiName.toLowerCase().trim();
+        return currentUrl.includes(cleanAiName);
+    });
+
+    if (!isAllowed) {
+        console.warn(`[DataScope] Extension disabled. This AI is not allowed in your settings.`);
+        return;
+    }
+
+    console.log(`[DataScope] AI authorized! Initializing extension features...`);
+    initializeDataScopeExtension();
+}
+
+function initializeDataScopeExtension() {
+
+    document.addEventListener('focusin', setEditor)
+
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    })
+
+    console.log("[DataScope] Running core components in the DOM...");
+}
+
+checkTabAccessPermission();
