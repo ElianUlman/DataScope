@@ -20,7 +20,7 @@ export const loginUser = async (req, res) => {
     try {
         const { email, password } = req.body;
 
-        const token = await userService.login({ email, password });
+        const { token, expiresAt } = await userService.login({ email, password })
         const user = await userRepository.findByEmail(email);
 
         console.log(`[LOGIN] OK — email: ${email}`);
@@ -28,6 +28,7 @@ export const loginUser = async (req, res) => {
         res.status(200).json({
             success: true,
             token: token,
+            expiresAt,
             user: {
                 id: user.id,
                 username: user.name,

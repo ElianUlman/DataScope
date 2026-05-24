@@ -199,7 +199,7 @@ async function checkTabAccessPermission() {
 
     const storage = await chrome.storage.local.get("user");
     const allowedAis = storage.user?.allowedAis || [];
-    
+
     console.log("[DataScope] Current URL:", currentUrl);
     console.log("[DataScope] Allowed AIs from user profile:", allowedAis);
 
@@ -224,6 +224,25 @@ async function checkTabAccessPermission() {
     initializeDataScopeExtension();
 }
 
+async function isTokenValid() {
+    const storage = await chrome.storage.local.get(["token", "expiresAt"]);
+
+    if (!storage.token || !storage.expiresAt) {
+        console.log("El token no existe o ha expirado.")
+        return false;
+    }
+
+    const currentTime = Date.now();
+    if (currentTime > storage.expiresAt) {
+        console.warn("[DataScope] El token ha expirado.");
+
+        await chrome.storage.local.remove(["token", "expiresAt", "user"]);
+        return false;
+    }
+
+    return true;
+}
+
 function initializeDataScopeExtension() {
     document.addEventListener('focusin', setEditor);
 
@@ -236,14 +255,46 @@ function initializeDataScopeExtension() {
 }
 
 async function runExtension() {
-    const storage = await chrome.storage.local.get("user");
-    const isPrivateModeActive = storage.user.privateMode || false;
+    let exitCode = true;
 
-    if (isPrivateModeActive === false) {
-        checkTabAccessPermission();
-    } else {
-        console.log("El modo privado esta activado. La extension no esta monitoreando");
+    const tokenValido = await isTokenValid();
+
+    if (!tokenValido) {
+        console.log("Sesión expirada o inexistente. Deteniendo extensión.");
+        exitCode = false;
+    }
+    else {
+        const storagePrivateMode = await chrome.storage.local.get("user");
+        const isPrivateModeActive = storagePrivateMode.user?.privateMode || false;
+
+        if (isPrivateModeActive === false) {
+            checkTabAccessPermission();
+        } else {
+            console.log("El modo privado esta activado. La extension no esta monitoreando");
+            exitCode = false;
+        }
+
+    }
+
+    return exitCode
+}
+
+let isExtensionRunning = false;
+
+async function tryStartExtension() {
+    if (isExtensionRunning) return;
+
+    const success = await runExtension();
+    if (success) {
+        isExtensionRunning = true;
     }
 }
 
-runExtension();
+chrome.storage.onChanged.addListener((changes, areaName) => {
+    if (areaName === "local" && (changes.token || changes.user)) {
+        console.log("[DataScope] Se detectaron cambios en las credenciales locales. Reintentando...");
+        tryStartExtension();
+    }
+});
+
+tryStartExtension();

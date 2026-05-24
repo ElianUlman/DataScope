@@ -56,19 +56,22 @@ chrome.runtime.onMessage.addListener(async (msg, sender, sendResponse) => {
                 if (data.token) {
                     let listaIAs = [];
 
-                    if (data.user && typeof data.user.allowed_ais === 'string') {
-                        listaIAs = data.user.allowed_ais
-                            .replace(/[{}]/g, '') // Quita las llaves { }
-                            .split(',')           // Separa los elementos por comas
-                            .map(ia => ia.trim().toLowerCase()); // Convierte todo a minúsculas
-                    } else if (Array.isArray(data.user.allowed_ais)) {
-                        listaIAs = data.user.allowed_ais.map(ia => ia.toLowerCase());
+                    const rawAllowedAis = data.user?.allowedAis || data.user?.allowed_ais;
+
+                    if (typeof rawAllowedAis === 'string') {
+                        listaIAs = rawAllowedAis
+                            .replace(/[{}]/g, '') 
+                            .split(',')           
+                            .map(ia => ia.trim().toLowerCase());
+                    } else if (Array.isArray(rawAllowedAis)) {
+                        listaIAs = rawAllowedAis.map(ia => ia.toLowerCase().trim());
                     }
 
                     chrome.storage.local.set({
                         token: data.token,
+                        expiresAt: data.expiresAt,
                         user: {
-                            username: data.user.username,
+                            username: data.user.username || data.user.name || "User",
                             allowedAis: listaIAs,
                             privateMode: false
                         }
@@ -77,6 +80,7 @@ chrome.runtime.onMessage.addListener(async (msg, sender, sendResponse) => {
                     });
 
                     console.log("IAs Permitidas guardadas en la extensión:", listaIAs);
+                    console.log("El token expirará en el timestamp:", data.expiresAt);
 
                 } else {
                     sendResponse({ ok: false, error: data.error || "Credenciales incorrectas" });

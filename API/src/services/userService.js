@@ -24,12 +24,14 @@ class userService {
   }
 
   async login(data) {
-    validateFields(['password', 'email'], data)
+    validateFields(['password', 'email'], data);
 
     const user = await userRepository.findByEmail(data.email);
-    if (!user) { throw new Error("User does not exist") }
+    if (!user) { throw new Error("User does not exist"); }
 
-    if (!(await bcrypt.compare(data.password, user.password))) { throw new Error("wrong password") }
+    if (!(await bcrypt.compare(data.password, user.password))) {
+      throw new Error("wrong password");
+    }
 
     const token = jwt.sign(
       { id: user.id, username: user.name, email: user.email, allowed_ais: user.allowed_ais },
@@ -37,8 +39,10 @@ class userService {
       { expiresIn: "1h" }
     );
 
-    // NUEVO: Retornamos ambas cosas desde el servicio hacia el controlador
-    return { token, user };
+    const expiresInMs = 60 * 60 * 1000;
+    const expiresAt = Date.now() + expiresInMs;
+
+    return { token, expiresAt, user };
   }
 
   async changeUserData(data, userId) {
