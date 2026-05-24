@@ -1,6 +1,6 @@
 import {Router} from "express";
 
-import {initialPage} from "../controllers/controller.js"
+
 
 import {
     uploadMessage
@@ -37,8 +37,7 @@ const routes = Router();
 
 //GETs
 
-routes.get('/', initialPage)
-routes.post('/', initialPage)
+
 
 
 routes.get('/userdata', authentication, getUserData)
