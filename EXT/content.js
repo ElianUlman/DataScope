@@ -291,9 +291,13 @@ async function tryStartExtension() {
 }
 
 chrome.storage.onChanged.addListener((changes, areaName) => {
-    if (areaName === "local" && (changes.token || changes.user)) {
-        console.log("[DataScope] Se detectaron cambios en las credenciales locales. Reintentando...");
-        tryStartExtension();
+    if (areaName === "local") {
+
+        if (changes.token || changes.user || changes.privateMode) {
+            console.log("[DataScope] Se detectaron cambios en las credenciales locales. Reintentando...");
+            isExtensionRunning = false;
+            tryStartExtension();
+        }
     }
 });
 
