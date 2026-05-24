@@ -10,7 +10,6 @@ let sendButtonQuery
 let listenersAttached = false
 
 function sendData(type) {
-    console.log("sendData ejecutado con tipo:", type)
     chrome.runtime.sendMessage({ type: type, content: oldEditorContent });
 }
 
@@ -18,34 +17,27 @@ function configEditor() {
     editor.addEventListener('input', (e) => {
         editorContent = e.target.textContent
 
-        console.log("INPUT detectado. Estado actual:", {
-            sendButton: sendButton,
-            listenersAttached: listenersAttached,
-            sendButtonQuery: sendButtonQuery,
-            candidatesSize: sendButtonCandidates.size
-        })
-
         if (!sendButton) {
-            console.log("chequeando botones")
             cleanButtonCandidates()
             findButton(editor, 10)
 
             if (sendButtonCandidates.size > 0 && !listenersAttached) {
                 listenersAttached = true
-                console.log("Listeners adjuntados, botones encontrados:", sendButtonCandidates.size)
-                console.log("Candidatos:", Array.from(sendButtonCandidates))
             }
         }
 
-        console.log("Antes de buscar boton. sendButtonQuery vale:", sendButtonQuery, "sendButton vale:", sendButton)
-
         if (!sendButton && sendButtonQuery) {
-            console.log("Intentando encontrar boton con query:", sendButtonQuery)
             sendButton = findElementByFingerprint(sendButtonQuery)
-            console.log("BOTON DE ENVIAR ENCONTRADO:", sendButton)
+            console.log("[INPUT] sendButton resuelto por fingerprint:", sendButton)
         }
 
         oldEditorContent = editorContent
+    })
+
+    editor.addEventListener("keydown", (e) => {
+        if (e.key === 'Enter' && !e.shiftKey && oldEditorContent?.trim() !== "") {
+            handleSend()
+        }
     })
 }
 
@@ -69,10 +61,7 @@ function checkSameElement(element, originalPrint) {
 }
 
 function attachListeners(e) {
-
     e.addEventListener('click', onMouseDown)
-    console.log('Event listener listo')
-
 }
 
 function cleanButtonCandidates() {
@@ -80,12 +69,10 @@ function cleanButtonCandidates() {
 }
 
 function findButton(start, levels) {
-
     let ancestro = start;
 
     for (let i = 0; i < levels; i++) {
         if (!ancestro || ancestro === document.body) {
-            console.log("Se llegó al body, dejando de subir.")
             break
         }
 
@@ -97,12 +84,10 @@ function findButton(start, levels) {
         })
 
         if (botones.length < 1) {
-            console.log("Este nivel no tiene botones, subiendo un nivel.")
         }
 
         ancestro = ancestro.parentElement;
     }
-
 }
 
 function sendbuttonSnapshot() {
@@ -151,61 +136,53 @@ function checkButton() {
     })
 
     sendButtonQuery = botonDesaparecido
-    console.log("Query encontrada:", sendButtonQuery)
 }
-
-console.log(sendButtonCandidates)
-
 
 const setEditor = (e) => {
     let candidate = e.target
-    if (candidate.isContentEditable || candidate.tagName === 'TEXTAREA') {
 
+    if (candidate.isContentEditable || candidate.tagName === 'TEXTAREA') {
         if (candidate === editor) return
 
         editor = candidate
         listenersAttached = false
         configEditor()
-        console.log("NUEVO EDITOR: ", editor)
+        console.log("[setEditor] NUEVO EDITOR:", editor)
     }
 }
 
-const onMouseDown = (e) => {
+const handleSend = () => {
+
+    console.log("[handleSend] disparado, contenido:", editor?.textContent)
 
     sendbuttonSnapshot()
-    let buttonCandidate = e.target
-
-    if (buttonCandidate.tagName != 'BUTTON') {
-        findButton(buttonCandidate, 10)
-        buttonCandidate = Array.from(sendButtonCandidates)[0]
-    }
-
-    console.log("CLICK DETECTADO EN: ", buttonCandidate)
-    console.log(sendButtonCandidates)
+    findButton(editor, 10)
 
     cleanButtonCandidates()
+
     setTimeout(() => {
+
         if (editor && editor.textContent === "") {
-            console.log("llamando sendData")
+            console.log("[handleSend] Luego de esperar:", editor?.textContent)
             findButton(editor, 10)
             checkButton()
-            console.log(sendButtonCandidates)
             sendData("USER_MESSAGE")
         }
     }, 100)
 }
 
-document.addEventListener('focusin', setEditor)
+const onMouseDown = (e) => {
+    handleSend()
+}
 
 const observer = new MutationObserver((mutationList) => {
-
     if (sendButtonQuery) {
         for (const mutation of mutationList) {
             mutation.addedNodes.forEach((node) => {
                 if (node.nodeType === 1) {
                     if (checkSameElement(node, sendButtonQuery)) {
                         sendButton = node;
-                        console.log("NUEVO BOTON DE ENVIO:", sendButton);
+                        console.log("[MutationObserver] Nuevo botón de envío encontrado:", sendButton);
                     }
                     const childMatch = node.querySelector(`*`);
                     if (childMatch && checkSameElement(childMatch, sendButtonQuery)) {
@@ -217,7 +194,111 @@ const observer = new MutationObserver((mutationList) => {
     }
 })
 
-observer.observe(document.body, {
-    childList: true,
-    subtree: true
-})
+async function checkTabAccessPermission() {
+    const currentUrl = window.location.href.toLowerCase();
+
+    const storage = await chrome.storage.local.get("user");
+    const allowedAis = storage.user?.allowedAis || [];
+
+    console.log("[DataScope] Current URL:", currentUrl);
+    console.log("[DataScope] Allowed AIs from user profile:", allowedAis);
+
+    let currentAi = null;
+    const isAllowed = allowedAis.some((aiName) => {
+        const cleanAiName = aiName.toLowerCase().trim();
+        const IS_CURRENT = currentUrl.includes(cleanAiName);
+        if (IS_CURRENT) currentAi = cleanAiName;
+        return IS_CURRENT;
+    });
+
+    if (currentAi) {
+        await chrome.storage.local.set({ currentAi })
+    }
+
+    if (!isAllowed) {
+        console.warn(`[DataScope] Extension disabled. This AI is not allowed in your settings.`);
+        return;
+    }
+
+    console.log(`[DataScope] AI authorized! Initializing extension features...`);
+    initializeDataScopeExtension();
+}
+
+async function isTokenValid() {
+    const storage = await chrome.storage.local.get(["token", "expiresAt"]);
+
+    if (!storage.token || !storage.expiresAt) {
+        console.log("El token no existe o ha expirado.")
+        return false;
+    }
+
+    const currentTime = Date.now();
+    if (currentTime > storage.expiresAt) {
+        console.warn("[DataScope] El token ha expirado.");
+
+        await chrome.storage.local.remove(["token", "expiresAt", "user"]);
+        return false;
+    }
+
+    return true;
+}
+
+function initializeDataScopeExtension() {
+    document.addEventListener('focusin', setEditor);
+
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
+
+    console.log("[DataScope] Running core components in the DOM...");
+}
+
+async function runExtension() {
+    let exitCode = true;
+
+    const tokenValido = await isTokenValid();
+
+    if (!tokenValido) {
+        console.log("Sesión expirada o inexistente. Deteniendo extensión.");
+        exitCode = false;
+    }
+    else {
+        const storagePrivateMode = await chrome.storage.local.get("user");
+        const isPrivateModeActive = storagePrivateMode.user?.privateMode || false;
+
+        if (isPrivateModeActive === false) {
+            checkTabAccessPermission();
+        } else {
+            console.log("El modo privado esta activado. La extension no esta monitoreando");
+            exitCode = false;
+        }
+
+    }
+
+    return exitCode
+}
+
+let isExtensionRunning = false;
+
+async function tryStartExtension() {
+    if (isExtensionRunning) return;
+
+    const success = await runExtension();
+    if (success) {
+        isExtensionRunning = true;
+    }
+}
+
+chrome.storage.onChanged.addListener((changes, areaName) => {
+    if (areaName === "local") {
+
+        if (changes.token || changes.user || changes.privateMode) {
+            console.log("[DataScope] Se detectaron cambios en las credenciales locales. Reintentando...");
+            isExtensionRunning = false;
+            tryStartExtension();
+        }
+    }
+});
+
+tryStartExtension();
