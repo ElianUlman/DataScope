@@ -10,7 +10,6 @@ let sendButtonQuery
 let listenersAttached = false
 
 function sendData(type) {
-    console.log("sendData ejecutado con tipo:", type)
     chrome.runtime.sendMessage({ type: type, content: oldEditorContent });
 }
 
@@ -18,12 +17,9 @@ function configEditor() {
     editor.addEventListener('input', (e) => {
         editorContent = e.target.textContent
 
-        console.log("[INPUT] Editor detectó escritura. textContent:", editorContent)
-
         if (!sendButton) {
             cleanButtonCandidates()
             findButton(editor, 10)
-            console.log("[INPUT] Candidatos encontrados:", sendButtonCandidates.size, Array.from(sendButtonCandidates))
 
             if (sendButtonCandidates.size > 0 && !listenersAttached) {
                 listenersAttached = true
@@ -39,9 +35,7 @@ function configEditor() {
     })
 
     editor.addEventListener("keydown", (e) => {
-        console.log("[KEYDOWN] Tecla presionada:", e.key, "| shiftKey:", e.shiftKey, "| textContent:", editor.textContent.trim())
         if (e.key === 'Enter' && !e.shiftKey && oldEditorContent?.trim() !== "") {
-            console.log("[KEYDOWN] Enter detectado, llamando handleSend()")
             handleSend()
         }
     })
@@ -79,7 +73,6 @@ function findButton(start, levels) {
 
     for (let i = 0; i < levels; i++) {
         if (!ancestro || ancestro === document.body) {
-            console.log("[findButton] Se llegó al body, dejando de subir.")
             break
         }
 
@@ -91,7 +84,6 @@ function findButton(start, levels) {
         })
 
         if (botones.length < 1) {
-            console.log("[findButton] Nivel sin botones, subiendo. Elemento actual:", ancestro.tagName, ancestro.className)
         }
 
         ancestro = ancestro.parentElement;
@@ -100,7 +92,6 @@ function findButton(start, levels) {
 
 function sendbuttonSnapshot() {
     sendButtonSnapshot = new Set([...sendButtonCandidates])
-    console.log("[SNAPSHOT] Snapshot tomado:", Array.from(sendButtonSnapshot))
 }
 
 function buttonToString(datosBoton) {
@@ -138,9 +129,6 @@ function findElementByFingerprint(fingerprint) {
 function checkButton() {
     let botonDesaparecido;
 
-    console.log("[checkButton] Snapshot:", Array.from(sendButtonSnapshot))
-    console.log("[checkButton] Candidates actuales:", Array.from(sendButtonCandidates))
-
     sendButtonSnapshot.forEach((btn) => {
         if (!sendButtonCandidates.has(btn)) {
             botonDesaparecido = btn
@@ -148,12 +136,10 @@ function checkButton() {
     })
 
     sendButtonQuery = botonDesaparecido
-    console.log("[checkButton] Query encontrada:", sendButtonQuery)
 }
 
 const setEditor = (e) => {
     let candidate = e.target
-    console.log("[setEditor] focusin en:", candidate.tagName, "| isContentEditable:", candidate.isContentEditable)
 
     if (candidate.isContentEditable || candidate.tagName === 'TEXTAREA') {
         if (candidate === editor) return
@@ -166,31 +152,26 @@ const setEditor = (e) => {
 }
 
 const handleSend = () => {
-    console.log("[handleSend] Iniciando. Candidates antes del snapshot:", Array.from(sendButtonCandidates))
+
+    console.log("[handleSend] disparado, contenido:", editor?.textContent)
 
     sendbuttonSnapshot()
     findButton(editor, 10)
 
-    console.log("[handleSend] Candidates después de findButton:", Array.from(sendButtonCandidates))
-
     cleanButtonCandidates()
 
     setTimeout(() => {
-        console.log("[handleSend setTimeout] editor.textContent:", JSON.stringify(editor.textContent))
 
         if (editor && editor.textContent === "") {
-            console.log("[handleSend setTimeout] Editor vacío, procediendo a sendData")
+            console.log("[handleSend] Luego de esperar:", editor?.textContent)
             findButton(editor, 10)
             checkButton()
             sendData("USER_MESSAGE")
-        } else {
-            console.warn("[handleSend setTimeout] Editor NO está vacío, sendData no se ejecuta. Contenido:", JSON.stringify(editor.textContent))
         }
     }, 100)
 }
 
 const onMouseDown = (e) => {
-    console.log("[onMouseDown] CLICK en:", e.target.tagName, e.target.className)
     handleSend()
 }
 
@@ -216,16 +197,23 @@ const observer = new MutationObserver((mutationList) => {
 async function checkTabAccessPermission() {
     const currentUrl = window.location.href.toLowerCase();
 
-    const storage = await chrome.storage.local.get(['allowedAis']);
-    const allowedAis = storage.allowedAis || []; 
-
+    const storage = await chrome.storage.local.get("user");
+    const allowedAis = storage.user?.allowedAis || [];
+    
     console.log("[DataScope] Current URL:", currentUrl);
-    console.log("[DataScope] Allowed AIs from database:", allowedAis);
+    console.log("[DataScope] Allowed AIs from user profile:", allowedAis);
 
-    const isAllowed = allowedAis.some(aiName => {
+    let currentAi = null;
+    const isAllowed = allowedAis.some((aiName) => {
         const cleanAiName = aiName.toLowerCase().trim();
-        return currentUrl.includes(cleanAiName);
+        const IS_CURRENT = currentUrl.includes(cleanAiName);
+        if (IS_CURRENT) currentAi = cleanAiName;
+        return IS_CURRENT;
     });
+
+    if (currentAi) {
+        await chrome.storage.local.set({ currentAi })
+    }
 
     if (!isAllowed) {
         console.warn(`[DataScope] Extension disabled. This AI is not allowed in your settings.`);
@@ -237,15 +225,25 @@ async function checkTabAccessPermission() {
 }
 
 function initializeDataScopeExtension() {
-
-    document.addEventListener('focusin', setEditor)
+    document.addEventListener('focusin', setEditor);
 
     observer.observe(document.body, {
         childList: true,
         subtree: true
-    })
+    });
 
     console.log("[DataScope] Running core components in the DOM...");
 }
 
-checkTabAccessPermission();
+async function runExtension() {
+    const storage = await chrome.storage.local.get("user");
+    const isPrivateModeActive = storage.user.privateMode || false;
+
+    if (isPrivateModeActive === false) {
+        checkTabAccessPermission();
+    } else {
+        console.log("El modo privado esta activado. La extension no esta monitoreando");
+    }
+}
+
+runExtension();

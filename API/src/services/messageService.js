@@ -3,7 +3,7 @@ import statisticRepository from "../repositories/statisticRepository.js"
 import { pool } from "../db.js";
 import { setPrompt, getWords, tokenize, calcularComplejidad, clasificate, initClasificador, averageComplexity } from "../utils/analizer.js"
 
-import { validateFields } from "../utils/validationUtils.js";
+import { validateFields, blockFields } from "../utils/validationUtils.js";
 
 class messageService {
     

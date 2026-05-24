@@ -1,17 +1,38 @@
 const API_CLOUD = "https://datascope-api.onrender.com/api";
 const API_LOCAL = "http://192.168.0.128:3000/api"
 
-chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener(async (msg, sender, sendResponse) => {
+
+    console.log(`se recibio un mensaje: ${msg}, ${sender}`)
 
     if (msg.type === "USER_MESSAGE") {
-        fetch(`${API_CLOUD}/`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ content: msg.content })
-        })
-            .then(res => res.text())
-            .then(data => console.log("Respuesta de la API:", data))
-            .catch(err => console.log("Error al conectar con la API:", err.message));
+
+        const storage = await chrome.storage.local.get(["currentAi", "token"]);
+
+        const rawToken = storage.token;
+        const cleanToken = typeof rawToken === 'object' && rawToken.token ? rawToken.token : rawToken;
+
+        console.log("token enviado:", cleanToken);
+        console.log("sender:", storage.currentAi);
+
+        try {
+            const res = await fetch(`${API_LOCAL}/message`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": cleanToken
+                },
+                body: JSON.stringify({
+                    content: msg.content,
+                    sender: "user"
+                    //sender podria ser la IA: storage.currentAi
+                })
+            });
+            const data = await res.text();
+            console.log("Respuesta de la API:", data);
+        } catch (err) {
+            console.log("Error al conectar con la API:", err.message);
+        }
 
         return true;
     }
@@ -46,7 +67,11 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 
                     chrome.storage.local.set({
                         token: data.token,
-                        allowedAis: listaIAs
+                        user: {
+                            username: data.user.username,
+                            allowedAis: listaIAs,
+                            privateMode: false
+                        }
                     }, () => {
                         sendResponse({ ok: true, token: data.token });
                     });

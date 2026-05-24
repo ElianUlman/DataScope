@@ -31,6 +31,11 @@ import {
     getInvites
 } from "../controllers/invites.controller.js"
 
+import{
+    saveStats
+}from "../controllers/statistic.controller.js"
+
+
 const routes = Router();
 
 //GETs
@@ -57,7 +62,7 @@ routes.patch('/user', authentication, updateUserData)
 //POSTS
 routes.post('/login', loginUser)
 
-routes.post('/message', authentication, uploadMessage) //authentication is deleted for now. Later it will need one (as to link users to their prompts).
+routes.post('/message', authentication, saveStats, uploadMessage) //authentication is deleted for now. Later it will need one (as to link users to their prompts).
 
 export default routes;
 
