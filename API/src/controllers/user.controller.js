@@ -8,7 +8,6 @@ export const createUser = async (req, res) => {
         await userService.createUser({ email, name, password })
         const token = await userService.login({ email, password })
 
-        console.log(`[REGISTER] OK — usuario: ${name} | email: ${email}`)
         res.status(201).json({ token })
     } catch (error) {
         console.error(`[REGISTER] ERROR — ${error.message}`)
@@ -23,7 +22,7 @@ export const loginUser = async (req, res) => {
         const { token, expiresAt } = await userService.login({ email, password })
         const user = await userRepository.findByEmail(email);
 
-        console.log(`[LOGIN] OK — email: ${email}`);
+       
 
         res.status(200).json({
             success: true,
