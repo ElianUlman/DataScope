@@ -35,11 +35,6 @@ export default function LandingPage() {
 
   return (
     <div className="landing">
-
-      
-
-      
-
       {/* ── HERO ── */}
       <section className="hero">
         <img src={imgFondo} alt="" className="hero__bg" />
