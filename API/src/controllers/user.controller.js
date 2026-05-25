@@ -6,9 +6,19 @@ export const createUser = async (req, res) => {
     try {
         const { email, name, password } = req.body
         await userService.createUser({ email, name, password })
-        const token = await userService.login({ email, password })
+        const { token, expiresAt, user } = await userService.login({ email, password })
 
-        res.status(201).json({ token })
+        res.status(200).json({
+            success: true,
+            token: token,
+            expiresAt,
+            user: {
+                id: user.id,
+                username: user.name,
+                email: user.email,
+                allowed_ais: user.allowed_ais || []
+            }
+        });
     } catch (error) {
         console.error(`[REGISTER] ERROR — ${error.message}`)
         res.status(500).json({ error: "error ocurred" })
@@ -19,10 +29,10 @@ export const loginUser = async (req, res) => {
     try {
         const { email, password } = req.body;
 
-        const { token, expiresAt } = await userService.login({ email, password })
-        const user = await userRepository.findByEmail(email);
+        const { token, expiresAt, user } = await userService.login({ email, password })
+        
 
-       
+
 
         res.status(200).json({
             success: true,
@@ -45,7 +55,7 @@ export const loginUser = async (req, res) => {
 
 export const getUserData = async (req, res) => {
     try {
-        res.status(200).json({ "id": req.user.id, "username": req.user.name, "email": req.user.email, "allowed_ais": req.user.allowed_ais })
+        res.status(200).json({ user: { "id": req.user.id, "username": req.user.name, "email": req.user.email, "allowed_ais": req.user.allowed_ais } })
     } catch (error) {
         console.log(error)
         res.status(500).json({ error: "error ocurred" })

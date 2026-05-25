@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import "./Header.css"
-import LoginModal from "../popup/LoginModal";
-import RegisterModal from "../popup/RegisterModal";
+import LoginModal from "../features/auth/components/LoginModal";
+import RegisterModal from "../features/auth/components/RegisterModal";
 
 const imgLogo = null;
 

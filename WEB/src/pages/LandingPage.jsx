@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import "./LandingPage.css";
-import LoginModal from "../popup/LoginModal";
-import RegisterModal from "../popup/RegisterModal";
+
 
 // — Imágenes: reemplazá estas rutas por tus archivos en src/assets/ —
 // Ejemplo: import imgFondo from "../assets/hero-bg.png"

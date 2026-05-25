@@ -20,6 +20,7 @@ class userService {
     data.allowed_ais = ["chatgpt", "claude", "gemini", "other"]
     data.password = await bcrypt.hash(data.password, hashRounds);
 
+    
     return await userRepository.create(data);
   }
 
