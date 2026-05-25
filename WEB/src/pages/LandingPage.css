@@ -108,59 +108,7 @@ body {
   padding: 16px 40px;
 }
 
-/* ─── HEADER ────────────────────────────────────────────────────────────────── */
 
-.header {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  width: 100%;
-  height: 88px;
-  background: var(--surface-2);
-  border-bottom: 3px solid var(--green);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 48px;
-  transition: box-shadow 0.3s;
-}
-
-.header--scrolled {
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
-}
-
-.header__logo {
-  height: 48px;
-  object-fit: contain;
-}
-
-.header__logo-text {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--green);
-  letter-spacing: -0.03em;
-}
-
-.header__nav {
-  display: flex;
-  gap: 48px;
-  list-style: none;
-}
-
-.header__nav a {
-  font-family: 'Ubuntu', sans-serif;
-  font-size: 20px;
-  font-weight: 500;
-  color: var(--green);
-  text-decoration: none;
-  letter-spacing: -0.02em;
-  transition: opacity 0.2s;
-}
-
-.header__nav a:hover {
-  opacity: 0.65;
-}
 
 /* ─── HERO ──────────────────────────────────────────────────────────────────── */
 
@@ -574,55 +522,7 @@ body {
   line-height: 1.6;
 }
 
-/* ─── FOOTER ────────────────────────────────────────────────────────────────── */
 
-.footer {
-  background: var(--surface-2);
-  border-top: 1px solid rgba(38, 38, 38, 0.5);
-  padding: 0 32px;
-  height: 180px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 32px;
-}
-
-.footer__brand h3 {
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--green);
-  margin-bottom: 8px;
-}
-
-.footer__brand p {
-  font-size: 13px;
-  color: var(--muted);
-  line-height: 1.5;
-  max-width: 260px;
-}
-
-.footer__links {
-  display: flex;
-  gap: 40px;
-  list-style: none;
-}
-
-.footer__links a {
-  font-size: 13px;
-  color: var(--muted);
-  text-decoration: none;
-  transition: color 0.2s;
-}
-
-.footer__links a:hover {
-  color: var(--green);
-}
-
-.footer__copy {
-  font-size: 13px;
-  color: var(--green-85);
-  white-space: nowrap;
-}
 
 /* ─── RESPONSIVE ────────────────────────────────────────────────────────────── */
 
@@ -654,13 +554,7 @@ body {
 }
 
 @media (max-width: 768px) {
-  .header {
-    padding: 0 20px;
-  }
-
-  .header__nav {
-    display: none;
-  }
+  
 
   .hero__content {
     padding: 48px 24px;
@@ -690,16 +584,5 @@ body {
     padding: 40px 24px;
   }
 
-  .footer {
-    flex-direction: column;
-    height: auto;
-    padding: 32px 24px;
-    text-align: center;
-  }
-
-  .footer__links {
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 20px;
-  }
+  
 }

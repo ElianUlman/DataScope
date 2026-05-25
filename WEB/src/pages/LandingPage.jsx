@@ -28,50 +28,17 @@ const BARS = [
   { height: 60,  opacity: 0.4 },
 ];
 
-const FOOTER_LINKS = ["Privacidad", "Términos", "Contacto", "LinkedIn", "Twitter"];
+
 
 export default function LandingPage() {
-  const [scrolled, setScrolled] = useState(false);
-  const [showLogin, setShowLogin] = useState(false);
-  const [showRegister, setShowRegister] = useState(false);
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 10);
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  
 
   return (
     <div className="landing">
 
-      {/* ── HEADER ── */}
-      <header className={`header ${scrolled ? "header--scrolled" : ""}`}>
-        {imgLogo
-          ? <img src={imgLogo} alt="DataScope" className="header__logo" />
-          : <span className="header__logo-text">DataScope</span>
-        }
-        <nav>
-          <ul className="header__nav">
-            <li><a href="#">Home</a></li>
-            <li><a href="#">About</a></li>
-            <li><a href="#">Pricing</a></li>
-            <li><a href="#">Tutorial</a></li>
-          </ul>
-        </nav>
-        <button onClick={() => setShowLogin(true)} className="btn btn--login">Login</button>
-      </header>
+      
 
-      {showLogin && (
-        <div className="modal-root">
-          <LoginModal onClose={() => setShowLogin(false)} onOpenRegister={() => setShowRegister(true)} />
-        </div>
-      )}
-
-      {showRegister && (
-        <div className="modal-root">
-          <RegisterModal onClose={() => setShowRegister(false)} onOpenLogin={() => setShowLogin(true)} />
-        </div>
-      )}
+      
 
       {/* ── HERO ── */}
       <section className="hero">
@@ -223,22 +190,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ── FOOTER ── */}
-      <footer className="footer">
-        <div className="footer__brand">
-          <h3>DataScope</h3>
-          <p>
-            El Observatorio Digital para la era de la inteligencia artificial.
-            Precisión, claridad y verdad en los datos.
-          </p>
-        </div>
-        <ul className="footer__links">
-          {FOOTER_LINKS.map((l) => (
-            <li key={l}><a href="#">{l}</a></li>
-          ))}
-        </ul>
-        <p className="footer__copy">© 2026 DataScope</p>
-      </footer>
+      
 
     </div>
   );
