@@ -32,6 +32,7 @@ const Header = () => {
                         <li><a href="#">About</a></li>
                         <li><a href="#">Pricing</a></li>
                         <li><a href="#">Tutorial</a></li>
+                        {isLogged && <li><a href="#">Overview</a></li>}
                     </ul>
                 </nav>
 
