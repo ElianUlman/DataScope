@@ -1,7 +1,26 @@
 import "./RegisterModal.css";
 import { Eye, AtSign } from "lucide-react";
+import { useState } from 'react'
+import { useAuth } from "../context/AuthContext";
 
 export default function RegisterModal({ onClose, onOpenLogin }) {
+  const [username, setUsername] = useState()
+  const [password, setPassword] = useState()
+  const [email, setEmail] = useState()
+  const [message, setMessage] = useState()
+  const { signup } = useAuth()
+
+  const handleSubmit = async () => {
+    setMessage("")
+    const result = await signup(name, email, password)
+
+    if (result == true) {
+      onClose()
+    } else {
+      setMessage("Hubo un error")
+    }
+
+  }
   return (
     <>
       <div className="modal-backdrop" onClick={onClose} />
@@ -11,14 +30,14 @@ export default function RegisterModal({ onClose, onOpenLogin }) {
 
         <div className="input-group">
           <label>USERNAME</label>
-          <input type="text" placeholder="Nombre de usuario" />
+          <input type="text" placeholder="Nombre de usuario" onChange={(e)=>setUsername(e.target.value)}/>
         </div>
 
         <div className="input-group">
           <label>EMAIL ADDRESS</label>
 
           <div className="input-icon">
-            <input type="email" placeholder="nombre@compania.com" />
+            <input type="email" placeholder="nombre@compania.com" onChange={(e)=>setEmail(e.target.value)}/>
             <AtSign size={18} className="icon" />
           </div>
         </div>
@@ -27,7 +46,7 @@ export default function RegisterModal({ onClose, onOpenLogin }) {
           <label>PASSWORD</label>
 
           <div className="input-icon">
-            <input type="password" placeholder="••••••••" />
+            <input type="password" placeholder="••••••••" onChange={(e)=>setPassword(e.target.value)}/>
             <Eye size={18} className="icon" />
           </div>
         </div>
@@ -36,7 +55,7 @@ export default function RegisterModal({ onClose, onOpenLogin }) {
           <input type="checkbox" />
           <span>Recordar mi cuenta</span>
         </div>
-
+        <p>{message}</p>
         <button className="register-btn">Registrarme</button>
 
         <p className="bottom-text">

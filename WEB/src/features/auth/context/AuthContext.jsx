@@ -6,17 +6,23 @@ const AuthContext = createContext()
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null)
     const [isLogged, setIsLogged] = useState(false);
+    
 
     useEffect(() => {
 
         async function getTokenData() {
+            
             const token = localStorage.getItem("token")
 
             if (token) {
                 const response = await getUserData(token)
-                setUser(response.data.user)
+                
+                console.log("USER DATA:", response)
+                console.log("USER:", response.user)
+                setUser(response.user)
                 setIsLogged(true)
             }
+            
         }
 
         getTokenData()
@@ -27,8 +33,8 @@ export const AuthProvider = ({ children }) => {
         try {
             const response = await userLogin(email, password)
 
-            setUser(response.data.user)
-            localStorage.setItem("token", response.data.token)
+            setUser(response.user)
+            localStorage.setItem("token", response.token)
             setIsLogged(true)
             console.log("succesful login")
             return true
@@ -42,8 +48,8 @@ export const AuthProvider = ({ children }) => {
         try {
             const response = await userSignup(name, email, password)
 
-            setUser(response.data.user)
-            localStorage.setItem("token", response.data.token)
+            setUser(response.user)
+            localStorage.setItem("token", response.token)
             setIsLogged(true)
 
             return true

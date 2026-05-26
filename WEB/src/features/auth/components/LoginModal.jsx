@@ -9,8 +9,9 @@ export default function LoginModal({ onClose, onOpenRegister }) {
   const [message, setMessage] = useState()
   const { login } = useAuth()
 
-  const handleSubmit = () => {
-    const result = login(email, password)
+  const handleSubmit = async () => {
+    setMessage("")
+    const result = await login(email, password)
 
     if(result == true){
       onClose()

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import "./Header.css"
 import LoginModal from "../features/auth/components/LoginModal";
 import RegisterModal from "../features/auth/components/RegisterModal";
+import { useAuth } from "../features/auth/context/AuthContext";
 
 const imgLogo = null;
 
@@ -9,6 +10,8 @@ const Header = () => {
     const [scrolled, setScrolled] = useState(false);
     const [showLogin, setShowLogin] = useState(false);
     const [showRegister, setShowRegister] = useState(false);
+
+    const { user, isLogged } = useAuth()
 
     useEffect(() => {
         const onScroll = () => setScrolled(window.scrollY > 10);
@@ -31,7 +34,11 @@ const Header = () => {
                         <li><a href="#">Tutorial</a></li>
                     </ul>
                 </nav>
-                <button onClick={() => setShowLogin(true)} className="btn btn--login">Login</button>
+
+                {isLogged ? <p>{user.username}</p> : <button onClick={() => setShowLogin(true)} className="btn btn--login">Login</button>
+
+                }
+                
             </header>
 
             {showLogin && (
