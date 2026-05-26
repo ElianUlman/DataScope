@@ -6,12 +6,14 @@ import { useAuth } from "../context/AuthContext";
 export default function LoginModal({ onClose, onOpenRegister }) {
   const [password, setPassword] = useState()
   const [email, setEmail] = useState()
+  const [rememberMe, setRememberMe] = useState(false)
+
   const [message, setMessage] = useState()
   const { login } = useAuth()
 
   const handleSubmit = async () => {
     setMessage("")
-    const result = await login(email, password)
+    const result = await login(email, password, rememberMe)
 
     if(result == true){
       onClose()
@@ -47,7 +49,7 @@ export default function LoginModal({ onClose, onOpenRegister }) {
         </div>
 
         <div className="remember">
-          <input type="checkbox" />
+          <input type="checkbox" onChange={(e) => setRememberMe(e.target.checked)}/>
           <span>Recordar mi cuenta</span>
         </div>
 

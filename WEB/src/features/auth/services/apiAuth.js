@@ -13,7 +13,7 @@ export const userLogin = async (email, password) => {
         return response
 
     } catch (error) {
-        return error
+        throw error
 
     }
 };
@@ -33,7 +33,7 @@ export const userSignup = async (name, email, password) => {
         return response
 
     } catch (error) {
-        return error
+        throw error
 
     }
 };
@@ -49,7 +49,7 @@ export const getUserData = async (token) =>{
      
     }catch(error){
       
-      return error
+      throw error
     }
   }
 
@@ -69,6 +69,6 @@ export const fullSignUp = async (companyName, companyTier, username, email, pass
         return true
 
     } catch (error) {
-        return error
+        throw error
     }
 }

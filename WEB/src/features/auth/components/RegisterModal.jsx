@@ -7,12 +7,14 @@ export default function RegisterModal({ onClose, onOpenLogin }) {
   const [username, setUsername] = useState()
   const [password, setPassword] = useState()
   const [email, setEmail] = useState()
+  const [rememberMe, setRememberMe] = useState(false)
+
   const [message, setMessage] = useState()
   const { signup } = useAuth()
 
   const handleSubmit = async () => {
     setMessage("")
-    const result = await signup(username, email, password)
+    const result = await signup(username, email, password, rememberMe)
 
     if (result == true) {
       onClose()
@@ -52,7 +54,7 @@ export default function RegisterModal({ onClose, onOpenLogin }) {
         </div>
 
         <div className="remember">
-          <input type="checkbox" />
+          <input type="checkbox" onChange={(e) => setRememberMe(e.target.checked)}/>
           <span>Recordar mi cuenta</span>
         </div>
         <p>{message}</p>
