@@ -10,10 +10,10 @@ export const userLogin = async (email, password) => {
             }
         );
         
-        return response.data
+        return response
 
     } catch (error) {
-        return error.response.status
+        return error
 
     }
 };
@@ -30,10 +30,10 @@ export const userSignup = async (name, email, password) => {
             }
         );
 
-        return response.data
+        return response
 
     } catch (error) {
-        return error.response.status
+        return error
 
     }
 };
@@ -45,11 +45,11 @@ export const getUserData = async (token) =>{
         Authorization: token
       }})
 
-      return response.data
+      return response
      
     }catch(error){
       
-      return error.response.status
+      return error
     }
   }
 
@@ -69,6 +69,6 @@ export const fullSignUp = async (companyName, companyTier, username, email, pass
         return true
 
     } catch (error) {
-        return error.response.status
+        return error
     }
 }

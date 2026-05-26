@@ -16,7 +16,7 @@ export const AuthProvider = ({ children }) => {
 
             if (token) {
                 const response = await getUserData(token)
-                setUser(response.user)
+                setUser(response.data.user)
                 setIsLogged(true)
             }
             
@@ -30,8 +30,8 @@ export const AuthProvider = ({ children }) => {
         try {
             const response = await userLogin(email, password)
 
-            setUser(response.user)
-            localStorage.setItem("token", response.token)
+            setUser(response.data.user)
+            localStorage.setItem("token", response.data.token)
             setIsLogged(true)
             
             return true
@@ -45,8 +45,8 @@ export const AuthProvider = ({ children }) => {
         try {
             const response = await userSignup(name, email, password)
 
-            setUser(response.user)
-            localStorage.setItem("token", response.token)
+            setUser(response.data.user)
+            localStorage.setItem("token", response.data.token)
             setIsLogged(true)
 
             return true
