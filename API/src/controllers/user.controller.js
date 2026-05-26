@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 
 export const createUser = async (req, res) => {
     try {
-        console.log(req.body)
+        
         const { name, email, password } = req.body
         await userService.createUser({ email, name, password })
         const { token, expiresAt, user } = await userService.login({ email, password })
