@@ -23,9 +23,10 @@ export const userSignup = async (name, email, password) => {
         const response = await axiosClient.put(
             "/user",
             {
+                "name": name,
                 "email": email,
-                "password": password,
-                "name": name
+                "password": password
+                
             }
         );
 

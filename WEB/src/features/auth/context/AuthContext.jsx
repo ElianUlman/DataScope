@@ -16,9 +16,6 @@ export const AuthProvider = ({ children }) => {
 
             if (token) {
                 const response = await getUserData(token)
-                
-                console.log("USER DATA:", response)
-                console.log("USER:", response.user)
                 setUser(response.user)
                 setIsLogged(true)
             }
@@ -36,7 +33,7 @@ export const AuthProvider = ({ children }) => {
             setUser(response.user)
             localStorage.setItem("token", response.token)
             setIsLogged(true)
-            console.log("succesful login")
+            
             return true
         } catch (error) {
             console.log(error)

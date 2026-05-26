@@ -12,7 +12,7 @@ export default function RegisterModal({ onClose, onOpenLogin }) {
 
   const handleSubmit = async () => {
     setMessage("")
-    const result = await signup(name, email, password)
+    const result = await signup(username, email, password)
 
     if (result == true) {
       onClose()
@@ -56,7 +56,7 @@ export default function RegisterModal({ onClose, onOpenLogin }) {
           <span>Recordar mi cuenta</span>
         </div>
         <p>{message}</p>
-        <button className="register-btn">Registrarme</button>
+        <button className="register-btn" onClick={() => handleSubmit()}>Registrarme</button>
 
         <p className="bottom-text">
           ¿Ya tenes una cuenta? <span onClick={() => { onOpenLogin(); onClose(); }}>Inicia sesion</span>
