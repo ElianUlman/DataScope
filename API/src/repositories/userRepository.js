@@ -12,11 +12,7 @@ class userRepository extends BaseRepository {
     return rows[0]
     
   } 
-
-  
-
 }
-
 
 export default new userRepository();
 

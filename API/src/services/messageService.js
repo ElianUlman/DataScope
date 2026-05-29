@@ -3,7 +3,7 @@ import statisticRepository from "../repositories/statisticRepository.js"
 import { pool } from "../db.js";
 import { setPrompt, getWords, tokenize, calcularComplejidad, clasificate, initClasificador, averageComplexity } from "../utils/analizer.js"
 
-import { validateFields } from "../utils/validationUtils.js";
+import { validateFields, blockFields } from "../utils/validationUtils.js";
 
 class messageService {
     
@@ -50,7 +50,7 @@ class messageService {
             const message = await messageRepository.create(data, client) //need to use the id
             objectStatistics.message_id=message.id
             
-            const statistic = await statisticRepository.create(objectStatistics, client)
+            await statisticRepository.create(objectStatistics, client)
             
 
             await client.query('COMMIT')
