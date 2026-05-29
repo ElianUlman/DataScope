@@ -36,7 +36,7 @@ const Header = () => {
                     </ul>
                 </nav>
 
-                {isLogged ? <p>{user.username}</p> : <button onClick={() => setShowLogin(true)} className="btn btn--login">Login</button>
+                {isLogged && user.username ? <p>{user.username}</p> : <button onClick={() => setShowLogin(true)} className="btn btn--login">Login</button>
 
                 }
                 

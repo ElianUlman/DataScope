@@ -2,7 +2,7 @@ const API_LOCAL = "http://10.152.2.105:3000/api"
 const API_CLOUD = "https://datascope-api.onrender.com/api"
 
 export async function sendMessage(content, token) {
-    const res = await fetch(`${API_LOCAL}/message`, {
+    const res = await fetch(`${API_CLOUD}/message`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -14,7 +14,7 @@ export async function sendMessage(content, token) {
 }
 
 export async function login(email, password) {
-    const res = await fetch(`${API_LOCAL}/login`, {
+    const res = await fetch(`${API_CLOUD}/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password })
