@@ -5,25 +5,25 @@
     <link rel="stylesheet" href="popup.css">
 </head>
 <body>
-    <section style="width: 300px; padding: 10px;">
+    <section class="popup-wrapper">
         
-        <div id="sinSesion">
-            <h1 id="titulo-app">Data Scope</h1>
+        <div id="sinSesion" class="panel" style="display: block;">
+            <h1 id="titulo-app" class="titulo-app">Data Scope</h1>
 
-            <form id="sesion">
-                <input type="text" name="Mail" placeholder="Tu mail..." id="mail" required style="display: block; margin-bottom: 5px; width: 100%;">
-                <input type="password" name="pwd" placeholder="Contraseña" id="pwd" required style="display: block; margin-bottom: 5px; width: 100%;">
-                <button type="submit">Enviar</button>
+            <form id="sesion" class="login-form">
+                <input type="text" name="Mail" placeholder="Tu mail..." id="mail" class="form-input" required style="display: block; margin-bottom: 5px; width: 100%;">
+                <input type="password" name="pwd" placeholder="Contraseña" id="pwd" class="form-input" required style="display: block; margin-bottom: 5px; width: 100%;">
+                <button type="submit" class="btn-primary">Enviar</button>
             </form>
 
-            <p id="reg-feedback"></p>
+            <p id="reg-feedback" class="reg-feedback"></p>
         </div>
 
-        <div id="conSesion" style="display: none;">
+        <div id="conSesion" class="panel" style="display: none;">
             
-            <a href="https://datascope-orhf.onrender.com/">Ir a Datascope</a>
-            <button id="btn-privateMode"></button>
-            <button id="btn-logout" style="margin-top: 10px;">Cerrar Sesión</button>
+            <a href="https://datascope-orhf.onrender.com/" class="btn-secondary">Ir a Datascope</a>
+            <button id="btn-privateMode" class="btn-secondary"></button>
+            <button id="btn-logout" class="btn-danger">Cerrar Sesión</button>
         </div>
 
     </section>
