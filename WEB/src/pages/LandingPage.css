@@ -33,7 +33,7 @@ html {
 body {
   background: var(--bg);
   color: var(--white);
-  font-family: 'Space Grotesk', sans-serif;
+  font-family:  'Roboto', 'Space Grotesk', sans-serif;
   overflow-x: hidden;
 }
 
@@ -71,7 +71,7 @@ body {
   border-radius: 16px;
   cursor: pointer;
   text-decoration: none;
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: 'Roboto',  'Space Grotesk', sans-serif;
   font-weight: 600;
   transition: opacity 0.2s, transform 0.15s;
 }
@@ -84,7 +84,7 @@ body {
 .btn--login {
   background: var(--green);
   color: #1a1919;
-  font-family: 'Ubuntu', sans-serif;
+  font-family:  'Roboto', 'Ubuntu', sans-serif;
   font-size: 18px;
   font-weight: 500;
   padding: 10px 28px;

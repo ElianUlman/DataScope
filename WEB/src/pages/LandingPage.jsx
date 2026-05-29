@@ -4,10 +4,12 @@ import "./LandingPage.css";
 
 // — Imágenes: reemplazá estas rutas por tus archivos en src/assets/ —
 // Ejemplo: import imgFondo from "../assets/hero-bg.png"
-const imgFondo            = "https://placehold.co/1440x960/0e0e0e/2ee88a?text=Hero+BG";
+//const imgFondo            = "https://placehold.co/1440x960/0e0e0e/2ee88a?text=Hero+BG";
+import imgFondo from "../assets/imgFondo.png"
 const imgImage13          = "https://placehold.co/707x422/1a1919/2ee88a?text=Dashboard";
 const imgSecureDataCenter = "https://placehold.co/400x228/131313/2ee88a?text=Data+Center";
-const imgLogo             = null; // reemplazá por: import imgLogo from "../assets/logo.png"
+import imgLogo from "../assets/imgLogo.png"
+
 const iconStats           = null;
 const iconQA              = null;
 const iconOptimize        = null;

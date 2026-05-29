@@ -1,12 +1,22 @@
 import LandingPage from './pages/LandingPage'
-import Header from './layouts/header'
-import Footer from './layouts/footer'
+import About from './pages/About.jsx';
+import Header from './layouts/header.jsx'
+import Footer from './layouts/footer.jsx'
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+
 
 
 export default function App() {
   return <>
     <Header />
-    <LandingPage />
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/about" element={<About />} />
+      </Routes>
+    </BrowserRouter>
+    
+
     <Footer />
   </>
 }
