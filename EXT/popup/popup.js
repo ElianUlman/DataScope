@@ -105,4 +105,9 @@ async function initializeButtonText() {
     }
 }
 
+document.querySelector('#conSesion a').addEventListener('click', (e) => {
+    e.preventDefault();
+    chrome.tabs.create({ url: e.currentTarget.href });
+});
+
 initializeButtonText();

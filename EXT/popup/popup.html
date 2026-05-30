@@ -1,28 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="popup.css">
 </head>
+
 <body>
     <section class="popup-wrapper">
-        
+
         <div id="sinSesion" class="panel" style="display: block;">
             <h1 id="titulo-app" class="titulo-app">Data Scope</h1>
 
             <form id="sesion" class="login-form">
-                <input type="text" name="Mail" placeholder="Tu mail..." id="mail" class="form-input" required style="display: block; margin-bottom: 5px; width: 100%;">
-                <input type="password" name="pwd" placeholder="Contraseña" id="pwd" class="form-input" required style="display: block; margin-bottom: 5px; width: 100%;">
+                <input type="text" name="Mail" placeholder="Tu mail..." id="mail" class="form-input" required
+                    style="display: block; margin-bottom: 5px; width: 100%;">
+                <input type="password" name="pwd" placeholder="Contraseña" id="pwd" class="form-input" required
+                    style="display: block; margin-bottom: 5px; width: 100%;">
                 <button type="submit" class="btn-primary">Enviar</button>
             </form>
 
             <p id="reg-feedback" class="reg-feedback"></p>
         </div>
 
-        <div id="conSesion" class="panel" style="display: none;">
-            
-            <a href="https://datascope-orhf.onrender.com/" class="btn-secondary">Ir a Datascope</a>
-            <button id="btn-privateMode" class="btn-secondary"></button>
+        <div id="conSesion" class="panel" style="display: none; justify-content: center;">
+                
+            <div class="private-mode-row">
+                <label class="toggle-switch">
+                    <input type="checkbox" id="btn-privateMode-toggle">
+                    <span class="toggle-track">
+                        <span class="toggle-thumb"></span>
+                    </span>
+                </label>
+                <span class="private-mode-label">Modo Privado</span>
+            </div>
+
+            <a href="https://datascope-orhf.onrender.com/" class="btn-secondary">Ir a DataScope</a>
+
             <button id="btn-logout" class="btn-danger">Cerrar Sesión</button>
         </div>
 
@@ -30,4 +44,5 @@
 
     <script src="popup.js"></script>
 </body>
+
 </html>
