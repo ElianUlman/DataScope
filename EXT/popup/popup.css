@@ -1,19 +1,231 @@
-html, body {
-    margin: 0;
-    padding: 0;
-    background: transparent;
-    overflow: hidden;
-    
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-div {
-    width: 400px;
-    height: 250px;
-    background-color: #ffffff;
-    overflow: hidden;
+body {
+  background-color: #0e0e0e;
+  font-family: 'Robot', sans-serif;
+  color: white;
+  min-width: 300px;
 }
 
-h1 {
-    text-align: center;
-    color: white;
+.popup-wrapper {
+  background-color: #0e0e0e;
+  border-radius: 20px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.titulo-app {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 22px;
+  letter-spacing: -0.3px;
+  color: #ffffff;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(73, 72, 71, 0.3);
+  border-radius: 8px;
+  padding: 24px 20px;
+  backdrop-filter: blur(12px); /* Agrega un efecto de desenfoque para mejorar la apariencia */
+  box-shadow: 0px 40px 40px -10px rgba(0, 0, 0, 0.5);
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.form-input {
+  display: block;
+  width: 100%;
+  padding: 12px 16px;
+  background-color: #000000;
+  border: 1px solid rgba(73, 72, 71, 0.3);
+  border-radius: 4px;
+  color: rgba(180, 180, 180, 0.5);
+  font-family: 'Robot', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-input::placeholder {
+  color: rgba(180, 180, 180, 0.4);
+}
+
+.form-input:focus {
+  border-color: rgba(46, 232, 138, 0.5);
+  box-shadow: 0 0 0 2px rgba(46, 232, 138, 0.1);
+  color: #b4b4b4;
+}
+
+.btn-primary {
+  width: 100%;
+  padding: 12px;
+  background-color: #2ee88a;
+  color: #1a1919;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.2px;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  box-shadow: 0px 0px 12px rgba(46, 232, 138, 0.2);
+  transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease;
+}
+
+.btn-primary:hover {
+  background-color: #2ee88a;
+  box-shadow: 0px 0px 20px rgba(46, 232, 138, 0.4);
+
+}
+
+.btn-primary:active {
+  transform: scale(0.98); /* Agrega un efecto de pulsación al hacer clic */
+}
+
+#conSesion{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-secondary {
+  min-height: 40px;
+  margin: 16px auto ;
+  width: 70%;
+  max-width: 240px;
+  padding: 10px 8px;
+  background-color: #000000;
+  color: #ffffff;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+  font-size: 13px;
+  letter-spacing: -0.36px;
+  text-align: center;
+  text-decoration: none;
+  border: 3px solid #2ee88a;
+  border-radius: 10px;
+  cursor: pointer; /* Cambia el cursor a pointer para indicar que es clickeable */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+}
+
+.btn-secondary:hover {
+  background-color: #2ee88a;
+  box-shadow: 0px 0px 20px rgba(46, 232, 138, 0.4);
+  color: #000000;
+}
+
+.btn-secondary:active {
+  transform: scale(0.98); /* Agrega un efecto de pulsación al hacer clic */
+}
+
+.private-mode-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+
+.private-mode-label {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+  font-size: 13px;
+  letter-spacing: -0.36px;
+  color: #ffffff;
+}
+
+.toggle-switch {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.toggle-switch input[type="checkbox"] /* Oculta el checkbox real */ {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-track {
+  display: block;
+  width: 72px;
+  height: 34px;
+  background-color: #000000;
+  border:1px solid rgb(255, 255, 255);
+  border-radius: 17px;
+  position: relative;
+  transition: background-color 0.25s ease;
+}
+
+.toggle-switch input:checked + .toggle-track /* Cambia el fondo del track cuando el checkbox está marcado */ {
+  background-color: #2ee88a;
+  border: 1px solid #2ee88a;
+}
+
+.toggle-thumb {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%); /* Centra verticalmente el thumb */
+  left: 4px;
+  width: 25px;
+  height: 25px;
+  background-color: #ffffff;
+  border-radius: 13px;
+  transition: left 0.25s ease; /* Anima el movimiento del thumb */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.toggle-switch input:checked + .toggle-track .toggle-thumb /* Mueve el thumb al final del track cuando el checkbox está marcado */ {
+  left: calc(72px - 25px - 4px); /* Mueve el thumb al final del track cuando el checkbox está marcado */
+}
+
+.btn-danger {
+  width: 100%;
+  padding: 10px 16px;
+  background-color: transparent;
+  color: rgba(180, 180, 180, 0.6);
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+  font-size: 13px;
+  border: 1px solid rgba(73, 72, 71, 0.25);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease;
+}
+
+.btn-danger:hover {
+  border-color: rgba(220, 80, 80, 0.4);
+  color: #ff6b6b;
+  background-color: rgba(220, 80, 80, 0.05);
+}
+
+.reg-feedback {
+  font-family: 'Roboto', sans-serif;
+  font-size: 12px;
+  color: #ff6b6b;
+  text-align: center;
+  min-height: 16px;
+  padding-top: 7%;
 }
