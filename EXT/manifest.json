@@ -3,7 +3,7 @@
   "description": "Base Level Extension",
   "version": "0.2",
   "manifest_version": 3,
-  "permissions": ["storage", "activeTab", "scripting"],
+  "permissions": ["storage", "cookies", "activeTab", "scripting"],
   "host_permissions": [
     "http://127.0.0.1:3000/*",
     "https://chatgpt.com/*",
@@ -17,6 +17,7 @@
     "https://chat.z.ai/*",
     "https://claude.ai/*",
     "https://chat.deepseek.com/*",
+    "https://*.onrender.com/",
     "<all_urls>"
   ],
   "action": {
