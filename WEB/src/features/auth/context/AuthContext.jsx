@@ -24,7 +24,18 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null)
     const [isLogged, setIsLogged] = useState(false);
 
+    const logout = () => {
+        localStorage.removeItem("token")
+        sessionStorage.removeItem("token")
 
+        // Solo borramos la cookie si existe, para no disparar eventos en cadena
+        const cookieExists = getCookie("datascope_token")
+        if (cookieExists) deleteCookie("datascope_token")
+
+        setUser(null)
+        setIsLogged(false)
+    }
+    
     useEffect(() => {
 
         async function getTokenData() {
@@ -35,7 +46,6 @@ export const AuthProvider = ({ children }) => {
 
                 if (token) {
                     const response = await getUserData(token)
-                    console.log(response.data)
                     setUser(response.data.user)
                     setIsLogged(true)
                 }
@@ -48,7 +58,38 @@ export const AuthProvider = ({ children }) => {
 
         getTokenData()
 
+        const syncAuthState = async () => {
+            const currentCookie = getCookie("datascope_token");
+            const localToken = localStorage.getItem("token") || sessionStorage.getItem("token");
+
+            if (!currentCookie && localToken) {
+                console.log("[Sync] Cookie eliminada desde la extensión. Cerrando sesión en la web...");
+                logout();
+            }
+            else if (currentCookie && !localToken) {
+                console.log("[Sync] Nueva cookie detectada desde la extensión. Iniciando sesión...");
+                try {
+                    const response = await getUserData(currentCookie);
+                    setUser(response.data.user || response.data);
+                    setIsLogged(true);
+                    sessionStorage.setItem("token", currentCookie);
+                } catch (error) {
+                    logout();
+                }
+            }
+        }
+
+        const interval = setInterval(syncAuthState, 1000);
+        window.addEventListener("focus", syncAuthState);
+
+        return () => {
+            clearInterval(interval);
+            window.removeEventListener("focus", syncAuthState);
+        };
+
     }, [])
+
+
 
     const login = async (email, password, isPersistant) => {
         try {
@@ -91,14 +132,6 @@ export const AuthProvider = ({ children }) => {
             console.log(error)
             return false
         }
-    }
-
-    const logout = () => {
-        localStorage.removeItem("token")
-        sessionStorage.removeItem("token")
-        deleteCookie("datascope_token")
-        setUser(null)
-        setIsLogged(false)
     }
 
     return (

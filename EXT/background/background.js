@@ -1,82 +1,87 @@
 import { sendMessage, login } from './api.js'
 import { getToken, saveSession, clearSession, parseAllowedAis, isSessionValid } from './storage.js'
 
-chrome.runtime.onMessage.addListener(async (msg, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+
+    if (msg.type === "LOGOUT") {
+        clearSession().then(() => {
+            sendResponse({ ok: true });
+        }).catch(err => {
+            sendResponse({ ok: false, error: err.message });
+        });
+        return true;
+    }
 
     if (msg.type === "USER_MESSAGE") {
-        try {
-            const token = await getToken()
+        (async () => {
+            try {
+                const token = await getToken();
+                if (!token) return sendResponse({ ok: false, error: "No autenticado" });
 
-            if (!token) {
-                console.warn("[DataScope] No hay token disponible")
-                sendResponse({ ok: false, error: "No autenticado" })
-                return true
+                const data = await sendMessage(msg.content, token);
+                sendResponse({ ok: true });
+            } catch (err) {
+                sendResponse({ ok: false, error: err.message });
             }
-
-            const data = await sendMessage(msg.content, token)
-            console.log("Respuesta de la API:", data)
-            sendResponse({ ok: true })
-        } catch (err) {
-            console.log("Error al conectar con la API:", err.message)
-            sendResponse({ ok: false, error: err.message })
-        }
-        return true
+        })();
+        return true;
     }
 
     if (msg.type === "LOGIN_API") {
-        try {
-            const data = await login(msg.payload.email, msg.payload.password)
+        (async () => {
+            try {
+                const data = await login(msg.payload.email, msg.payload.password);
 
-            if (data.token) {
-                const listaIAs = parseAllowedAis(data.user?.allowedAis || data.user?.allowed_ais)
-                const username = data.user?.username || data.user?.name || "User"
+                if (data.token) {
+                    const listaIAs = parseAllowedAis(data.user?.allowedAis || data.user?.allowed_ais);
+                    const username = data.user?.username || data.user?.name || "User";
+                    const userData = { username, allowedAis: listaIAs, privateMode: false };
 
-                const userData = {
-                    username,
-                    allowedAis: listaIAs,
-                    privateMode: false
+                    // Guarda en storage y cookie (ahora sin romperse)
+                    await saveSession(data.token, data.expiresAt, userData);
+                    sendResponse({ ok: true, token: data.token });
+                } else {
+                    sendResponse({ ok: false, error: data.error || "Credenciales incorrectas" });
                 }
-
-                // guarda en storage Y en cookie
-                await saveSession(data.token, data.expiresAt, userData)
-
-                sendResponse({ ok: true, token: data.token })
-            } else {
-                sendResponse({ ok: false, error: data.error || "Credenciales incorrectas" })
+            } catch (err) {
+                console.error("Error en login:", err.message);
+                sendResponse({ ok: false, error: err.message });
             }
-        } catch (err) {
-            console.error("Error en login:", err.message)
-            sendResponse({ ok: false, error: err.message })
-        }
-        return true
-    }
-
-    if (msg.type === "LOGOUT") {
-        await clearSession()
-        sendResponse({ ok: true })
-        return true
+        })();
+        return true;
     }
 
     if (msg.type === "CHECK_SESSION") {
-        const valid = await isSessionValid()
-        sendResponse({ ok: valid })
-        return true
+        isSessionValid().then(valid => sendResponse({ ok: valid }));
+        return true;
     }
-})
+});
 
+// LISTENER DE COOKIES SEGURO
 chrome.cookies.onChanged.addListener(async (changeInfo) => {
-    const { cookie, removed } = changeInfo;
+    const { cookie, removed, cause } = changeInfo;
 
-    if (cookie.name === "datascope_token") {
-        console.log("[Background] Cambio detectado en la cookie de sesión:", cookie);
+    // Ignorar cambios causados por nosotros mismos
+    if (cause === "overwrite" || cause === "explicit") return;
 
+    const validDomains = ["onrender.com", "localhost", "192.168.0.128"];
+    const isDomainValid = validDomains.some(domain => cookie.domain.includes(domain));
+
+    if (isDomainValid && cookie.name === "datascope_token") {
         if (!removed) {
-            await chrome.storage.local.set({ 
+            await chrome.storage.local.set({
                 token: cookie.value,
                 expiresAt: cookie.expirationDate ? cookie.expirationDate * 1000 : Date.now() + (60 * 60 * 1000)
             });
-        } else {
-            await clearSession();
+        }
+    } else {
+        const storage = await chrome.storage.local.get(["token", "_clearing"]);
+
+        // Si _clearing está activo, fuimos nosotros quienes borramos → ignorar
+        if (storage._clearing) return;
+
+        if (storage.token) {
+            await chrome.storage.local.remove(["token", "expiresAt", "user"]);
         }
     }
 });
