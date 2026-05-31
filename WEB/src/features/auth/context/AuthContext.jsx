@@ -35,7 +35,7 @@ export const AuthProvider = ({ children }) => {
         setUser(null)
         setIsLogged(false)
     }
-    
+
     useEffect(() => {
 
         async function getTokenData() {
@@ -105,6 +105,14 @@ export const AuthProvider = ({ children }) => {
             }
 
             setIsLogged(true)
+
+            try {
+                await chrome.runtime.sendMessage(
+                    "gnjpfjnhhklcmafjchlfmmckhigpjobk",
+                    { type: "WEB_LOGIN", token: response.data.token }
+                )
+            } 
+            catch (e) {}
 
             return true
         } catch (error) {

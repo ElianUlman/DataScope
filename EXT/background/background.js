@@ -55,6 +55,18 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
         isSessionValid().then(valid => sendResponse({ ok: valid }));
         return true;
     }
+
+    if (msg.type === "WEB_LOGIN") {
+    (async () => {
+        const expiresAt = Date.now() + (24 * 60 * 60 * 1000); // 1 día
+        await chrome.storage.local.set({
+            token: msg.token,
+            expiresAt: expiresAt
+        });
+        sendResponse({ ok: true });
+    })();
+    return true;
+}
 });
 
 // LISTENER DE COOKIES SEGURO
