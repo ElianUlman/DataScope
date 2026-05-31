@@ -30,17 +30,17 @@ export const AuthProvider = ({ children }) => {
         async function getTokenData() {
 
             const token = sessionStorage.getItem("token") || localStorage.getItem("token") || getCookie("datascope_token")
-
+            
             try {
 
                 if (token) {
                     const response = await getUserData(token)
-                    console.log(response.data)
                     setUser(response.data.user)
                     setIsLogged(true)
                 }
 
             } catch (error) {
+                
                 logout();
             }
 
@@ -67,7 +67,7 @@ export const AuthProvider = ({ children }) => {
 
             return true
         } catch (error) {
-
+            console.log("error: "+error)
             return false
         }
     }

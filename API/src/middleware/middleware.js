@@ -19,13 +19,14 @@ export const authentication = (req, res, next) => {
     if (!token) return res.status(401).send("not logged")
 
     try {
+        
         const user = jwt.verify(token, tokenWholePassword);
         req.user = user
 
         next()
     } catch (error) {
         console.log("encountered " + error)
-        res.send("encountered " + error)
+        res.status(401).send("encountered " + error)
     }
 }
 
