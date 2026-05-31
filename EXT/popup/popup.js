@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
 const btnLogout = document.getElementById("btn-logout");
 if (btnLogout) {
     btnLogout.addEventListener("click", () => {
-        chrome.storage.local.remove(["token"], () => {
+        chrome.runtime.sendMessage({ type: "LOGOUT" }, () => {
             console.log("Sesión eliminada.");
             verificarPantalla();
         });

@@ -17,7 +17,7 @@
     "https://chat.z.ai/*",
     "https://claude.ai/*",
     "https://chat.deepseek.com/*",
-    "https://*.onrender.com/",
+    "https://*.onrender.com/*",
     "<all_urls>"
   ],
   "action": {

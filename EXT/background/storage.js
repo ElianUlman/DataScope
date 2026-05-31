@@ -1,9 +1,9 @@
 // Variable para cambiar fácilmente entre entorno local y producción
-const IS_LOCAL_DEV = true;
+const IS_LOCAL_DEV = false;
 
 // WEB_URL se usa para tu web. COOKIE_URL se usa para la API de Chrome (sin puerto).
-const WEB_URL = IS_LOCAL_DEV ? "http://192.168.0.128:5173" : "https://datascope-orhf.onrender.com";
-const COOKIE_URL = IS_LOCAL_DEV ? "http://192.168.0.128" : "https://datascope-orhf.onrender.com";
+const WEB_URL = IS_LOCAL_DEV ? "http://192.168.0.128:5173" : "https://datascope-web-pruebas.onrender.com";
+const COOKIE_URL = IS_LOCAL_DEV ? "http://192.168.0.128" : "https://datascope-web-pruebas.onrender.com";
 
 const COOKIE_NAME = "datascope_token";
 
@@ -26,12 +26,13 @@ export async function saveSession(token, expiresAt, userData) {
 
     try {
         await chrome.cookies.set({
-            url: COOKIE_URL, 
+            url: COOKIE_URL,
             name: COOKIE_NAME,
             value: token,
             expirationDate: expiresAt / 1000,
             secure: isSecureConnection,
-            sameSite: "lax"
+            sameSite: "lax",
+            httpOnly: false
         });
     } catch (err) {
         console.error("[DataScope] Error al guardar la cookie:", err);
@@ -44,14 +45,14 @@ export async function saveSession(token, expiresAt, userData) {
 export async function clearSession() {
     // Primero limpiamos storage
     await chrome.storage.local.remove(["token", "expiresAt", "user"]);
-    
+
     // Marcamos que nosotros iniciamos este borrado
     await chrome.storage.local.set({ _clearing: true });
 
     try {
-        const result = await chrome.cookies.remove({ 
+        const result = await chrome.cookies.remove({
             url: COOKIE_URL,
-            name: COOKIE_NAME 
+            name: COOKIE_NAME
         });
         console.log("[clearSession] Cookie eliminada:", result);
     } catch (e) {

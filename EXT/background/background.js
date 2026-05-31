@@ -61,25 +61,23 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 chrome.cookies.onChanged.addListener(async (changeInfo) => {
     const { cookie, removed, cause } = changeInfo;
 
-    // Ignorar cambios causados por nosotros mismos
     if (cause === "overwrite" || cause === "explicit") return;
 
-    const validDomains = ["onrender.com", "localhost", "192.168.0.128"];
+    const validDomains = ["datascope-web-pruebas.onrender.com", "onrender.com", "localhost", "192.168.0.128"];
     const isDomainValid = validDomains.some(domain => cookie.domain.includes(domain));
 
-    if (isDomainValid && cookie.name === "datascope_token") {
-        if (!removed) {
-            await chrome.storage.local.set({
-                token: cookie.value,
-                expiresAt: cookie.expirationDate ? cookie.expirationDate * 1000 : Date.now() + (60 * 60 * 1000)
-            });
-        }
+    if (!isDomainValid || cookie.name !== "datascope_token") return;
+
+    if (!removed) {
+        // Cookie seteada desde la web → logueamos la extensión
+        await chrome.storage.local.set({
+            token: cookie.value,
+            expiresAt: cookie.expirationDate ? cookie.expirationDate * 1000 : Date.now() + (60 * 60 * 1000)
+        });
     } else {
+        // Cookie borrada desde la web → deslogueamos la extensión
         const storage = await chrome.storage.local.get(["token", "_clearing"]);
-
-        // Si _clearing está activo, fuimos nosotros quienes borramos → ignorar
         if (storage._clearing) return;
-
         if (storage.token) {
             await chrome.storage.local.remove(["token", "expiresAt", "user"]);
         }
