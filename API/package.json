@@ -21,8 +21,13 @@
     "jsonwebtoken": "^9.0.3",
     "mssql": "^12.2.1",
     "natural": "^8.1.1",
+    "nodemailer": "^8.0.10",
     "pg": "^8.20.0",
-    "silabajs": "^2.1.0"
+    "qrcode": "^1.5.4",
+    "redis": "^6.0.0",
+    "resend": "^6.12.4",
+    "silabajs": "^2.1.0",
+    "speakeasy": "^2.0.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.14"

@@ -2,9 +2,32 @@ import userService from "../services/userService.js"
 import userRepository from '../repositories/userRepository.js';
 import jwt from 'jsonwebtoken';
 
+export const mfaVerification = async (req, res) =>{
+    try{
+        const mfaUser = req.mfaUser
+        const {code} = req.body
+        const { token, expiresAt, user } = await userService.MFA({id: mfaUser.id, code})
+
+        res.status(200).json({
+            success: true,
+            token: token,
+            expiresAt,
+            user: {
+                id: user.id,
+                username: user.name,
+                email: user.email,
+                allowed_ais: user.allowed_ais || []
+            }
+        });
+    }catch(error){
+        console.log(error)
+        res.status(500).json({ error: "error ocurred" })
+    }
+}
+
 export const createUser = async (req, res) => {
     try {
-        
+
         const { name, email, password } = req.body
         await userService.createUser({ email, name, password })
         const { token, expiresAt, user } = await userService.login({ email, password })
@@ -30,22 +53,29 @@ export const loginUser = async (req, res) => {
     try {
         const { email, password } = req.body;
 
-        const { token, expiresAt, user } = await userService.login({ email, password })
-        
+        const { requiresMfa, token, expiresAt, user } = await userService.login({ email, password })
 
 
+        if (requiresMfa) {
+            res.status(200).json({
+                requiresMfa: true,
+                token: token
+            })
+        } else {
+            res.status(200).json({
+                success: true,
+                token: token,
+                expiresAt,
+                user: {
+                    id: user.id,
+                    username: user.name,
+                    email: user.email,
+                    allowed_ais: user.allowed_ais || []
+                }
+            });
+        }
 
-        res.status(200).json({
-            success: true,
-            token: token,
-            expiresAt,
-            user: {
-                id: user.id,
-                username: user.name,
-                email: user.email,
-                allowed_ais: user.allowed_ais || []
-            }
-        });
+
 
     } catch (error) {
         console.error(`[LOGIN] ERROR — email: ${req.body.email} | ${error.message}`);

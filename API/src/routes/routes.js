@@ -17,7 +17,8 @@ import {
     getUserData,
     loginUser,
     createUser,
-    updateUserData
+    updateUserData,
+    mfaVerification
 } from "../controllers/user.controller.js";
 
 import {
@@ -33,11 +34,13 @@ import {
 
 import { getStatsByUser, getUserAvg } from "../controllers/statistic.controller.js";
 
+import { test } from "../controllers/controller.js";
+
 const routes = Router();
 
 //GETs
 
-
+routes.get('/test', test)
 
 
 routes.get('/userdata', authentication, getUserData)
@@ -59,8 +62,9 @@ routes.patch('/user', authentication, updateUserData)
 
 //POSTS
 routes.post('/login', loginUser)
+routes.post('/verify-mfa', authentication, mfaVerification) 
 
-routes.post('/message', authentication, uploadMessage) //authentication is deleted for now. Later it will need one (as to link users to their prompts).
+routes.post('/message', authentication, uploadMessage) 
 
 export default routes;
 

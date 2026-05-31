@@ -1,5 +1,5 @@
 import { createContext, useState, useContext, useEffect } from "react"
-import { userLogin, userSignup, getUserData } from "../services/apiAuth"
+import { userLogin, userSignup, getUserData, userMFA } from "../services/apiAuth"
 
 const AuthContext = createContext()
 
@@ -50,17 +50,40 @@ export const AuthProvider = ({ children }) => {
 
     }, [])
 
-    const login = async (email, password, isPersistant) => {
-        try {
-            const response = await userLogin(email, password)
-            console.log(response.data)
+    const MFA = async (code, isPersistant) => {
+        try{
+            const token = await sessionStorage.getItem("mfaToken");
+            const response = await userMFA(token, code)
+            console.log("mfa user data: ", response.data)
             setUser(response.data.user)
             if (isPersistant) {
                 localStorage.setItem("token", response.data.token)
                 setCookie("datascope_token", response.data.token, 30)
             } else {
                 sessionStorage.setItem("token", response.data.token)
-                setCookie("datascope_token", response.data.token, 1) // 1 día
+            }
+
+            setIsLogged(true)
+
+            return true
+        }catch(e){
+            throw e
+        }
+    }
+
+    const login = async (email, password, isPersistant) => {
+        try {
+            const response = await userLogin(email, password)
+            if(response.data.requiresMfa){
+                sessionStorage.setItem("mfaToken", response.data.token)
+                return "requires mfa"
+            }
+            setUser(response.data.user)
+            if (isPersistant) {
+                localStorage.setItem("token", response.data.token)
+                setCookie("datascope_token", response.data.token, 30)
+            } else {
+                sessionStorage.setItem("token", response.data.token)
             }
 
             setIsLogged(true)
@@ -82,7 +105,6 @@ export const AuthProvider = ({ children }) => {
                 setCookie("datascope_token", response.data.token, 30)
             } else {
                 sessionStorage.setItem("token", response.data.token)
-                setCookie("datascope_token", response.data.token, 1)
             }
             setIsLogged(true)
 
@@ -109,6 +131,7 @@ export const AuthProvider = ({ children }) => {
                 login,
                 signup,
                 logout,
+                MFA
             }}
         >
             {children}

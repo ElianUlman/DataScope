@@ -1,5 +1,19 @@
 import axiosClient from "../../../services/axiosClient";
 
+export const userMFA = async (token, code) => {
+    try {
+        const response = await axiosClient.post(
+            "/verify-mfa",
+            { code: code },  // request body
+            { headers: { Authorization: token } } 
+        )
+
+        return response
+    } catch (error) {
+        throw error
+    }
+}
+
 export const userLogin = async (email, password) => {
     try {
         const response = await axiosClient.post(
@@ -9,7 +23,7 @@ export const userLogin = async (email, password) => {
                 "password": password
             }
         );
-        
+
         return response
 
     } catch (error) {
@@ -26,7 +40,7 @@ export const userSignup = async (name, email, password) => {
                 "name": name,
                 "email": email,
                 "password": password
-                
+
             }
         );
 
@@ -38,20 +52,21 @@ export const userSignup = async (name, email, password) => {
     }
 };
 
-export const getUserData = async (token) =>{
-    try{
-      const response = await axiosClient.get("/userdata", {
-      headers: {
-        Authorization: token
-      }})
+export const getUserData = async (token) => {
+    try {
+        const response = await axiosClient.get("/userdata", {
+            headers: {
+                Authorization: token
+            }
+        })
 
-      return response
-     
-    }catch(error){
-      
-      throw error
+        return response
+
+    } catch (error) {
+
+        throw error
     }
-  }
+}
 
 export const fullSignUp = async (companyName, companyTier, username, email, password) => {
     try {

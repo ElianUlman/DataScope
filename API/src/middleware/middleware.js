@@ -21,7 +21,14 @@ export const authentication = (req, res, next) => {
     try {
         
         const user = jwt.verify(token, tokenWholePassword);
-        req.user = user
+        
+        if(user.isMFA){
+            
+            req.mfaUser = user
+        }else{
+            req.user = user
+        }
+        
 
         next()
     } catch (error) {
