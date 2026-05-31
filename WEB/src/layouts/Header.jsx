@@ -4,7 +4,7 @@ import LoginModal from "../features/auth/components/LoginModal";
 import RegisterModal from "../features/auth/components/RegisterModal";
 import { useAuth } from "../features/auth/context/AuthContext";
 
-const imgLogo = null;
+import imgLogo from "../assets/imgLogo.png"
 
 const Header = () => {
     const [scrolled, setScrolled] = useState(false);
@@ -29,7 +29,7 @@ const Header = () => {
                 <nav>
                     <ul className="header__nav">
                         <li><a href="/">Home</a></li>
-                        <li><a href="#">About</a></li>
+                        <li><a href="/about">About</a></li>
                         <li><a href="#">Pricing</a></li>
                         <li><a href="#">Tutorial</a></li>
                         {isLogged && <li><a href="#">Overview</a></li>}
