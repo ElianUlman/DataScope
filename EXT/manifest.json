@@ -3,7 +3,12 @@
   "description": "Base Level Extension",
   "version": "0.2",
   "manifest_version": 3,
-  "permissions": ["storage", "cookies", "activeTab", "scripting"],
+  "permissions": [
+    "storage",
+    "cookies",
+    "activeTab",
+    "scripting"
+  ],
   "host_permissions": [
     "http://127.0.0.1:3000/*",
     "https://chatgpt.com/*",
@@ -33,7 +38,9 @@
       "matches": [
         "<all_urls>"
       ],
-      "js": ["content/loader.js"],
+      "js": [
+        "content/loader.js"
+      ],
       "type": "module",
       "run_at": "document_idle"
     }
@@ -46,7 +53,15 @@
         "content/buttonDetector.js",
         "content/editorDetector.js"
       ],
-      "matches": ["<all_urls>"]
+      "matches": [
+        "<all_urls>"
+      ]
     }
-  ]
+  ],
+  "externally_connectable": {
+    "matches": [
+      "https://datascope-web-pruebas.onrender.com/*",
+      "https://datascope-orhf.onrender.com/*"
+    ]
+  }
 }

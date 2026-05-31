@@ -57,16 +57,17 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     }
 
     if (msg.type === "WEB_LOGIN") {
-    (async () => {
-        const expiresAt = Date.now() + (24 * 60 * 60 * 1000); // 1 día
-        await chrome.storage.local.set({
-            token: msg.token,
-            expiresAt: expiresAt
-        });
-        sendResponse({ ok: true });
-    })();
-    return true;
-}
+        (async () => {
+            console.log(msg)
+            const expiresAt = Date.now() + (24 * 60 * 60 * 1000); // 1 día
+            await chrome.storage.local.set({
+                token: msg.token,
+                expiresAt: expiresAt
+            });
+            sendResponse({ ok: true });
+        })();
+        return true;
+    }
 });
 
 // LISTENER DE COOKIES SEGURO

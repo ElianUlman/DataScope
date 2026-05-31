@@ -107,12 +107,15 @@ export const AuthProvider = ({ children }) => {
             setIsLogged(true)
 
             try {
+                console.log("[Web] Intentando avisar a la extensión...")
                 await chrome.runtime.sendMessage(
                     "gnjpfjnhhklcmafjchlfmmckhigpjobk",
                     { type: "WEB_LOGIN", token: response.data.token }
                 )
-            } 
-            catch (e) {}
+                console.log("[Web] Mensaje enviado a la extensión")
+            } catch (e) {
+                console.log("[Web] Error al avisar a la extensión:", e.message)
+            }
 
             return true
         } catch (error) {
