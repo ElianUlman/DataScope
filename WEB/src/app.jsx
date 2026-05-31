@@ -1,6 +1,6 @@
 import LandingPage from './pages/LandingPage'
-import Header from './layouts/header'
-import Footer from './layouts/footer'
+import Header from './layouts/Header'
+import Footer from './layouts/Footer'
 
 
 export default function App() {
