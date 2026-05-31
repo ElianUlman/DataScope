@@ -1,5 +1,5 @@
 import React from 'react'
-import "./footer.css"
+import "./Footer.css"
 
 const FOOTER_LINKS = ["Privacidad", "Términos", "Contacto", "LinkedIn", "Twitter"];
 
