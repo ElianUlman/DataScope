@@ -34,6 +34,12 @@ export const AuthProvider = ({ children }) => {
 
         setUser(null)
         setIsLogged(false)
+
+        try {
+            window.postMessage({ type: "WEB_LOGOUT" }, "*")
+        } catch (e) {
+            console.log("[Web] Error al avisar logout a la extensión:", e.message)
+        }
     }
 
     useEffect(() => {

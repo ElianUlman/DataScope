@@ -58,7 +58,6 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 
     if (msg.type === "WEB_LOGIN") {
         (async () => {
-            console.log(msg)
             const expiresAt = Date.now() + (24 * 60 * 60 * 1000); // 1 día
             await chrome.storage.local.set({
                 token: msg.token,
@@ -68,6 +67,21 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
         })();
         return true;
     }
+
+    if (msg.type === "WEB_LOGOUT") {
+    (async () => {
+        const cookie = await chrome.cookies.get({ 
+            url: "https://datascope-web-pruebas.onrender.com", 
+            name: "datascope_token" 
+        });
+        if (!cookie) {
+            await chrome.storage.local.remove(["token", "expiresAt", "user"]);
+            console.log("[Background] Logout desde la web confirmado, sesión limpiada.");
+        }
+        sendResponse({ ok: true });
+    })();
+    return true;
+}
 });
 
 // LISTENER DE COOKIES SEGURO
