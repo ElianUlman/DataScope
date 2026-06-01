@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import "./LandingPage.css";
 import { useAuth } from "../features/auth/context/AuthContext";
+import { useNavigate } from 'react-router-dom';
 
 
 // — Imágenes: reemplazá estas rutas por tus archivos en src/assets/ —
@@ -34,6 +35,7 @@ const BARS = [
 export default function LandingPage() {
 
   const { setShowRegister, isLogged } = useAuth();
+  const navigate = useNavigate();
 
   const handleProfile = () => {
     navigate('/perfil')
