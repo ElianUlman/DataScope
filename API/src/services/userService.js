@@ -42,7 +42,7 @@ class userService {
       const code = Math.floor(100000 + Math.random() * 900000).toString();
       const hashedCode = await bcrypt.hash(code, 10)
       await redis.set(`mfa:${user.id}`, hashedCode, { EX: 300 });
-      console.log("sending email to "+ user.email)
+      
       await sendEmail(user.email, code)
 
       const MFAtoken = jwt.sign(

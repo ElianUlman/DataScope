@@ -67,7 +67,8 @@ export const AuthProvider = ({ children }) => {
 
             return true
         }catch(e){
-            throw e
+            console.log("error: "+e)
+            return false
         }
     }
 

@@ -19,6 +19,7 @@ export default function LoginModal({ onClose, onOpenRegister }) {
     if (result === "requires mfa") {
       
       setIsMfaRequired(true)
+      setEmail()
     } else if (result === true) {
       onClose()
     } else {
@@ -50,7 +51,7 @@ export default function LoginModal({ onClose, onOpenRegister }) {
             <label>VERIFICATION CODE</label>
 
             <div className="input-icon">
-              <input type="text" placeholder="" onChange={(e) => setCode(e.target.value)} />
+              <input type="text" onChange={(e) => setCode(e.target.value)} key="MFA"/>
             </div>
           </div>
           <p>{message}</p>

@@ -20,7 +20,7 @@ export const mfaVerification = async (req, res) =>{
             }
         });
     }catch(error){
-        console.log(error)
+        console.log("error de MFA: "+error.message)
         res.status(500).json({ error: "error ocurred" })
     }
 }
