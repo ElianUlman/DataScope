@@ -27,10 +27,8 @@ const BARS = [
   { height: 60,  opacity: 0.4 },
 ];
 
-const [showRegister, setShowRegister] = useState(false);
 
 export default function LandingPage() {
-  
 
   return (
     <div className="landing">
