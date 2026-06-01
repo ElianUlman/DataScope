@@ -71,7 +71,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     if (msg.type === "WEB_LOGOUT") {
     (async () => {
         const cookie = await chrome.cookies.get({ 
-            url: "https://datascope-web-pruebas.onrender.com", 
+            url: "https://datascope-orhf.onrender.com/", 
             name: "datascope_token" 
         });
         if (!cookie) {
@@ -90,7 +90,7 @@ chrome.cookies.onChanged.addListener(async (changeInfo) => {
 
     if (cause === "overwrite" || cause === "explicit") return;
 
-    const validDomains = ["datascope-web-pruebas.onrender.com", "onrender.com", "localhost", "192.168.0.128"];
+    const validDomains = ["datascope-web-pruebas.onrender.com", "datascope-orhf.onrender.com/", "onrender.com", "localhost", "192.168.0.128"];
     const isDomainValid = validDomains.some(domain => cookie.domain.includes(domain));
 
     if (!isDomainValid || cookie.name !== "datascope_token") return;

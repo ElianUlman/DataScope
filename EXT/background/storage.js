@@ -2,8 +2,8 @@
 const IS_LOCAL_DEV = false;
 
 // WEB_URL se usa para tu web. COOKIE_URL se usa para la API de Chrome (sin puerto).
-const WEB_URL = IS_LOCAL_DEV ? "http://192.168.0.128:5173" : "https://datascope-web-pruebas.onrender.com";
-const COOKIE_URL = IS_LOCAL_DEV ? "http://192.168.0.128" : "https://datascope-web-pruebas.onrender.com";
+const WEB_URL = IS_LOCAL_DEV ? "http://192.168.0.128:5173" : "https://datascope-orhf.onrender.com/";
+const COOKIE_URL = IS_LOCAL_DEV ? "http://192.168.0.128" : "https://datascope-orhf.onrender.com/";
 
 const COOKIE_NAME = "datascope_token";
 
