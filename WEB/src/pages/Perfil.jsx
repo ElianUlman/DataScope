@@ -1,14 +1,16 @@
 import "./Perfil.css";
 import { useAuth } from "../features/auth/context/AuthContext";
 import { useState } from "react";
+import { useNavigate } from 'react-router-dom';
 
-export default function Perfil({user, logout, setView}) {
+export default function Perfil() {
 
-    const { user, isLogged } = useAuth();
+    const { user, isLogged, logout } = useAuth();
+    const navigate = useNavigate();
 
     const handleLogout = () => {
         logout()
-        setView("LandingPage")
+        navigate('/')
     }
 
     return (

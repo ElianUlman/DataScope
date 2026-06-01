@@ -9,17 +9,16 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 export default function App() {
 
-  const [view, setView] = useState("LandingPage")
-
   return <>
     <Header />
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/about" element={<About />} />
+        <Route path="/perfil" element={<Perfil />} />
       </Routes>
     </BrowserRouter>
-    
+
 
     <Footer />
   </>

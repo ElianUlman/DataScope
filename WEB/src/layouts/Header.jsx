@@ -4,6 +4,7 @@ import LoginModal from "../features/auth/components/LoginModal";
 import RegisterModal from "../features/auth/components/RegisterModal";
 import { useAuth } from "../features/auth/context/AuthContext";
 import perfilGenerico from "../assets/perfilGenerico.jpg";
+import { useNavigate, useLocation } from 'react-router-dom';
 
 import imgLogo from "../assets/imgLogo.png"
 
@@ -13,6 +14,9 @@ const Header = () => {
     const [showRegister, setShowRegister] = useState(false);
 
     const { isLogged, user, logout } = useAuth();
+    const navigate = useNavigate();
+    const location = useLocation();
+    const rutaActual = location.pathname;
     
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -21,6 +25,11 @@ const Header = () => {
         window.addEventListener("scroll", onScroll);
         return () => window.removeEventListener("scroll", onScroll);
     }, []);
+
+    const handleLogout = () => {
+        logout()
+        if(rutaActual != '/') navigate('/')
+    }
 
     return (
         <div>
@@ -47,13 +56,14 @@ const Header = () => {
                         <img
                             src={user.url && user.url.trim() !== "" ? user.url : perfilGenerico}
                             alt="Foto de perfil"
+                            onClick={() => navigate('/perfil')}
                         />
 
                         {isMenuOpen && (
                             <div>
                                 <ul>
                                     <li>
-                                        <button onClick={logout}>
+                                        <button onClick={handleLogout}>
                                             Cerrar Sesión
                                         </button>
                                     </li>
