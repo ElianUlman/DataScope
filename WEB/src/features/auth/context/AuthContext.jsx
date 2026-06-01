@@ -23,6 +23,8 @@ function deleteCookie(name) {
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null)
     const [isLogged, setIsLogged] = useState(false);
+    const [showRegister, setShowRegister] = useState(false);
+    const [showLogin, setShowLogin] = useState(false);
 
     const logout = () => {
         localStorage.removeItem("token")
@@ -154,6 +156,8 @@ export const AuthProvider = ({ children }) => {
                 user,
                 isLogged,
                 login,
+                showRegister,
+                setShowRegister,
                 signup,
                 logout,
             }}

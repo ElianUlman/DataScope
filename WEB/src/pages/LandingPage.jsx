@@ -32,6 +32,8 @@ const BARS = [
 
 export default function LandingPage() {
 
+  const { setShowRegister } = useAuth();
+  
   return (
     <div className="landing">
       {/* ── HERO ── */}
@@ -183,9 +185,6 @@ export default function LandingPage() {
           <button onClick={() => setShowRegister(true)} className="btn btn--cta">Registrarse</button>
         </div>
       </section>
-
-      
-
     </div>
   );
 }
