@@ -10,7 +10,7 @@ import imgLogo from "../assets/imgLogo.png"
 
 const Header = () => {
     const [scrolled, setScrolled] = useState(false);
-    const { isLogged, user, logout, setShowRegister, setShowLogin } = useAuth();
+    const { isLogged, user, logout, setShowRegister, setShowLogin, showLogin, showRegister } = useAuth();
 
     const navigate = useNavigate();
     const location = useLocation();
