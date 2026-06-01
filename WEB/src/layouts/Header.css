@@ -20,17 +20,17 @@
 }
 
 .header__logo {
-    height: 48px;
+    height: 70px;
     object-fit: contain;
 }
 
-.header__logo-text {
+/*.header__logo-text {
     font-family: 'Space Grotesk', sans-serif;
     font-size: 22px;
     font-weight: 700;
     color: var(--green);
     letter-spacing: -0.03em;
-}
+}*/
 
 .header__nav {
     display: flex;
@@ -39,7 +39,7 @@
 }
 
 .header__nav a {
-    font-family: 'Ubuntu', sans-serif;
+    font-family: 'Roboto', 'Ubuntu', sans-serif;
     font-size: 20px;
     font-weight: 500;
     color: var(--green);
