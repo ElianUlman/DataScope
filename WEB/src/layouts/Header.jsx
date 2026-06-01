@@ -11,7 +11,9 @@ const Header = () => {
     const [showLogin, setShowLogin] = useState(false);
     const [showRegister, setShowRegister] = useState(false);
 
-    const { user, isLogged } = useAuth()
+    const { isLogged, user, logout } = useAuth();
+    
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     useEffect(() => {
         const onScroll = () => setScrolled(window.scrollY > 10);
@@ -36,10 +38,38 @@ const Header = () => {
                     </ul>
                 </nav>
 
-                {isLogged && user.username ? <p>{user.username}</p> : <button onClick={() => setShowLogin(true)} className="btn btn--login">Login</button>
+                {isLogged && user ? (
+                    <div
+                        onMouseEnter={() => setIsMenuOpen(true)}
+                        onMouseLeave={() => setIsMenuOpen(false)}
+                    >
+                        <img
+                            src={user.url && user.url.trim() !== "" ? user.url : "../assets/perfilGenerico.jpg"}
+                            alt="Foto de perfil"
+                        />
 
-                }
-                
+                        {isMenuOpen && (
+                            <div>
+                                <div>
+                                    <p>{user.username || "Usuario"}</p>
+                                </div>
+
+                                <ul>
+                                    <li>
+                                        <button onClick={logout}>
+                                            Cerrar Sesión
+                                        </button>
+                                    </li>
+                                </ul>
+                            </div>
+                        )}
+                    </div>
+                ) : (
+                    <button onClick={() => setShowLogin(true)} className="btn btn--login">
+                        Login
+                    </button>
+                )}
+
             </header>
 
             {showLogin && (
@@ -55,7 +85,6 @@ const Header = () => {
             )}
 
         </div>
-
     )
 }
 
