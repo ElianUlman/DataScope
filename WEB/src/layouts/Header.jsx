@@ -53,11 +53,10 @@ const Header = () => {
                         onMouseEnter={() => setIsMenuOpen(true)}
                         onMouseLeave={() => setIsMenuOpen(false)}
                     >
-                        <Link to="/about">
+                        <Link to="/perfil">
                             <img
                                 src={user.url && user.url.trim() !== "" ? user.url : perfilGenerico}
                                 alt="Foto de perfil"
-                                onClick={() => navigate('/perfil')}
                             />
                         </Link>
 
