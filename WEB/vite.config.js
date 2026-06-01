@@ -7,6 +7,6 @@ export default defineConfig({
   preview: {
     host: true,
     port: parseInt(process.env.PORT) || 4173,
-    allowedHosts: ['datascope-orhf.onrender.com']
+    allowedHosts: ['datascope-orhf.onrender.com', 'datascope-web-pruebas.onrender.com']
   }
 })

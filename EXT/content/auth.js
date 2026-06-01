@@ -1,19 +1,9 @@
 export async function isTokenValid() {
-    const storage = await chrome.storage.local.get(["token", "expiresAt"]);
-
-    if (!storage.token || !storage.expiresAt) {
-        console.log("El token no existe o ha expirado.")
-        return false;
-    }
-
-    const currentTime = Date.now();
-    if (currentTime > storage.expiresAt) {
-        console.warn("[DataScope] El token ha expirado.");
-        await chrome.storage.local.remove(["token", "expiresAt", "user"]);
-        return false;
-    }
-
-    return true;
+    return new Promise((resolve) => {
+        chrome.runtime.sendMessage({ type: "CHECK_SESSION" }, (response) => {
+            resolve(response?.ok || false)
+        })
+    })
 }
 
 export async function checkTabAccessPermission(initializeCallback) {
