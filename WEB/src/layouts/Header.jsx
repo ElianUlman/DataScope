@@ -3,6 +3,7 @@ import "./Header.css"
 import LoginModal from "../features/auth/components/LoginModal";
 import RegisterModal from "../features/auth/components/RegisterModal";
 import { useAuth } from "../features/auth/context/AuthContext";
+import perfilGenerico from "../assets/perfilGenerico.jpg";
 
 const imgLogo = null;
 
@@ -44,16 +45,12 @@ const Header = () => {
                         onMouseLeave={() => setIsMenuOpen(false)}
                     >
                         <img
-                            src={user.url && user.url.trim() !== "" ? user.url : "../assets/perfilGenerico.jpg"}
+                            src={user.url && user.url.trim() !== "" ? user.url : perfilGenerico}
                             alt="Foto de perfil"
                         />
 
                         {isMenuOpen && (
                             <div>
-                                <div>
-                                    <p>{user.username || "Usuario"}</p>
-                                </div>
-
                                 <ul>
                                     <li>
                                         <button onClick={logout}>
