@@ -4,7 +4,7 @@ import LoginModal from "../features/auth/components/LoginModal";
 import RegisterModal from "../features/auth/components/RegisterModal";
 import { useAuth } from "../features/auth/context/AuthContext";
 import perfilGenerico from "../assets/perfilGenerico.jpg";
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 
 import imgLogo from "../assets/imgLogo.png"
 
