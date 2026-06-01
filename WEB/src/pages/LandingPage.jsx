@@ -7,33 +7,37 @@ import { useAuth } from "../features/auth/context/AuthContext";
 // Ejemplo: import imgFondo from "../assets/hero-bg.png"
 //const imgFondo            = "https://placehold.co/1440x960/0e0e0e/2ee88a?text=Hero+BG";
 import imgFondo from "../assets/imgFondo.png"
-const imgImage13          = "https://placehold.co/707x422/1a1919/2ee88a?text=Dashboard";
+const imgImage13 = "https://placehold.co/707x422/1a1919/2ee88a?text=Dashboard";
 const imgSecureDataCenter = "https://placehold.co/400x228/131313/2ee88a?text=Data+Center";
 import imgLogo from "../assets/imgLogo.png"
 
-const iconStats           = null;
-const iconQA              = null;
-const iconOptimize        = null;
-const iconArrow           = null;
+const iconStats = null;
+const iconQA = null;
+const iconOptimize = null;
+const iconArrow = null;
 
 const STATS = [
   { title: "Mantén la información\nde tu empresa a salvo", sub: "Tenemos el conocimiento necesario" },
-  { title: "+10.000 empresas\nconfían en nosotros",        sub: "No pongas en peligro tu información" },
-  { title: "Trabaja a una velocidad\nimparable",           sub: "Hasta un 50% de eficiencia" },
+  { title: "+10.000 empresas\nconfían en nosotros", sub: "No pongas en peligro tu información" },
+  { title: "Trabaja a una velocidad\nimparable", sub: "Hasta un 50% de eficiencia" },
 ];
 
 const BARS = [
-  { height: 80,  opacity: 0.2 },
+  { height: 80, opacity: 0.2 },
   { height: 120, opacity: 0.4 },
   { height: 100, opacity: 0.6 },
-  { height: 170, opacity: 1   },
-  { height: 60,  opacity: 0.4 },
+  { height: 170, opacity: 1 },
+  { height: 60, opacity: 0.4 },
 ];
 
 
 export default function LandingPage() {
 
-  const { setShowRegister } = useAuth();
+  const { setShowRegister, isLogged } = useAuth();
+
+  const handleProfile = () => {
+    navigate('/perfil')
+  }
 
   return (
     <div className="landing">
@@ -75,7 +79,7 @@ export default function LandingPage() {
           <div className="bento__card bento__card--main">
             <div className="bento__glow" />
             <div className="card-icon">
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="1" y="10" width="3" height="9" rx="1" fill="#2ee88a"/><rect x="6" y="6" width="3" height="13" rx="1" fill="#2ee88a"/><rect x="11" y="8" width="3" height="11" rx="1" fill="#2ee88a"/><rect x="16" y="2" width="3" height="17" rx="1" fill="#2ee88a"/></svg>
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="1" y="10" width="3" height="9" rx="1" fill="#2ee88a" /><rect x="6" y="6" width="3" height="13" rx="1" fill="#2ee88a" /><rect x="11" y="8" width="3" height="11" rx="1" fill="#2ee88a" /><rect x="16" y="2" width="3" height="17" rx="1" fill="#2ee88a" /></svg>
             </div>
             <h3 className="card__title">Estadísticas en Tiempo Real</h3>
             <p className="card__desc">
@@ -96,7 +100,7 @@ export default function LandingPage() {
           {/* Secondary — Optimización */}
           <div className="bento__card">
             <div className="card-icon">
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 2a8 8 0 100 16A8 8 0 0010 2zm0 14a6 6 0 110-12 6 6 0 010 12zm1-9H9v3H6l4 4 4-4h-3V7z" fill="#2ee88a"/></svg>
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 2a8 8 0 100 16A8 8 0 0010 2zm0 14a6 6 0 110-12 6 6 0 010 12zm1-9H9v3H6l4 4 4-4h-3V7z" fill="#2ee88a" /></svg>
             </div>
             <h3 className="card__title">Optimización de Procesos</h3>
             <p className="card__desc">
@@ -108,7 +112,7 @@ export default function LandingPage() {
           {/* Secondary — Calidad */}
           <div className="bento__card">
             <div className="card-icon">
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M16.7 3.3L8 12 4.3 8.3 3 9.7l5 5 10-10-1.3-1.4z" fill="#2ee88a"/></svg>
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M16.7 3.3L8 12 4.3 8.3 3 9.7l5 5 10-10-1.3-1.4z" fill="#2ee88a" /></svg>
             </div>
             <h3 className="card__title">Calidad Garantizada</h3>
             <p className="card__desc">
@@ -136,7 +140,7 @@ export default function LandingPage() {
               </p>
               <a href="#" className="security__link">
                 Leer sobre seguridad
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1l6 6-6 6M1 7h12" stroke="#2ee88a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1l6 6-6 6M1 7h12" stroke="#2ee88a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
               </a>
             </div>
             <div className="security__img">
@@ -183,7 +187,13 @@ export default function LandingPage() {
             Únete a los líderes que ya están midiendo el ROI real de la
             inteligencia artificial.
           </p>
-          <button onClick={() => setShowRegister(true)} className="btn btn--cta">Registrarse</button>
+          {isLogged ?
+            (
+              <button onClick={handleProfile} className="btn btn--cta">Mi perfil</button>
+            ) :
+            (
+              <button onClick={() => setShowRegister(true)} className="btn btn--cta">Registrarse</button>
+            )}
         </div>
       </section>
     </div>
