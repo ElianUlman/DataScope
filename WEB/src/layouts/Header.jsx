@@ -17,7 +17,7 @@ const Header = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const rutaActual = location.pathname;
-    
+
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     useEffect(() => {
@@ -28,7 +28,7 @@ const Header = () => {
 
     const handleLogout = () => {
         logout()
-        if(rutaActual != '/') navigate('/')
+        if (rutaActual != '/') navigate('/')
     }
 
     return (
@@ -40,10 +40,10 @@ const Header = () => {
                 }
                 <nav>
                     <ul className="header__nav">
-                        <li><a href="/">Home</a></li>
-                        <li><a href="/about">About</a></li>
-                        <li><a href="#">Pricing</a></li>
-                        <li><a href="#">Tutorial</a></li>
+                        <li><Link to="/">Home</Link></li>
+                        <li><Link to="/about">About</Link></li>
+                        <li><Link to="#">Pricing</Link></li>
+                        <li><Link to="#">Tutorial</Link></li>
                         {isLogged && <li><a href="#">Overview</a></li>}
                     </ul>
                 </nav>
@@ -53,11 +53,13 @@ const Header = () => {
                         onMouseEnter={() => setIsMenuOpen(true)}
                         onMouseLeave={() => setIsMenuOpen(false)}
                     >
-                        <img
-                            src={user.url && user.url.trim() !== "" ? user.url : perfilGenerico}
-                            alt="Foto de perfil"
-                            onClick={() => navigate('/perfil')}
-                        />
+                        <Link to="/about">
+                            <img
+                                src={user.url && user.url.trim() !== "" ? user.url : perfilGenerico}
+                                alt="Foto de perfil"
+                                onClick={() => navigate('/perfil')}
+                            />
+                        </Link>
 
                         {isMenuOpen && (
                             <div>

@@ -10,8 +10,8 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 export default function App() {
 
   return <>
-    <Header />
     <BrowserRouter>
+      <Header />
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/about" element={<About />} />

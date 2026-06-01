@@ -28,7 +28,7 @@ export default function Perfil() {
                 <p>Correo electronico</p>
                 <p>{user?.email}</p>
             </div>
-            <button onClick={handleLogout}></button>
+            <button onClick={handleLogout}>Logout</button>
         </section>
     )
 }
