@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import "./LandingPage.css";
+import { useAuth } from "../features/auth/context/AuthContext";
 
 
 // — Imágenes: reemplazá estas rutas por tus archivos en src/assets/ —
@@ -33,7 +34,7 @@ const BARS = [
 export default function LandingPage() {
 
   const { setShowRegister } = useAuth();
-  
+
   return (
     <div className="landing">
       {/* ── HERO ── */}
