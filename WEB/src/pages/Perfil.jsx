@@ -1,9 +1,14 @@
 import "./Perfil.css";
+import { useAuth } from "../features/auth/context/AuthContext";
+import { useState } from "react";
 
 export default function Perfil({user, logout, setView}) {
 
+    const { user, isLogged } = useAuth();
+
     const handleLogout = () => {
         logout()
+        setView("LandingPage")
     }
 
     return (
