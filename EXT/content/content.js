@@ -1,4 +1,4 @@
-import { isTokenValid, checkTabAccessPermission } from './auth.js'
+import { isTokenValid, checkTabAccessPermission, getCurrentAi} from './auth.js'
 import {
     findButton, cleanButtonCandidates, sendbuttonSnapshot,
     checkButton, findElementByFingerprint, checkSameElement,
@@ -10,10 +10,11 @@ let oldEditorContent = ""
 let sendButton = null
 let isExtensionRunning = false
 
-function sendData(type, content) {
+function sendData(type, content, currentPlatform) {
+    console.log(type, content, currentPlatform)
     try {
         if (!chrome.runtime?.id) return
-        chrome.runtime.sendMessage({ type, content });
+        chrome.runtime.sendMessage({ type, content, currentPlatform });
     } catch (err) {
         console.warn("[DataScope] Extension context invalidated:", err.message)
     }
@@ -26,12 +27,13 @@ const handleSend = () => {
     findButton(getCurrentEditor(), 10, onMouseDown)
     cleanButtonCandidates()
 
-    setTimeout(() => {
+    setTimeout(async () => {
         const contenido = getCurrentEditor()?.textContent?.trim()
         if (getCurrentEditor() && contenido === "") {
             findButton(getCurrentEditor(), 10, onMouseDown)
             checkButton()
-            sendData("USER_MESSAGE", oldEditorContent)
+            const currentAi = await getCurrentAi()
+            sendData("USER_MESSAGE", oldEditorContent, currentAi)
         }
     }, 100)
 }

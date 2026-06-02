@@ -8,8 +8,11 @@ import { validateFields, blockFields } from "../utils/validationUtils.js";
 class messageService {
     
     async uploadMessage(data) {
+        // 🔴 LOG 1: Ver qué contiene exactamente el objeto "data" que llegó al servicio
+        console.log("=== [BACKEND SERVICIO] Objeto 'data' recibido ===");
+        console.log(data);
         
-        validateFields(['user_id', 'content', 'sender'], data)
+        validateFields(['user_id', 'content', 'sender', 'platform'], data)
         blockFields(['creation_datetime'], data)
         
 
@@ -17,9 +20,6 @@ class messageService {
         if (!allowedEmisors.includes(data.sender)) {
             throw new Error("Invalid emisor");
         }
-
-
-        
 
         //latencia_ms = ~cuánto tarda la API en responder --> esto hace falta conseguir creo
         //costo estimado = ~tokens usados × precio del modelo --> se puede hacer con un enum, pero por facilidad voy a usar un precio del modelo promedio y fijo
@@ -47,7 +47,17 @@ class messageService {
         const client = await pool.connect();
         try{
             await client.query('BEGIN')
+            
+            // 🔴 LOG 2: Ver el objeto justo un milisegundo antes de ejecutar el INSERT en la BD
+            console.log("=== [BACKEND SERVICIO] Pasando 'data' a BaseRepository ===");
+            console.log(data);
+
             const message = await messageRepository.create(data, client) //need to use the id
+            
+            // 🔴 LOG 3: Ver qué devolvió la base de datos tras el insert
+            console.log("=== [BACKEND SERVICIO] Respuesta de messageRepository.create ===");
+            console.log(message);
+
             objectStatistics.message_id=message.id
             
             await statisticRepository.create(objectStatistics, client)
@@ -65,10 +75,7 @@ class messageService {
             client.release();
         }
         
-
-        
     }
-
 
 }
 

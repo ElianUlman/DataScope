@@ -14,13 +14,15 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 
     if (msg.type === "USER_MESSAGE") {
         (async () => {
+            console.log("BACKGROUND: " + msg.content, msg.currentPlatform)
             try {
                 const token = await getToken();
                 if (!token) return sendResponse({ ok: false, error: "No autenticado" });
 
-                const data = await sendMessage(msg.content, token);
+                const data = await sendMessage(msg.content, msg.currentPlatform, token);
                 sendResponse({ ok: true });
             } catch (err) {
+                console.error("Error en BACKGROUND:", err.message);
                 sendResponse({ ok: false, error: err.message });
             }
         })();
@@ -69,19 +71,19 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     }
 
     if (msg.type === "WEB_LOGOUT") {
-    (async () => {
-        const cookie = await chrome.cookies.get({ 
-            url: "https://datascope-orhf.onrender.com/", 
-            name: "datascope_token" 
-        });
-        if (!cookie) {
-            await chrome.storage.local.remove(["token", "expiresAt", "user"]);
-            console.log("[Background] Logout desde la web confirmado, sesión limpiada.");
-        }
-        sendResponse({ ok: true });
-    })();
-    return true;
-}
+        (async () => {
+            const cookie = await chrome.cookies.get({
+                url: "https://datascope-orhf.onrender.com/",
+                name: "datascope_token"
+            });
+            if (!cookie) {
+                await chrome.storage.local.remove(["token", "expiresAt", "user"]);
+                console.log("[Background] Logout desde la web confirmado, sesión limpiada.");
+            }
+            sendResponse({ ok: true });
+        })();
+        return true;
+    }
 });
 
 // LISTENER DE COOKIES SEGURO
