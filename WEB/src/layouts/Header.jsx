@@ -38,35 +38,33 @@ const Header = () => {
                 }
                 <nav>
                     <ul className="header__nav">
-                        <li><Link to="/">Home</Link></li>
-                        <li><Link to="/about">About</Link></li>
+                        <li><Link to="/" className={rutaActual === '/' ? 'header__nav-active' : ''}>Home</Link></li>
+                        <li><Link to="/about" className={rutaActual === '/about' ? 'header__nav-active' : ''}>About</Link></li>
                         <li><Link to="#">Pricing</Link></li>
                         <li><Link to="#">Tutorial</Link></li>
-                        {isLogged && <li><a href="#">Overview</a></li>}
+                        {isLogged && <li><a href="#" className={rutaActual === '/overview' ? 'header__nav-active' : ''}>Overview</a></li>}
                     </ul>
                 </nav>
 
                 {isLogged && user ? (
                     <div
+                        className="header__profile-menu-container"
                         onMouseEnter={() => setIsMenuOpen(true)}
                         onMouseLeave={() => setIsMenuOpen(false)}
                     >
-                        <Link to="/perfil">
+                        <Link to="/perfil" className="header__profile-link">
                             <img
+                                className="header__profile-img"
                                 src={user.url && user.url.trim() !== "" ? user.url : perfilGenerico}
                                 alt="Foto de perfil"
                             />
                         </Link>
 
                         {isMenuOpen && (
-                            <div>
-                                <ul>
-                                    <li>
-                                        <button onClick={handleLogout}>
-                                            Cerrar Sesión
-                                        </button>
-                                    </li>
-                                </ul>
+                            <div className="header__profile-menu">
+                                <button onClick={handleLogout} className="header__profile-menu-button">
+                                    Cerrar Sesión
+                                </button>
                             </div>
                         )}
                     </div>

@@ -57,7 +57,9 @@ export default function RegisterModal({ onClose, onOpenLogin }) {
           <input type="checkbox" onChange={(e) => setRememberMe(e.target.checked)}/>
           <span>Recordar mi cuenta</span>
         </div>
-        <p>{message}</p>
+
+        <p className="error-text">{message}</p>
+
         <button className="register-btn" onClick={() => handleSubmit()}>Registrarme</button>
 
         <p className="bottom-text">
