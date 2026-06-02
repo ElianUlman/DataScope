@@ -143,6 +143,14 @@ export const AuthProvider = ({ children }) => {
             }
             setIsLogged(true)
 
+            try {
+                console.log("[Web] Intentando avisar a la extensión...")
+                window.postMessage({ type: "WEB_LOGIN", token: response.data.token }, "*")
+                console.log("[Web] Mensaje enviado")
+            } catch (e) {
+                console.log("[Web] Error:", e.message)
+            }
+
             return true
         } catch (error) {
             console.log(error)
