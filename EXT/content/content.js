@@ -1,4 +1,4 @@
-import { isTokenValid, checkTabAccessPermission, getCurrentAi} from './auth.js'
+import { isTokenValid, checkTabAccessPermission, getCurrentAi } from './auth.js'
 import {
     findButton, cleanButtonCandidates, sendbuttonSnapshot,
     checkButton, findElementByFingerprint, checkSameElement,
@@ -34,13 +34,14 @@ const handleSend = () => {
 
     setTimeout(async () => {
         const contenido = getCurrentEditor()?.textContent?.trim()
+        console.log("[DS] contenido después de send:", JSON.stringify(contenido))
         if (getCurrentEditor() && contenido === "") {
             findButton(getCurrentEditor(), 10, onMouseDown)
             checkButton()
             const currentAi = await getCurrentAi()
             sendData("USER_MESSAGE", oldEditorContent, currentAi)
         }
-    }, 100)
+    }, 500)
 }
 
 const onMouseDown = () => handleSend()
