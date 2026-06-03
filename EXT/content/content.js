@@ -14,7 +14,12 @@ function sendData(type, content, currentPlatform) {
     console.log(type, content, currentPlatform)
     try {
         if (!chrome.runtime?.id) return
-        chrome.runtime.sendMessage({ type, content, currentPlatform });
+
+        chrome.storage.local.get("currentModel", (result) => {
+            const model = result.currentModel || "unknown";
+            chrome.runtime.sendMessage({ type, content, currentPlatform, model });
+        });
+
     } catch (err) {
         console.warn("[DataScope] Extension context invalidated:", err.message)
     }

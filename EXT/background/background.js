@@ -14,12 +14,12 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 
     if (msg.type === "USER_MESSAGE") {
         (async () => {
-            console.log("BACKGROUND: " + msg.content, msg.currentPlatform)
+            console.log("BACKGROUND: " + msg.content, msg.currentPlatform, msg.model)
             try {
                 const token = await getToken();
                 if (!token) return sendResponse({ ok: false, error: "No autenticado" });
 
-                const data = await sendMessage(msg.content, msg.currentPlatform, token);
+                const data = await sendMessage(msg.content, msg.currentPlatform, msg.model, token);
                 sendResponse({ ok: true });
             } catch (err) {
                 console.error("Error en BACKGROUND:", err.message);
@@ -86,7 +86,6 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     }
 });
 
-// LISTENER DE COOKIES SEGURO
 chrome.cookies.onChanged.addListener(async (changeInfo) => {
     const { cookie, removed, cause } = changeInfo;
 

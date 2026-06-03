@@ -5,4 +5,7 @@ window.addEventListener("message", (event) => {
     if (event.data?.type === "WEB_LOGIN" || event.data?.type === "WEB_LOGOUT") {
         chrome.runtime.sendMessage(event.data);
     }
+    if (event.data?.source === "IA_DETECTOR_INJECTED" && event.data?.model) {
+        chrome.storage.local.set({ currentModel: event.data.model });
+    }
 });

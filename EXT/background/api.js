@@ -2,15 +2,15 @@ const API_LOCAL = "http://10.152.2.105:3000/api"
 const API_CLOUD = "https://datascope-api-pruebas.onrender.com/api"
 const API_CASA = "http://192.168.0.128:3000/api"
 
-export async function sendMessage(content, platform, token) {
-    console.log("API: " + content, platform)
+export async function sendMessage(content, platform, model, token) {
+    console.log("API: " + content, platform, model)
     const res = await fetch(`${API_CLOUD}/message`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
             "Authorization": token
         },
-        body: JSON.stringify({ content, platform, sender: "user" })
+        body: JSON.stringify({ content, platform, sender: "user", model })
     })
     const textResponse = await res.text();
     console.log("Respuesta API: " + textResponse);
