@@ -58,6 +58,11 @@ const Header = () => {
                                 src={user.url && user.url.trim() !== "" ? user.url : perfilGenerico}
                                 alt="Foto de perfil"
                             />
+
+                            <p className="header__profile-text"> 
+                                {user?.name?.trim() ? user.name : 'user'}
+                            </p>
+
                         </Link>
 
                         {isMenuOpen && (

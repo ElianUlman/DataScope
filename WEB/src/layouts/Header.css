@@ -55,13 +55,16 @@
 .header__profile-link {
     display: inline-flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
+    gap: 12px;
+    text-decoration: none;
 }
 
 .header__profile-menu-container {
     position: relative;
     display: inline-flex;
     align-items: center;
+    margin-right: 5%;
 }
 
 .header__profile-img {
@@ -71,9 +74,17 @@
     object-fit: cover;
 }
 
+.header__profile-text {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--green);
+    max-width: 160px;
+}
+
 .header__profile-menu {
     position: absolute;
-    top: calc(100% + 4px); /* 4px de espacio debajo de la imagen*/
+    top: calc(100% + 2%);
     right: 0;
     background: var(--surface-2, #ffffff);
     border: 1px solid rgba(0, 0, 0, 0.12);
@@ -82,16 +93,20 @@
     padding: 10px;
     min-width: 160px;
     z-index: 110; /* Asegura que el menú esté por encima de otros elementos */
+    text-align: center;
 }
 
 .header__profile-menu-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 100%;
     border: none;
     background: transparent;
-    color: var(--green); 
+    color: var(--green);
     font-size: 16px;
-    text-align: left;
-    padding: 10px 12px;
+    text-align: center;
+    padding: 6% 0;
     cursor: pointer;
     border-radius: 8px;
 }
