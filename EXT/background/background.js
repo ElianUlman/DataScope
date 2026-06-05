@@ -14,15 +14,19 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 
     if (msg.type === "USER_MESSAGE") {
         (async () => {
-            console.log("BACKGROUND: " + msg.content, msg.currentPlatform, msg.model)
+            console.log("[background] USER_MESSAGE recibido — content:", msg.content, "platform:", msg.currentPlatform, "model:", msg.model)
             try {
                 const token = await getToken();
-                if (!token) return sendResponse({ ok: false, error: "No autenticado" });
-
+                if (!token) {
+                    console.warn("[background] no hay token, abortando")
+                    return sendResponse({ ok: false, error: "No autenticado" });
+                }
+                console.log("[background] token obtenido — llamando sendMessage en api.js")
                 const data = await sendMessage(msg.content, msg.currentPlatform, msg.model, token);
+                console.log("[background] sendMessage completado")
                 sendResponse({ ok: true });
             } catch (err) {
-                console.error("Error en BACKGROUND:", err.message);
+                console.error("[background] error:", err.message);
                 sendResponse({ ok: false, error: err.message });
             }
         })();

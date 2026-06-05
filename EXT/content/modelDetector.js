@@ -10,10 +10,13 @@ if (!window.__fetchInterceptado) {
         if (options?.method === 'POST' && options?.body) {
             try {
                 const data = JSON.parse(options.body);
-                // Log temporal para ver toda la estructura
-                if (url?.includes('claude.ai')) {
-                    console.log("[DS] URL:", url)
-                    console.log("[DS] BODY:", JSON.stringify(data, null, 2))
+                if (data?.model) {
+                    console.log("[modelDetector] modelo detectado:", data.model, "— enviando postMessage")
+                    window.postMessage({
+                        source: "IA_DETECTOR_INJECTED",
+                        model: data.model
+                    }, "*");
+                    console.log("[modelDetector] postMessage enviado")
                 }
             } catch (e) {}
         }
