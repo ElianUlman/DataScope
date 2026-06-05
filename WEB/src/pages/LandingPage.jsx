@@ -48,8 +48,8 @@ export default function LandingPage() {
         <img src={imgFondo} alt="" className="hero__bg" />
         <div className="hero__content">
           <h1 className="hero__title fade-up fade-up--1">
-            Optimiza la eficiencia<br />
-            de tu equipo en <span>IA</span>
+            <span className="hero__title-top">Optimiza la eficiencia</span>
+            <span className="hero__title-bottom">de tu equipo en IA</span>
           </h1>
           <a href="#" className="btn btn--primary fade-up fade-up--2">Conocé más</a>
         </div>
