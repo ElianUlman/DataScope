@@ -14,3 +14,17 @@ export const uploadMessage = async(req,res)=>{
         res.status(500).json({error: "error ocurred"})
     }
 }
+
+export const AIsPorcentageByCompany = async(req,res) =>{
+    try{
+        
+        const companyId = req.targetCompanyId
+
+        const result = await messageService.getUsedAiPorcentages({companyId})
+        
+        res.status(201).json(result)
+    }catch(e){
+        console.log(e)
+        res.status(500).json({error: "error ocurred"})
+    }
+}

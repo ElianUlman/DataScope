@@ -6,7 +6,7 @@ import { pipeline } from '@xenova/transformers'
 import { encoding_for_model, get_encoding } from "tiktoken"; //chatgpt token counter
 
 import { GoogleGenAI } from '@google/genai';// for counting geminis tokens
-const gemini = new GoogleGenAI({ apiKey: 'AQ.Ab8RN6IL-TNZTZM7op8hJZJPDbK061mJTy27vBCnhuAIu5sByw' });
+const gemini = new GoogleGenAI({ apiKey: 'AQ.Ab8RN6IL-TNZTZM7op8hJZJPDbK061mJTy27vBCnhuAIu5sByw' }); //aparentemente esto es un secret :/
 
 
 let clasificador = null

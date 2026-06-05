@@ -3,6 +3,7 @@ import {Router} from "express";
 
 
 import {
+    AIsPorcentageByCompany,
     uploadMessage
 } from "../controllers/messages.controller.js"
 
@@ -48,6 +49,8 @@ routes.get('/stats', authentication, getStatsByUser)
 routes.get('/statsAvg', authentication, getUserAvg)
 
 routes.get('/mycompanies', authentication, getCompaniesByAdminId)
+
+routes.get('/IaPercent', authentication, adminAuth, AIsPorcentageByCompany)
 
 
 //PUTS
