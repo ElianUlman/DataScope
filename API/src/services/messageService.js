@@ -27,7 +27,7 @@ class messageService {
         //analizer.js no analiza ni claridad, ni "clarity examples" ni "clarity costraints" (asi que voy a igualarlos a 1 y despues los hacemos)
         
         setPrompt(data.content)
-        const cantTokens = tokenize()
+        const cantTokens = tokenize(data.content, data.platform)
 
         await initClasificador();
         const {categoria: category} = await clasificate();

@@ -32,12 +32,13 @@ import {
 } from "../controllers/invites.controller.js"
 
 import { getStatsByUser, getUserAvg } from "../controllers/statistic.controller.js";
+import { func4tests } from "../controllers/controller.js";
 
 const routes = Router();
 
 //GETs
 
-
+routes.get('/', func4tests)
 
 
 routes.get('/userdata', authentication, getUserData)
