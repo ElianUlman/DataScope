@@ -111,8 +111,9 @@
 
 .header__profile-menu {
     position: absolute;
-    top: calc(100% + 2%);
-    right: 0;
+    top: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%) translateY(-12%);
     background: var(--surface-2, #ffffff);
     border: 1px solid rgba(0, 0, 0, 0.12);
     border-radius: 12px;
@@ -121,7 +122,6 @@
     min-width: 160px;
     z-index: 110; /* Asegura que el menú esté por encima de otros elementos */
     text-align: center;
-    transform: translateX(25%);
 }
 
 .header__profile-menu-button {

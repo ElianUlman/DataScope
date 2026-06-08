@@ -29,6 +29,7 @@
   display: flex;
   gap: 40px;
   list-style: none;
+  padding-right: 9%;
 }
 
 .footer__links a {
