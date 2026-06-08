@@ -58,7 +58,7 @@ export default function Perfil() {
                         <div className="form-field">
                             <label className="form-label">NOMBRE COMPLETO</label>
                             <div className="form-input">
-                                <span>{user?.name || "Francisco Gomez"}</span>
+                                <span>{user?.username || "Francisco Gomez"}</span>
                             </div>
                         </div>
 
@@ -72,14 +72,14 @@ export default function Perfil() {
                         <div className="form-field">
                             <label className="form-label">ROL EN LA ORGANIZACIÓN</label>
                             <div className="form-role-badge">
-                                <span>{user?.role || "Analista de Datos Senior"}</span>
+                                <span>{user?.userrole || "Analista de Datos Senior"}</span>
                             </div>
                         </div>
 
                         <div className="form-field">
                             <label className="form-label">ZONA HORARIA</label>
                             <div className="form-input form-select">
-                                <span>{user?.timezone || "Europe/Madrid (GMT+2)"}</span>
+                                <span>{user?.usertimezone || "Europe/Madrid (GMT+2)"}</span>
                                 <svg className="select-chevron" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                     <polyline points="6 9 12 15 18 9" />
                                 </svg>
