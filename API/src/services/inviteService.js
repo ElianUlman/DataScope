@@ -1,7 +1,7 @@
 import inviteRepository from "../repositories/inviteRepository.js";
 import userRepository from "../repositories/userRepository.js";
 
-import { validateFields } from "../utils/validationUtils.js";
+import { validateFields, blockFields } from "../utils/validationUtils.js";
 
 class inviteService {
   async getInvitesByCompanyId(data){

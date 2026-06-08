@@ -3,6 +3,7 @@ import {Router} from "express";
 
 
 import {
+    AIsPorcentageByCompany,
     uploadMessage
 } from "../controllers/messages.controller.js"
 
@@ -32,12 +33,13 @@ import {
 } from "../controllers/invites.controller.js"
 
 import { getStatsByUser, getUserAvg } from "../controllers/statistic.controller.js";
+import { func4tests } from "../controllers/controller.js";
 
 const routes = Router();
 
 //GETs
 
-
+routes.get('/', func4tests)
 
 
 routes.get('/userdata', authentication, getUserData)
@@ -47,6 +49,8 @@ routes.get('/stats', authentication, getStatsByUser)
 routes.get('/statsAvg', authentication, getUserAvg)
 
 routes.get('/mycompanies', authentication, getCompaniesByAdminId)
+
+routes.get('/IaPercent', authentication, adminAuth, AIsPorcentageByCompany)
 
 
 //PUTS

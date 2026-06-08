@@ -53,7 +53,7 @@ export default function LoginModal({ onClose, onOpenRegister }) {
           <span>Recordar mi cuenta</span>
         </div>
 
-        <p>{message}</p>
+        <p className="error-text">{message}</p>
 
         <button className="login-btn" onClick={() => handleSubmit()}>Iniciar</button>
 
