@@ -55,12 +55,12 @@ const Header = () => {
                         <Link to="/perfil" className="header__profile-link">
                             <img
                                 className="header__profile-img"
-                                src={user.url && user.url.trim() !== "" ? user.url : perfilGenerico}
+                                src={user.userurl && user.userurl.trim() !== "" ? user.userurl : perfilGenerico}
                                 alt="Foto de perfil"
                             />
 
                             <p className="header__profile-text"> 
-                                {user?.name?.trim() ? user.name : 'user'}
+                                {user?.username?.trim() ? user.username : 'user'}
                             </p>
 
                         </Link>

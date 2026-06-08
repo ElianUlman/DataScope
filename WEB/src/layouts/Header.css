@@ -46,10 +46,37 @@
     text-decoration: none;
     letter-spacing: -0.02em;
     transition: opacity 0.2s;
+    position: relative;
+    padding-bottom: 6px; /* espacio para el underline */
 }
 
 .header__nav a:hover {
     opacity: 0.65;
+}
+
+.header__nav a::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%); /* Inicia con una escala reducida para el efecto de crecimiento /* translateX(-50%) para centrar el underline debajo del texto */
+    transform-origin: center; /* Asegura que el crecimiento ocurra desde el centro */
+    bottom: 0px;
+    height: 8%; 
+    width: 60%;
+    background: var(--green);
+    opacity: 0;
+    transition: transform 320ms cubic-bezier(.2,.9,.2,1), opacity 220ms ease, width 320ms ease;  /* ms = milisegundos /* Cubic-bezier para un efecto de crecimiento más suave  /* Opacity para que el underline aparezca gradualmente /* Width para que el underline se expanda desde el centro */
+}
+
+.header__nav a.header__nav-active {
+    font-weight: 700;
+    color: var(--green);
+}
+
+.header__nav a.header__nav-active::after {
+    transform: translateX(-50%);
+    opacity: 1;
+    width: 100%;
 }
 
 .header__profile-link {
@@ -94,6 +121,7 @@
     min-width: 160px;
     z-index: 110; /* Asegura que el menú esté por encima de otros elementos */
     text-align: center;
+    transform: translateX(25%);
 }
 
 .header__profile-menu-button {
@@ -118,8 +146,8 @@
 .header__nav-active {
     font-weight: 700;
     color: var(--green);
-    border-bottom: 3px solid var(--green);
     padding-bottom: 2px;
+    border-bottom: none;
 }
 
 @media (max-width: 768px) {

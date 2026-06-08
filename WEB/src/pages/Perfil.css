@@ -1,0 +1,227 @@
+:root {
+  --color-bg:          #0e0e0e;
+  --color-card:        #131313;
+  --color-surface:     #262626;
+  --color-border:      rgba(73, 72, 71, 0.3);
+  --color-border-soft: rgba(180, 180, 180, 0.1);
+  --color-accent:      #2ee88a;
+  --color-accent-60:   rgba(46, 232, 138, 0.6);
+  --color-text:        #ffffff;
+  --color-muted:       #b4b4b4;
+  --color-role-text:   #006413;
+  --color-danger:      #d7383b;
+  --color-danger-bg:   rgba(159, 5, 25, 0.05);
+  --color-danger-border: rgba(255, 113, 108, 0.3);
+
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-body:    'Inter', sans-serif;
+}
+
+.perfil-page {
+  min-height: 100vh;
+  background: linear-gradient(90deg, var(--color-bg) 0%, var(--color-bg) 100%); /* Linear-gradient para un fondo sólido, pero permite futuras mejoras con degradados */
+  padding: 10%;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  box-sizing: border-box;
+}
+
+.perfil-header {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-bottom: 2%;
+  border-bottom: 1px solid black;
+  width: 100%;
+}
+
+.perfil-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 30px;
+  line-height: 36px;
+  letter-spacing: -0.75px;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.perfil-subtitle {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+  color: var(--color-muted);
+  margin: 0;
+  max-width: 60%;
+}
+
+.perfil-grid {
+  width: 100%;
+}
+
+.perfil-card {
+  position: relative;
+  background: var(--color-card);
+  border-radius: 8px;
+  padding: 2% 4%;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  overflow: hidden;
+  box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.05);
+  max-width: 60%;
+  border-left: 4px solid var(--color-accent);
+}
+
+.card-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.card-heading-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-muted);
+  flex-shrink: 0;
+}
+
+.card-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 28px;
+  color: var(--color-text);
+  margin: 0;
+  white-space: nowrap;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  width: 100%;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8.5px;
+}
+
+.form-label {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 10px;
+  line-height: 15px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.form-input {
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  padding: 2% 0 2%;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;  
+  border: none;
+}
+
+.form-input span {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+  color: var(--color-text);
+  padding-left: 4%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.form-role-badge {
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  padding: 2% 0% 2%;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;  
+  border: none;
+}
+
+.form-role-badge span {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px; /* Line-height para asegurar que el texto esté centrado verticalmente dentro del badge */
+  color: var(--color-accent);
+  padding-left: 4%;
+  white-space: nowrap;
+  overflow: hidden; /* Asegura que el texto no se desborde del contenedor */
+  text-overflow: ellipsis; /* Agrega puntos suspensivos si el texto es demasiado largo para el contenedor */
+}
+
+.form-select {
+  justify-content: space-between;
+  padding-right: 8%;
+}
+
+.select-chevron {
+  color: var(--color-muted);
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.card-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 2%;
+  width: 100%;
+}
+
+.btn-save {
+  background: var(--color-accent);
+  color: var(--color-role-text);
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 20%;
+  padding: calc(9 / 375 * 100%)  calc(12 / 375* 100%);
+  border: none;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.btn-save:hover {
+  opacity: 0.85;
+}
+
+.btn-logout {
+  background: var(--color-danger-bg);
+  color: var(--color-danger);
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20%;
+  padding: calc(9 / 375 * 100%)  calc(20 / 375* 100%);
+  border: 1px solid var(--color-danger-border);
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.btn-logout:hover {
+  background: rgba(159, 5, 25, 0.12);
+}
