@@ -35,14 +35,19 @@
   },
   "content_scripts": [
     {
-      "matches": [
-        "<all_urls>"
-      ],
-      "js": [
-        "content/loader.js"
-      ],
+      "matches": ["<all_urls>"],
+      "js": ["content/loader.js"],
       "type": "module",
       "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "https://chatgpt.com/*",
+        "https://claude.ai/*"
+      ],
+      "js": ["content/modelDetector.js"],
+      "world": "MAIN",
+      "run_at": "document_start"
     }
   ],
   "web_accessible_resources": [
@@ -51,11 +56,10 @@
         "content/content.js",
         "content/auth.js",
         "content/buttonDetector.js",
-        "content/editorDetector.js"
+        "content/editorDetector.js",
+        "content/modelDetector.js"
       ],
-      "matches": [
-        "<all_urls>"
-      ]
+      "matches": ["<all_urls>"]
     }
   ],
   "externally_connectable": {

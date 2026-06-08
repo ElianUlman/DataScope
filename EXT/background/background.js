@@ -14,13 +14,19 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 
     if (msg.type === "USER_MESSAGE") {
         (async () => {
+            console.log("[background] USER_MESSAGE recibido — content:", msg.content, "platform:", msg.currentPlatform, "model:", msg.model)
             try {
                 const token = await getToken();
-                if (!token) return sendResponse({ ok: false, error: "No autenticado" });
-
-                const data = await sendMessage(msg.content, token);
+                if (!token) {
+                    console.warn("[background] no hay token, abortando")
+                    return sendResponse({ ok: false, error: "No autenticado" });
+                }
+                console.log("[background] token obtenido — llamando sendMessage en api.js")
+                const data = await sendMessage(msg.content, msg.currentPlatform, msg.model, token);
+                console.log("[background] sendMessage completado")
                 sendResponse({ ok: true });
             } catch (err) {
+                console.error("[background] error:", err.message);
                 sendResponse({ ok: false, error: err.message });
             }
         })();
@@ -69,22 +75,21 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     }
 
     if (msg.type === "WEB_LOGOUT") {
-    (async () => {
-        const cookie = await chrome.cookies.get({ 
-            url: "https://datascope-orhf.onrender.com/", 
-            name: "datascope_token" 
-        });
-        if (!cookie) {
-            await chrome.storage.local.remove(["token", "expiresAt", "user"]);
-            console.log("[Background] Logout desde la web confirmado, sesión limpiada.");
-        }
-        sendResponse({ ok: true });
-    })();
-    return true;
-}
+        (async () => {
+            const cookie = await chrome.cookies.get({
+                url: "https://datascope-orhf.onrender.com/",
+                name: "datascope_token"
+            });
+            if (!cookie) {
+                await chrome.storage.local.remove(["token", "expiresAt", "user"]);
+                console.log("[Background] Logout desde la web confirmado, sesión limpiada.");
+            }
+            sendResponse({ ok: true });
+        })();
+        return true;
+    }
 });
 
-// LISTENER DE COOKIES SEGURO
 chrome.cookies.onChanged.addListener(async (changeInfo) => {
     const { cookie, removed, cause } = changeInfo;
 
