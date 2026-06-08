@@ -5,14 +5,6 @@ class messageRepository extends BaseRepository {
     super("public.messages");
   }
 
-  async getUsedAIs(id) {
-    const { rows } = await this.query(`SELECT public.messages.platform 
-      FROM public.messages INNER JOIN public.users ON public.users.id = public.messages.user_id
-      INNER JOIN public.invites ON public.users.id = public.invites.userfk
-      WHERE companyfk=$1`, [id])
-    return rows
-  }
-
   async getActivityVolumeByCompany(companyId, period = 'day') {
     const validPeriods = ['day', 'week', 'month']
     if (!validPeriods.includes(period)) throw new Error(`Período inválido: ${period}`)
@@ -32,16 +24,12 @@ class messageRepository extends BaseRepository {
     return rows
   }
 
-  // Adopción de Plataformas de IA
-  // Devuelve la cantidad y porcentaje de mensajes por plataforma (ia + model) para una empresa.
   async getPlatformAdoptionByCompany(companyId) {
     const { rows } = await this.query(`
       SELECT
-        public.messages.platform,
+        public.messages.platform AS ia,
         COUNT(*) AS total_messages,
-        ROUND(
-          COUNT(*) * 100.0 / SUM(COUNT(*)) OVER (), 2
-        ) AS percentage
+        ROUND(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER (), 2) AS percentage
       FROM public.messages
         INNER JOIN public.users ON public.users.id = public.messages.user_id
         INNER JOIN public.invites ON public.users.id = public.invites.userfk
@@ -72,7 +60,7 @@ class messageRepository extends BaseRepository {
   async getAvgQueryComplexityByCompany(companyId) {
     const { rows } = await this.query(`
       SELECT
-        ROUND(AVG(LENGTH(public.messages.content)), 2)                        AS avg_chars,
+        ROUND(AVG(LENGTH(public.messages.content)), 2) AS avg_chars,
         ROUND(AVG(ARRAY_LENGTH(STRING_TO_ARRAY(TRIM(public.messages.content), ' '), 1)), 2) AS avg_words
       FROM public.messages
         INNER JOIN public.users ON public.users.id = public.messages.user_id
@@ -86,11 +74,11 @@ class messageRepository extends BaseRepository {
   async getInteractionRateByCompany(companyId) {
     const { rows } = await this.query(`
       SELECT
-        COUNT(*)                                    AS total_messages,
-        COUNT(DISTINCT public.messages.user_id)     AS unique_users,
+        COUNT(*) AS total_messages,
+        COUNT(DISTINCT public.messages.user_id) AS unique_users,
         ROUND(
           COUNT(*) * 1.0 / NULLIF(COUNT(DISTINCT public.messages.user_id), 0), 2
-        )                                           AS avg_messages_per_user
+        ) AS avg_messages_per_user
       FROM public.messages
         INNER JOIN public.users ON public.users.id = public.messages.user_id
         INNER JOIN public.invites ON public.users.id = public.invites.userfk
