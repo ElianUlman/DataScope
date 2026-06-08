@@ -146,7 +146,17 @@ export async function clasificate() {
         "creative_writing",
         "data_analysis",
         "translation",
-        "general_question"
+        "general_question",
+        "summarization",
+        "email_drafting",
+        "document_editing",
+        "research",
+        "brainstorming",
+        "math_and_calculations",
+        "customer_support",
+        "legal_or_compliance_question",
+        "human_resources",
+        "presentation_or_report_creation"
     ]
 
     const resultado = await clasificador(texto, categorias)
