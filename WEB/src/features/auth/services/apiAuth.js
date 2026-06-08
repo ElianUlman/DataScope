@@ -1,4 +1,4 @@
-import axiosClient from "../../../services/axiosClient";
+import axiosClient from "../../axiosClient.js";
 
 export const userLogin = async (email, password) => {
     try {

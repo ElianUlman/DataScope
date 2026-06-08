@@ -1,4 +1,6 @@
-import axiosClient from "./axiosClient";
+import axiosClient from "../features/axiosClient";
+
+//codigo viejo
 
 function setCookie(name, value, days) {
   const expires = new Date()

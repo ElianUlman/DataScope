@@ -2,6 +2,7 @@ import "./Perfil.css";
 import { useAuth } from "../features/auth/context/AuthContext";
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
+import Settings from "../features/settings/components/Settings";
 
 export default function Perfil() {
 
@@ -41,6 +42,8 @@ export default function Perfil() {
                     de acceso para el ecosistema DataScope.
                 </p>
             </div>
+
+            <Settings/>
 
             <div className="perfil-grid">
                 <div className="perfil-card">
