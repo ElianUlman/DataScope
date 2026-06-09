@@ -36,10 +36,11 @@
     display: flex;
     gap: 48px;
     list-style: none;
+
 }
 
 .header__nav a {
-    font-family: 'Roboto', 'Ubuntu', sans-serif;
+    font-family: 'Roboto', sans-serif;
     font-size: 20px;
     font-weight: 500;
     color: var(--green);
@@ -91,7 +92,7 @@
     position: relative;
     display: inline-flex;
     align-items: center;
-    margin-right: 5%;
+    flex-direction: column;
 }
 
 .header__profile-img {
@@ -107,13 +108,15 @@
     font-weight: 600;
     color: var(--green);
     max-width: 160px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .header__profile-menu {
     position: absolute;
     top: calc(100% + 8px);
     left: 50%;
-    transform: translateX(-50%) translateY(-12%);
+    transform: translateX(-50%) translateY(-15%);
     background: var(--surface-2, #ffffff);
     border: 1px solid rgba(0, 0, 0, 0.12);
     border-radius: 12px;
