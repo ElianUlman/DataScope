@@ -2,6 +2,7 @@ const IS_LOCAL_DEV = false
 const WEB_URL = IS_LOCAL_DEV ? "http://192.168.0.128:5173" : "https://datascope-web-pruebas.onrender.com";
 const COOKIE_URL = IS_LOCAL_DEV ? "http://192.168.0.128" : "https://datascope-web-pruebas.onrender.com";
 
+const COOKIE_NAME = "datascope_token"
 export async function saveSession(token, expiresAt, userData) {
     await chrome.storage.local.set({ token, expiresAt, user: userData });
     
