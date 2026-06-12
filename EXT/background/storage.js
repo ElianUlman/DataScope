@@ -1,11 +1,34 @@
-// Variable para cambiar fácilmente entre entorno local y producción
-const IS_LOCAL_DEV = false;
+// Quita la barra '/' al final de la URL en producción
+const WEB_URL = IS_LOCAL_DEV ? "http://192.168.0.128:5173" : "https://datascope-web-pruebas.onrender.com";
+const COOKIE_URL = IS_LOCAL_DEV ? "http://192.168.0.128" : "https://datascope-web-pruebas.onrender.com";
 
-// WEB_URL se usa para tu web. COOKIE_URL se usa para la API de Chrome (sin puerto).
-const WEB_URL = IS_LOCAL_DEV ? "http://192.168.0.128:5173" : "https://datascope-orhf.onrender.com/";
-const COOKIE_URL = IS_LOCAL_DEV ? "http://192.168.0.128" : "https://datascope-orhf.onrender.com/";
+export async function saveSession(token, expiresAt, userData) {
+    await chrome.storage.local.set({ token, expiresAt, user: userData });
+    
+    // Bandera para evitar que nuestro propio cambio de cookie confunda al background
+    await chrome.storage.local.set({ _clearing: true }); 
 
-const COOKIE_NAME = "datascope_token";
+    const urlObj = new URL(COOKIE_URL);
+    
+    try {
+        await chrome.cookies.set({
+            url: COOKIE_URL,
+            name: COOKIE_NAME,
+            value: token,
+            expirationDate: expiresAt / 1000,
+            secure: true,
+            sameSite: "no_restriction",
+            domain: urlObj.hostname, 
+            path: "/"
+        });
+    } catch (err) {
+        console.error("[DataScope] Error al guardar la cookie:", err);
+    } finally {
+        setTimeout(async () => {
+            await chrome.storage.local.remove("_clearing");
+        }, 500);
+    }
+}
 
 export function parseAllowedAis(rawAllowedAis) {
     if (typeof rawAllowedAis === 'string') {
@@ -15,29 +38,6 @@ export function parseAllowedAis(rawAllowedAis) {
         return rawAllowedAis.map(ia => ia.toLowerCase().trim());
     }
     return [];
-}
-
-export async function saveSession(token, expiresAt, userData) {
-    // 1. Guardamos en memoria local
-    await chrome.storage.local.set({ token, expiresAt, user: userData });
-
-    // 2. Usamos la URL sin puerto para que Chrome no bloquee la cookie
-    const isSecureConnection = COOKIE_URL.startsWith("https");
-
-    try {
-        await chrome.cookies.set({
-            url: COOKIE_URL,
-            name: COOKIE_NAME,
-            value: token,
-            expirationDate: expiresAt / 1000,
-            secure: isSecureConnection,
-            sameSite: "lax",
-            httpOnly: false
-        });
-    } catch (err) {
-        console.error("[DataScope] Error al guardar la cookie:", err);
-        throw err; // Lanzamos el error para que el login lo atrape si algo falla de verdad
-    }
 }
 
 // storage.js

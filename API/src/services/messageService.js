@@ -82,13 +82,11 @@ class messageService {
         try{
             await client.query('BEGIN')
             
-            // 🔴 LOG 2: Ver el objeto justo un milisegundo antes de ejecutar el INSERT en la BD
             console.log("=== [BACKEND SERVICIO] Pasando 'data' a BaseRepository ===");
             console.log(data);
 
-            const message = await messageRepository.create(data, client) //need to use the id
+            const message = await messageRepository.create(data, client)
             
-            // 🔴 LOG 3: Ver qué devolvió la base de datos tras el insert
             console.log("=== [BACKEND SERVICIO] Respuesta de messageRepository.create ===");
             console.log(message);
 

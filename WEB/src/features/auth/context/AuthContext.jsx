@@ -71,18 +71,23 @@ export const AuthProvider = ({ children }) => {
             const localToken = localStorage.getItem("token") || sessionStorage.getItem("token");
 
             if (!currentCookie && localToken) {
-                console.log("[Sync] Cookie eliminada desde la extensión. Cerrando sesión en la web...");
-                logout();
+                console.log("[Sync] Alerta: Cookie no encontrada en el DOM.");
             }
             else if (currentCookie && !localToken) {
-                console.log("[Sync] Nueva cookie detectada desde la extensión. Iniciando sesión...");
+                console.log("[Sync] Nueva cookie detectada. Sincronizando sesión...");
                 try {
                     const response = await getUserData(currentCookie);
-                    setUser(response.data.user || response.data);
-                    setIsLogged(true);
-                    sessionStorage.setItem("token", currentCookie);
+                    const userData = response.data?.user || response.data;
+                    if (userData) {
+                        setUser(userData);
+                        setIsLogged(true);
+                        sessionStorage.setItem("token", currentCookie);
+                    }
                 } catch (error) {
-                    logout();
+                    console.error("Error al auto-loguear con la cookie de la extensión:", error);
+                    if (error.response?.status === 401 || error.response?.status === 403) {
+                        logout();
+                    }
                 }
             }
         }

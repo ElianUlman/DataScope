@@ -3,13 +3,11 @@ import axiosClient from "./axiosClient";
 function setCookie(name, value, days) {
   const expires = new Date()
   expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000)
-  // SameSite=None and Secure are required for cross-site cookies to be sent
-  // Note: Secure requires HTTPS
-  document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;SameSite=None;Secure`
+  document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;SameSite=Lax`
 }
 
 function deleteCookie(name) {
-  document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;SameSite=None;Secure`
+  document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`
 }
 
 export const userLogin = async (email, password) => {
@@ -70,7 +68,7 @@ export const getMyCompanies = async (token) => {
 export const fullSignUp = async (companyName, companyTier, username, email, password) => {
   try {
     const response = await axiosClient.put(
-      "/createCompany",
+      "/company",
       {
         "companyName": companyName,
         "companyTier": companyTier,
@@ -91,4 +89,65 @@ export const logOut = () => {
   sessionStorage.clear();
   deleteCookie("datascope_token");
 }
+
+export const getActivityVolume = async (token, period = 'day') => {
+  try {
+    const response = await axiosClient.get("/dashboard/activityVolume", {
+      headers: { Authorization: token },
+      params: { period } // Envía el período ('day', 'week', 'month') como Query Param (?period=day)
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener volumen de actividad:", error);
+    return false;
+  }
+};
+
+export const getPlatformAdoption = async (token) => {
+  try {
+    const response = await axiosClient.get("/dashboard/platformAdoption", {
+      headers: { Authorization: token }
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener adopción de plataformas:", error);
+    return false;
+  }
+};
+
+export const getHourlyDistribution = async (token) => {
+  try {
+    const response = await axiosClient.get("/dashboard/hourlyDistribution", {
+      headers: { Authorization: token }
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener distribución horaria:", error);
+    return false;
+  }
+};
+
+export const getAvgComplexity = async (token) => {
+  try {
+    const response = await axiosClient.get("/dashboard/avgComplexity", {
+      headers: { Authorization: token }
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener complejidad promedio:", error);
+    return false;
+  }
+};
+
+export const getInteractionRate = async (token) => {
+  try {
+    const response = await axiosClient.get("/dashboard/interactionRate", {
+      headers: { Authorization: token }
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener tasa de interacción:", error);
+    return false;
+  }
+};
 
