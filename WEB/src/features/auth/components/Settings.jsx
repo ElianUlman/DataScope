@@ -30,8 +30,8 @@ export default function Settings() {
         const formData = new FormData();
         formData.append("image", file);
         await uploadPfp(formData)
+        navigate('/')
     };
-
 
     return (
         <div className="perfil-grid">

@@ -33,6 +33,7 @@ import {
 
 import { getStatsByUser, getUserAvg } from "../controllers/statistic.controller.js";
 import { func4tests } from "../controllers/controller.js";
+import { upload } from "../utils/filesHandler.js";
 
 const routes = Router();
 
@@ -59,7 +60,7 @@ routes.put('/invite', authentication, adminAuth, createInvite)
 
 //PATCHS
 routes.patch('/user', authentication, updateUserData)
-routes.patch('/user/pfp', authentication, uploadProfilePicture) //agregar upload.single("image")
+routes.patch('/user/pfp', authentication, upload.single("image"), uploadProfilePicture) //agregar upload.single("image")
 
 //POSTS
 routes.post('/login', loginUser)

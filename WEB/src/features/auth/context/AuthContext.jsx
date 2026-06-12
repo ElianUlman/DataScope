@@ -144,7 +144,7 @@ export const AuthProvider = ({ children }) => {
         const token = sessionStorage.getItem("token") || localStorage.getItem("token") || getCookie("datascope_token")
         try {
             const response = await patchUserProfilePic(token, image)
-
+            console.log(response.data.user)
             localStorage.setItem("token", response.data.token)
             sessionStorage.setItem("token", response.data.token)
             setCookie("datascope_token", response.data.token, 30)

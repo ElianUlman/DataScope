@@ -65,6 +65,7 @@ export async function tokenize(prompt, AI) {
         return result.totalTokens;
         
     }else{
+        const tokenizer = new natural.WordTokenizer()
         return tokenizer.tokenize(prompt).length
     }
 

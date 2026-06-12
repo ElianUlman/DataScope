@@ -99,7 +99,7 @@ export const uploadProfilePicture = async (req, res) => {
             expiresAt,
             user: {
                 id: user.id,
-                username: user.name,
+                username: user.username,
                 email: user.email,
                 profile_pic: user.profile_pic,
                 allowed_ais: user.allowed_ais || []

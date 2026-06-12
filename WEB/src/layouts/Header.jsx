@@ -29,6 +29,7 @@ const Header = () => {
         if (rutaActual != '/') navigate('/')
     }
 
+
     return (
         <div>
             <header className={`header ${scrolled ? "header--scrolled" : ""}`}>
@@ -56,12 +57,12 @@ const Header = () => {
                         <Link to="/perfil" className="header__profile-link">
                             <img
                                 className="header__profile-img"
-                                src={user.userurl && user.userurl.trim() !== "" ? user.userurl : perfilGenerico}
+                                src={user.profile_pic && user.profile_pic?.trim() !== "" ? user.profile_pic : perfilGenerico}
                                 alt="Foto de perfil"
                             />
 
                             <p className="header__profile-text"> 
-                                {user?.username?.trim() ? user.username : 'user'}
+                                {user?.username?.trim() ? user?.username : 'user'}
                             </p>
 
                         </Link>

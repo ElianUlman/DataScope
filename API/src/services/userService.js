@@ -85,10 +85,6 @@ class userService {
       throw new Error(error.message);
     }
 
-    await userRepository.update(
-      user.id,
-      profile_pic
-    );
 
     const {
       data: { publicUrl }
@@ -96,7 +92,14 @@ class userService {
       .from("profilePic")
       .getPublicUrl(profile_pic);
 
-    user.profile_pic = profile_pic;
+    await userRepository.update(
+      user.id,
+      { profile_pic: publicUrl }
+    );
+
+
+
+    user.profile_pic = publicUrl;
 
     return generateTokenResponse(user)
 
@@ -105,17 +108,21 @@ class userService {
 }
 
 const generateTokenResponse = (user) => {
-    const token = jwt.sign(
-      { id: user.id, username: user.name, email: user.email, allowed_ais: user.allowed_ais, profile_pic: user.profile_pic },
-      tokenWholePassword,
-      { expiresIn: "1h" }
-    );
+  const token = jwt.sign(
+    { id: user.id, 
+      username: user.username || user.name, 
+      email: user.email, 
+      allowed_ais: user.allowed_ais, 
+      profile_pic: user.profile_pic },
+    tokenWholePassword,
+    { expiresIn: "1h" }
+  );
 
-    const expiresInMs = 60 * 60 * 1000;
-    const expiresAt = Date.now() + expiresInMs;
+  const expiresInMs = 60 * 60 * 1000;
+  const expiresAt = Date.now() + expiresInMs;
 
-    return { token, expiresAt, user };
-  }
+  return { token, expiresAt, user };
+}
 
 export default new userService();
 
