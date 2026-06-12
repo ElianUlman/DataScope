@@ -30,7 +30,7 @@ html {
   scroll-behavior: smooth;
 }
 
-body {
+.body-landing {
   background: var(--bg);
   color: var(--white);
   font-family:  'Roboto', 'Space Grotesk', sans-serif;
