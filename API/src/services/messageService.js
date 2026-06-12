@@ -61,16 +61,16 @@ class messageService {
         //analizer.js no analiza ni claridad, ni "clarity examples" ni "clarity costraints" (asi que voy a igualarlos a 1 y despues los hacemos)
         
         setPrompt(data.content)
-        const cantTokens = tokenize(data.content, data.platform)
+        //const cantTokens = tokenize(data.content, data.platform)
 
         await initClasificador();
         const {categoria: category} = await clasificate();
 
         const objectStatistics={
             message_id: 0,
-            used_tokens: cantTokens,
+            //used_tokens: cantTokens,
             latency_ms: 1,
-            estimated_cost: (cantTokens*0.0000001),
+            //estimated_cost: (cantTokens*0.0000001),
             category: category,
             clarity: 1,
             complexity: await averageComplexity(),

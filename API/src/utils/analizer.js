@@ -3,16 +3,14 @@ import natural from 'natural'
 import { pipeline } from '@xenova/transformers'
 
 
-import { encoding_for_model, get_encoding } from "tiktoken"; //chatgpt token counter
+import { encoding_for_model, get_encoding } from "tiktoken";
 
-import { GoogleGenAI } from '@google/genai';// for counting geminis tokens
-const gemini = new GoogleGenAI({ apiKey: 'AQ.Ab8RN6IL-TNZTZM7op8hJZJPDbK061mJTy27vBCnhuAIu5sByw' }); //aparentemente esto es un secret :/
+import { GoogleGenAI } from '@google/genai';
+const gemini = new GoogleGenAI({ apiKey: 'AQ.Ab8RN6IL-TNZTZM7op8hJZJPDbK061mJTy27vBCnhuAIu5sByw' }); 
 
 
 let clasificador = null
 
-//btw chatgpt me dijo que es mejor no hacer variables globales por si le llegan muchos
-//request a la API (porque entonces se podria llegar a sobrescribir el valor)
 let texto
 let analisis = {
     tokens: [],
