@@ -63,10 +63,13 @@ class userService {
 
   async uploadProfilePicture(user, file) {
     // delete previous avatar if it exists
+    
+
     if (user.profile_pic) {
+      const deleteId = user.profile_pic.split('/').pop();
       await supabase.storage
         .from("profilePic")
-        .remove([user.profile_pic]);
+        .remove([deleteId]);
     }
 
     const profile_pic = `${user.id}-${Date.now()}`;
