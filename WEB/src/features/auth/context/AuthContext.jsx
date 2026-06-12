@@ -1,5 +1,5 @@
 import { createContext, useState, useContext, useEffect } from "react"
-import { userLogin, userSignup, getUserData, patchUser } from "../services/apiAuth"
+import { userLogin, userSignup, getUserData, patchUser, patchUserProfilePic } from "../services/apiAuth"
 
 const AuthContext = createContext()
 
@@ -140,6 +140,21 @@ export const AuthProvider = ({ children }) => {
         }
     }
 
+    const uploadPfp = async (image) =>{
+        const token = sessionStorage.getItem("token") || localStorage.getItem("token") || getCookie("datascope_token")
+        try {
+            const response = await patchUserProfilePic(token, image)
+
+            localStorage.setItem("token", response.data.token)
+            sessionStorage.setItem("token", response.data.token)
+            setCookie("datascope_token", response.data.token, 30)
+            setUser(response.data.user)
+
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
     const signup = async (name, email, password, isPersistant) => {
         try {
             const response = await userSignup(name, email, password)
@@ -182,6 +197,7 @@ export const AuthProvider = ({ children }) => {
                 signup,
                 logout,
                 updateUserData,
+                uploadPfp,
             }}
         >
             {children}

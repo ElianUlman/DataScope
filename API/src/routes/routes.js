@@ -59,7 +59,7 @@ routes.put('/invite', authentication, adminAuth, createInvite)
 
 //PATCHS
 routes.patch('/user', authentication, updateUserData)
-routes.patch('/user/pfp', authentication, uploadProfilePicture)
+routes.patch('/user/pfp', authentication, uploadProfilePicture) //agregar upload.single("image")
 
 //POSTS
 routes.post('/login', loginUser)

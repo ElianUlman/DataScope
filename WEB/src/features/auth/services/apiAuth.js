@@ -9,7 +9,7 @@ export const userLogin = async (email, password) => {
                 "password": password
             }
         );
-        
+
         return response
 
     } catch (error) {
@@ -26,7 +26,7 @@ export const userSignup = async (name, email, password) => {
                 "name": name,
                 "email": email,
                 "password": password
-                
+
             }
         );
 
@@ -38,22 +38,40 @@ export const userSignup = async (name, email, password) => {
     }
 };
 
-export const getUserData = async (token) =>{
-    try{
-      const response = await axiosClient.get("/userdata", {
-      headers: {
-        Authorization: token
-      }})
+export const getUserData = async (token) => {
+    try {
+        const response = await axiosClient.get("/userdata", {
+            headers: {
+                Authorization: token
+            }
+        })
 
-      return response
-     
-    }catch(error){
-      
-      throw error
+        return response
+
+    } catch (error) {
+
+        throw error
     }
-  }
+}
 
-  export const patchUser = async (token, data) => {
+export const patchUserProfilePic = async (token, image) => {
+    try {
+        const response = await axiosClient.patch(
+            "/user/pfp",
+            image,
+            {
+                headers: {
+                    Authorization: token
+                }
+            }
+        );
+        return response
+    } catch (error) {
+        throw error
+    }
+}
+
+export const patchUser = async (token, data) => {
     try {
         const response = await axiosClient.patch("/user", data,
             {

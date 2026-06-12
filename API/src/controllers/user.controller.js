@@ -17,6 +17,7 @@ export const createUser = async (req, res) => {
                 id: user.id,
                 username: user.name,
                 email: user.email,
+                profile_pic: user.profile_pic,
                 allowed_ais: user.allowed_ais || []
             }
         });
@@ -43,6 +44,7 @@ export const loginUser = async (req, res) => {
                 id: user.id,
                 username: user.name,
                 email: user.email,
+                profile_pic: user.profile_pic,
                 allowed_ais: user.allowed_ais || []
             }
         });
@@ -56,7 +58,7 @@ export const loginUser = async (req, res) => {
 
 export const getUserData = async (req, res) => {
     try {
-        res.status(200).json({ user: { "id": req.user.id, "username": req.user.username, "email": req.user.email, "allowed_ais": req.user.allowed_ais } })
+        res.status(200).json({ user: { "id": req.user.id, "username": req.user.username, "email": req.user.email, "allowed_ais": req.user.allowed_ais, "profile_pic": req.user.profile_pic } })
     } catch (error) {
         console.log(error)
         res.status(500).json({ error: "error ocurred" })
@@ -74,6 +76,7 @@ export const updateUserData = async (req, res) => {
                 id: user.id,
                 username: user.name,
                 email: user.email,
+                profile_pic: user.profile_pic,
                 allowed_ais: user.allowed_ais || []
             }
         });
@@ -86,12 +89,22 @@ export const updateUserData = async (req, res) => {
 
 export const uploadProfilePicture = async (req, res) => {
     try {
-        const result = await userService.uploadProfilePicture(
+        const { token, expiresAt, user } = await userService.uploadProfilePicture(
             req.user,
             req.file
         );
-
-        res.status(200).json(result);
+        res.status(200).json({
+            success: true,
+            token: token,
+            expiresAt,
+            user: {
+                id: user.id,
+                username: user.name,
+                email: user.email,
+                profile_pic: user.profile_pic,
+                allowed_ais: user.allowed_ais || []
+            }
+        });
     } catch (error) {
         console.log(error)
         res.status(500).json({ error: "error ocurred" })

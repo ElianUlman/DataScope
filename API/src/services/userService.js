@@ -63,7 +63,7 @@ class userService {
 
   async uploadProfilePicture(user, file) {
     // delete previous avatar if it exists
-    if (user.profile_picture) {
+    if (user.profile_pic) {
       await supabase.storage
         .from("profilePic")
         .remove([user.profile_pic]);
@@ -102,9 +102,9 @@ class userService {
 
   }
 
+}
 
-
-  generateTokenResponse = (user) => {
+const generateTokenResponse = (user) => {
     const token = jwt.sign(
       { id: user.id, username: user.name, email: user.email, allowed_ais: user.allowed_ais, profile_pic: user.profile_pic },
       tokenWholePassword,
@@ -116,8 +116,6 @@ class userService {
 
     return { token, expiresAt, user };
   }
-
-}
 
 export default new userService();
 

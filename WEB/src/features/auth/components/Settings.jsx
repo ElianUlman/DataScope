@@ -4,14 +4,14 @@ import { useState } from "react";
 
 
 export default function Settings() {
-    const { user, isLogged, logout, updateUserData } = useAuth();
+    const { user, isLogged, logout, updateUserData,uploadPfp } = useAuth();
     const navigate = useNavigate();
-    
+
 
     const [image, setImage] = useState()
     const [username, setUsername] = useState(user.username)
     const [email, setEmail] = useState(user.email)
-    
+
     const handleSubmit = () => {
 
         updateUserData(username, email)
@@ -22,6 +22,15 @@ export default function Settings() {
         logout()
         navigate('/')
     }
+
+    const handleProfilePicture = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append("image", file);
+        await uploadPfp(formData)
+    };
 
 
     return (
@@ -41,15 +50,15 @@ export default function Settings() {
                     <div className="form-field">
                         <label className="form-label">NOMBRE COMPLETO</label>
                         <div className="form-input">
-                            <input type="text" value={username} onChange={(e)=>setUsername(e.target.value)}/>
+                            <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
                         </div>
                     </div>
 
                     <div className="form-field">
                         <label className="form-label">CORREO ELECTRÓNICO</label>
                         <div className="form-input">
-                            <input type="text" value={email} onChange={(e)=>setEmail(e.target.value)}/>
-                            
+                            <input type="text" value={email} onChange={(e) => setEmail(e.target.value)} />
+
                         </div>
                     </div>
 
@@ -87,6 +96,14 @@ export default function Settings() {
                     <button className="btn-save" onClick={handleSubmit}>Guardar Cambios</button>
                     <button className="btn-logout" onClick={handleLogout}>Logout</button>
                 </div>
+
+
+
+                <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleProfilePicture}
+                />
             </div>
         </div>
     )
