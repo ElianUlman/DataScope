@@ -1,6 +1,9 @@
 import './About.css'
+import { useAuth } from "../features/auth/context/AuthContext";
 
 function About() {
+  const { setShowRegister, isLogged } = useAuth();
+
   return (
     <div className="about-page">
 
@@ -95,8 +98,8 @@ function About() {
               <div className="about-mockup-main">
                 <div className="about-mockup-chart">
                   <svg viewBox="0 0 200 80" preserveAspectRatio="none">
-                    <polyline points="0,60 30,45 60,50 90,20 120,30 150,15 180,25 200,10" fill="none" stroke="#00e676" strokeWidth="2"/>
-                    <polyline points="0,60 30,45 60,50 90,20 120,30 150,15 180,25 200,10 200,80 0,80" fill="rgba(0,230,118,0.1)" strokeWidth="0"/>
+                    <polyline points="0,60 30,45 60,50 90,20 120,30 150,15 180,25 200,10" fill="none" stroke="#00e676" strokeWidth="2" />
+                    <polyline points="0,60 30,45 60,50 90,20 120,30 150,15 180,25 200,10 200,80 0,80" fill="rgba(0,230,118,0.1)" strokeWidth="0" />
                   </svg>
                 </div>
                 <div className="about-mockup-dots">
@@ -142,13 +145,14 @@ function About() {
       </section>
 
       {/* CTA */}
-      <section className="about-cta">
+      {!isLogged && (<section className="about-cta">
         <div className="about-cta-box">
           <h2 className="about-cta-title">Únete a la Revolución</h2>
           <p>Comienza hoy mismo a auditar el futuro de tu empresa con el Observatorio Digital más avanzado.</p>
-          <button className="about-cta-btn">Registrarse</button>
+          <button className="about-cta-btn" onClick={() => setShowRegister(true)} >Registrarse</button>
         </div>
-      </section>
+      </section>)}
+
 
     </div>
   )

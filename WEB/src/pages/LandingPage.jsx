@@ -51,7 +51,7 @@ export default function LandingPage() {
             <span className="hero__title-top">Optimiza la eficiencia</span>
             <span className="hero__title-bottom">de tu equipo en IA</span>
           </h1>
-          <a href="#" className="btn btn--primary fade-up fade-up--2">Conocé más</a>
+          <a href="/about" className="btn btn--primary fade-up fade-up--2">Conocé más</a>
         </div>
       </section>
 
@@ -140,7 +140,7 @@ export default function LandingPage() {
                 Tus datos nunca salen de tu entorno corporativo. DataScope actúa
                 como un filtro de privacidad activo.
               </p>
-              <a href="#" className="security__link">
+              <a href="/about" className="security__link">
                 Leer sobre seguridad
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1l6 6-6 6M1 7h12" stroke="#2ee88a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
               </a>
