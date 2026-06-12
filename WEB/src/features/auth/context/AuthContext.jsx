@@ -30,7 +30,6 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem("token")
         sessionStorage.removeItem("token")
 
-        // Solo borramos la cookie si existe, para no disparar eventos en cadena
         const cookieExists = getCookie("datascope_token")
         if (cookieExists) deleteCookie("datascope_token")
 
@@ -71,23 +70,18 @@ export const AuthProvider = ({ children }) => {
             const localToken = localStorage.getItem("token") || sessionStorage.getItem("token");
 
             if (!currentCookie && localToken) {
-                console.log("[Sync] Alerta: Cookie no encontrada en el DOM.");
+                console.log("[Sync] Cookie eliminada desde la extensión. Cerrando sesión en la web...");
+                logout();
             }
             else if (currentCookie && !localToken) {
-                console.log("[Sync] Nueva cookie detectada. Sincronizando sesión...");
+                console.log("[Sync] Nueva cookie detectada desde la extensión. Iniciando sesión...");
                 try {
                     const response = await getUserData(currentCookie);
-                    const userData = response.data?.user || response.data;
-                    if (userData) {
-                        setUser(userData);
-                        setIsLogged(true);
-                        sessionStorage.setItem("token", currentCookie);
-                    }
+                    setUser(response.data.user || response.data);
+                    setIsLogged(true);
+                    sessionStorage.setItem("token", currentCookie);
                 } catch (error) {
-                    console.error("Error al auto-loguear con la cookie de la extensión:", error);
-                    if (error.response?.status === 401 || error.response?.status === 403) {
-                        logout();
-                    }
+                    logout();
                 }
             }
         }

@@ -77,7 +77,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     if (msg.type === "WEB_LOGOUT") {
         (async () => {
             const cookie = await chrome.cookies.get({
-                url: "https://datascope-orhf.onrender.com/",
+                url: "https://datascope-web-pruebas.onrender.com",
                 name: "datascope_token"
             });
             if (!cookie) {
@@ -93,14 +93,11 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 chrome.cookies.onChanged.addListener(async (changeInfo) => {
     const { cookie, removed, cause } = changeInfo;
 
-    // 1. Evitar ciclos si la causa es interna o duplicada
     if (cause === "overwrite" || cause === "explicit") return;
 
-    // Verificar si estamos en un proceso de cambio controlado por la extensión
     const storageFlags = await chrome.storage.local.get("_clearing");
     if (storageFlags._clearing) return; 
 
-    // Corregir la validación del dominio (quitando barras cruzadas en strings)
     const validDomains = ["datascope-web-pruebas.onrender.com", "datascope-orhf.onrender.com", "onrender.com", "localhost", "192.168.0.128"];
     const isDomainValid = validDomains.some(domain => cookie.domain.includes(domain));
 

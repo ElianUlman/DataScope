@@ -1,4 +1,4 @@
-// Quita la barra '/' al final de la URL en producción
+const IS_LOCAL_DEV = false
 const WEB_URL = IS_LOCAL_DEV ? "http://192.168.0.128:5173" : "https://datascope-web-pruebas.onrender.com";
 const COOKIE_URL = IS_LOCAL_DEV ? "http://192.168.0.128" : "https://datascope-web-pruebas.onrender.com";
 
