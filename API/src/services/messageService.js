@@ -102,6 +102,7 @@ class messageService {
             console.log("=== [BACKEND SERVICIO] Pasando 'data' a BaseRepository ===");
             console.log(data);
 
+            data.category = category
             const message = await messageRepository.create(data, client)
             
             console.log("=== [BACKEND SERVICIO] Respuesta de messageRepository.create ===");

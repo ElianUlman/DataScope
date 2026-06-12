@@ -3,11 +3,13 @@ import axiosClient from "./axiosClient";
 function setCookie(name, value, days) {
   const expires = new Date()
   expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000)
-  document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;SameSite=Lax`
+  // SameSite=None and Secure are required for cross-site cookies to be sent
+  // Note: Secure requires HTTPS
+  document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;SameSite=None;Secure`
 }
 
 function deleteCookie(name) {
-  document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`
+  document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;SameSite=None;Secure`
 }
 
 export const userLogin = async (email, password) => {

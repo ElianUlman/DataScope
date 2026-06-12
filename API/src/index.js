@@ -10,14 +10,17 @@ import routesPrueba from './routes/routes.js';
 
 const app = express();
 
-app.use(cors());
+const corsOptions = {
+    origin: true, // reflect request origin — allows credentials across origins
+    credentials: true
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
 app.use('/api', routesPrueba);
 
 
 app.listen(3000, ()=>{
-
-    console.log("api corriendo en localhost:"+PORT);
-    
+        console.log("api corriendo en localhost:"+PORT);
 })
