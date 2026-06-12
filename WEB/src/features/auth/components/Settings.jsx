@@ -1,10 +1,10 @@
-import { useAuth } from "../../auth/context/AuthContext"
+import { useAuth } from "../context/AuthContext.jsx"
 import { useNavigate } from 'react-router-dom';
 import { useState } from "react";
 
 
 export default function Settings() {
-    const { user, isLogged, logout } = useAuth();
+    const { user, isLogged, logout, updateUserData } = useAuth();
     const navigate = useNavigate();
     
 
@@ -13,8 +13,9 @@ export default function Settings() {
     const [email, setEmail] = useState(user.email)
     
     const handleSubmit = () => {
-        //use imported hook
-        //navigate('/')
+
+        updateUserData(username, email)
+        navigate('/')
     }
 
     const handleLogout = () => {
@@ -83,7 +84,7 @@ export default function Settings() {
                 </div>
 
                 <div className="card-actions">
-                    <button className="btn-save">Guardar Cambios</button>
+                    <button className="btn-save" onClick={handleSubmit}>Guardar Cambios</button>
                     <button className="btn-logout" onClick={handleLogout}>Logout</button>
                 </div>
             </div>

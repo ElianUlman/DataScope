@@ -20,7 +20,7 @@ class userService {
     data.allowed_ais = ["chatgpt", "claude", "gemini", "other"]
     data.password = await bcrypt.hash(data.password, hashRounds);
 
-    
+
     return await userRepository.create(data);
   }
 
@@ -49,7 +49,26 @@ class userService {
   async changeUserData(data, userId) {
 
     blockFields(['creationdate', 'id'], data)
-    return await userRepository.update(userId, data)
+    try {
+      const user = await userRepository.update(userId, data)
+
+      const token = jwt.sign(
+        { id: user.id, username: user.name, email: user.email, allowed_ais: user.allowed_ais },
+        tokenWholePassword,
+        { expiresIn: "1h" }
+      );
+
+      const expiresInMs = 60 * 60 * 1000;
+      const expiresAt = Date.now() + expiresInMs;
+
+      return { token, expiresAt, user };
+      
+    } catch (error) {
+      throw error
+    }
+
+
+    return
 
 
 

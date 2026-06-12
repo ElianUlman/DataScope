@@ -53,6 +53,22 @@ export const getUserData = async (token) =>{
     }
   }
 
+  export const patchUser = async (token, data) => {
+    try {
+        const response = await axiosClient.patch("/user", data,
+            {
+                headers: {
+                    Authorization: token
+                }
+            })
+        return response
+
+    } catch (error) {
+
+        throw error
+    }
+}
+
 export const fullSignUp = async (companyName, companyTier, username, email, password) => {
     try {
         const response = await axiosClient.put(

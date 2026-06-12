@@ -2,7 +2,7 @@ import "./Perfil.css";
 import { useAuth } from "../features/auth/context/AuthContext";
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
-import Settings from "../features/settings/components/Settings";
+import Settings from "../features/auth/components/Settings.jsx";
 
 export default function Perfil() {
 

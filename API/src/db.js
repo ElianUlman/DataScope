@@ -1,6 +1,11 @@
 import pg from 'pg';
 import 'dotenv/config';
 
+export const pool = new pg.Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false }
+});
+
 //funcion para cuando estamos en el colegio con la configuraciones de conexion para su db
 /*
 export const pool=new pg.Pool({
@@ -24,10 +29,7 @@ export const pool=new pg.Pool({
  
 
 
-export const pool = new pg.Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false }
-});
+
 
 
 

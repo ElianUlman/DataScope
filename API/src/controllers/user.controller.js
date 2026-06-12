@@ -65,8 +65,18 @@ export const getUserData = async (req, res) => {
 
 export const updateUserData = async (req, res) => {
     try {
-        await userService.changeUserData(req.body, req.user.id)
-        res.status(204).send()
+        const { token, expiresAt, user } = await userService.changeUserData(req.body, req.user.id)
+        res.status(200).json({
+            success: true,
+            token: token,
+            expiresAt,
+            user: {
+                id: user.id,
+                username: user.name,
+                email: user.email,
+                allowed_ais: user.allowed_ais || []
+            }
+        });
     } catch (error) {
         console.log(error)
         res.status(500).json({ error: "error ocurred" })
