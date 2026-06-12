@@ -41,14 +41,14 @@ export default function Settings() {
                     <div className="form-field">
                         <label className="form-label">NOMBRE COMPLETO</label>
                         <div className="form-input">
-                            <input type="text" value={email} onChange={(e)=>setEmail(e.target.value)}/>
+                            <input type="text" value={username} onChange={(e)=>setUsername(e.target.value)}/>
                         </div>
                     </div>
 
                     <div className="form-field">
                         <label className="form-label">CORREO ELECTRÓNICO</label>
                         <div className="form-input">
-                            <input type="text" value={username} onChange={(e)=>setUsername(e.target.value)}/>
+                            <input type="text" value={email} onChange={(e)=>setEmail(e.target.value)}/>
                             
                         </div>
                     </div>

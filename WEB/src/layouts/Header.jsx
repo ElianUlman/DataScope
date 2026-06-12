@@ -40,6 +40,7 @@ const Header = () => {
                     <ul className="header__nav">
                         <li><Link to="/" className={rutaActual === '/' ? 'header__nav-active' : ''}>Home</Link></li>
                         <li><Link to="/about" className={rutaActual === '/about' ? 'header__nav-active' : ''}>About</Link></li>
+                        
                         <li><Link to="#">Pricing</Link></li>
                         <li><Link to="#">Tutorial</Link></li>
                         {isLogged && <li><a href="#" className={rutaActual === '/overview' ? 'header__nav-active' : ''}>Overview</a></li>}
