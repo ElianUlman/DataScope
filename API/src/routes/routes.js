@@ -1,7 +1,5 @@
 import {Router} from "express";
 
-
-
 import {
     AIsPorcentageByCompany,
     uploadMessage
@@ -18,7 +16,8 @@ import {
     getUserData,
     loginUser,
     createUser,
-    updateUserData
+    updateUserData,
+    uploadProfilePicture
 } from "../controllers/user.controller.js";
 
 import {
@@ -60,6 +59,7 @@ routes.put('/invite', authentication, adminAuth, createInvite)
 
 //PATCHS
 routes.patch('/user', authentication, updateUserData)
+routes.patch('/user/pfp', authentication, uploadProfilePicture)
 
 //POSTS
 routes.post('/login', loginUser)

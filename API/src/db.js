@@ -6,6 +6,19 @@ export const pool = new pg.Pool({
   ssl: { rejectUnauthorized: false }
 });
 
+
+//esto es para bucket storage (para guardar imagenes, como la foto de perfil, en la DB)
+import { createClient } from "@supabase/supabase-js";
+
+export const supabase = createClient(
+    process.env.SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_ROLE_KEY
+);
+
+
+
+
+
 //funcion para cuando estamos en el colegio con la configuraciones de conexion para su db
 /*
 export const pool=new pg.Pool({

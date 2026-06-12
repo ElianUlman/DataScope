@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 
 export const createUser = async (req, res) => {
     try {
-        
+
         const { name, email, password } = req.body
         await userService.createUser({ email, name, password })
         const { token, expiresAt, user } = await userService.login({ email, password })
@@ -31,7 +31,7 @@ export const loginUser = async (req, res) => {
         const { email, password } = req.body;
 
         const { token, expiresAt, user } = await userService.login({ email, password })
-        
+
 
 
 
@@ -81,4 +81,20 @@ export const updateUserData = async (req, res) => {
         console.log(error)
         res.status(500).json({ error: "error ocurred" })
     }
+}
+
+
+export const uploadProfilePicture = async (req, res) => {
+    try {
+        const result = await userService.uploadProfilePicture(
+            req.user,
+            req.file
+        );
+
+        res.status(200).json(result);
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ error: "error ocurred" })
+    }
+
 }

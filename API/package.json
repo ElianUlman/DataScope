@@ -13,7 +13,7 @@
   "dependencies": {
     "@anthropic-ai/sdk": "^0.100.1",
     "@google/genai": "^2.8.0",
-    "@supabase/supabase-js": "^2.108.0",
+    "@supabase/supabase-js": "^2.108.1",
     "@xenova/transformers": "^2.0.1",
     "bcrypt": "^6.0.0",
     "body-parser": "^2.2.2",
@@ -23,6 +23,7 @@
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
     "mssql": "^12.2.1",
+    "multer": "^2.1.1",
     "natural": "^8.1.1",
     "pg": "^8.20.0",
     "silabajs": "^2.1.0",
