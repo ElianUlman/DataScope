@@ -1,16 +1,27 @@
 import 'dotenv/config'
 import nlp from 'compromise'
 import natural from 'natural'
-import { pipeline } from '@xenova/transformers'
+import { pipeline, env } from '@xenova/transformers'
+import LanguageDetect from 'languagedetect'
+import translate from 'translate'
 
+// OPTIMIZACIONES EXTREMAS DE MEMORIA:
+// 1. Forzamos a que use un solo hilo de procesamiento
+env.backends.onnx.wasm.numThreads = 1;
+// 2. Desactivamos el proxy de workers para no duplicar memoria
+env.backends.onnx.wasm.proxy = false;
+// 3. Desactivar variables locales extras si no hacen falta
+env.allowLocalModels = true; 
+env.useBrowserCache = false;
 
 import { encoding_for_model, get_encoding } from "tiktoken";
 
 import { GoogleGenAI } from '@google/genai';
 const gemini = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY }); 
 
+const lngDetector = new LanguageDetect();
+
 let clasificador = null
-let traductor = null
 
 let textoOriginal = ""
 let texto
@@ -24,11 +35,10 @@ let analisis = {
 }
 
 export async function initClasificador() {
-    console.log("Cargando modelos locales de IA (Clasificación y Traducción)...")
+    console.log("Cargando modelo local de IA (Clasificación)...")
     // Forzamos quantized: true para asegurar el menor consumo de memoria posible
     if (!clasificador) clasificador = await pipeline('zero-shot-classification', 'Xenova/mobilebert-uncased-mnli', { quantized: true })
-    if (!traductor) traductor = await pipeline('translation', 'Xenova/opus-mt-es-en', { quantized: true })
-    console.log("Modelos listos")
+    console.log("Modelo listo")
 }
 
 export function setPrompt(prompt) {
@@ -37,22 +47,22 @@ export function setPrompt(prompt) {
 }
 
 export async function preProcesarPrompt() {
-    if (clasificador && traductor) {
-        // Usamos la IA de clasificación Zero-Shot que YA tienes cargada para adivinar el idioma
-        const deteccion = await clasificador(textoOriginal, ['english', 'spanish']);
-        const idiomaDetectado = deteccion.labels[0];
-        const confianza = deteccion.scores[0];
+    // Usamos languagedetect (0MB de consumo local) para adivinar el idioma
+    const detecciones = lngDetector.detect(textoOriginal, 1);
+    const idiomaDetectado = detecciones.length > 0 ? detecciones[0][0] : 'english';
+    const confianza = detecciones.length > 0 ? detecciones[0][1] : 0;
         
-        console.log(`[ANALIZER] Idioma detectado (Zero-Shot): ${idiomaDetectado} (Confianza: ${(confianza * 100).toFixed(2)}%)`);
+    console.log(`[ANALIZER] Idioma detectado (Languagedetect): ${idiomaDetectado} (Confianza: ${(confianza * 100).toFixed(2)}%)`);
 
-        if (idiomaDetectado === 'spanish' && confianza > 0.5) {
-            console.log("[ANALIZER] Traduciendo prompt al inglés para generar métricas correctas...");
+    if (idiomaDetectado === 'spanish') {
+        console.log("[ANALIZER] Traduciendo prompt al inglés para generar métricas correctas...");
             
-            // Usamos el modelo local de traducción cuantizado
-            const resultado = await traductor(textoOriginal);
-            texto = resultado[0].translation_text;
-            console.log(`[ANALIZER] Texto traducido: "${texto}"`);
-        }
+        // Usamos la API pública de Google Translate sin costo ni consumo de RAM local
+        translate.engine = 'google';
+        texto = await translate(textoOriginal, { from: 'es', to: 'en' });
+        console.log(`[ANALIZER] Texto traducido: "${texto}"`);
+    } else {
+        texto = textoOriginal;
     }
 
     // Generamos las palabras (sustantivos, verbos, etc) en base al texto traducido
@@ -208,6 +218,15 @@ export async function clasificate() {
 
     console.log("-----CLASIFICACION-----")
     console.log(clasificacion)
+
+    // DESTRUCCIÓN DE VARIABLES GLOBALES:
+    // Al vaciar estas variables, le decimos al Garbage Collector 
+    // que ya puede reclamar y liberar esta memoria RAM.
+    textoOriginal = ""
+    texto = ""
+    analisis.tokens = []
+    analisis.sustantivos = []
+    analisis.verbos = []
 
     return clasificacion
 }
