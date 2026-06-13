@@ -67,13 +67,3 @@ routes.post('/login', loginUser)
 routes.post('/message', authentication, uploadMessage) //authentication is deleted for now. Later it will need one (as to link users to their prompts).
 
 export default routes;
-
-
-
-
-
-
-
-
-
-

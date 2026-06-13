@@ -1,7 +1,9 @@
 import messageRepository from "../repositories/messageRepository.js"
 import statisticRepository from "../repositories/statisticRepository.js"
 import { pool } from "../db.js";
-import { setPrompt, getWords, tokenize, calcularComplejidad, clasificate, initClasificador, averageComplexity, preProcesarPrompt } from "../utils/analizer.js"
+import { initClasificador, translateText, clasificate } from "../utils/mlService.js"
+import { getWords } from "../utils/nlpService.js"
+import { averageComplexity } from "../utils/metricsService.js"
 
 import { validateFields, blockFields } from "../utils/validationUtils.js";
 
@@ -56,17 +58,20 @@ class messageService {
 
         //analizer.js no analiza ni claridad, ni "clarity examples" ni "clarity costraints" (asi que voy a igualarlos a 1 y despues los hacemos)
         
-        setPrompt(data.content)
         //const cantTokens = tokenize(data.content, data.platform)
 
         await initClasificador();
-        await preProcesarPrompt();
         
-        const {categoria: category} = await clasificate();
+        console.log("Traduciendo texto a inglés para NLP y Clasificación...");
+        const textoTraducido = await translateText(data.content);
+        
+        const analisis = getWords(textoTraducido);
+        
+        const {categoria: category} = await clasificate(textoTraducido);
 
         console.log(`[API MESSAGE RECEIVED] Plataforma: ${data.platform} | Categoría: ${category} | Contenido: "${data.content}"`);
 
-        let complexityValue = await averageComplexity();
+        let complexityValue = averageComplexity(analisis);
 
         const objectStatistics={
             message_id: 0,
