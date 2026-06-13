@@ -10,7 +10,6 @@ const gemini = new GoogleGenAI({ apiKey: 'AQ.Ab8RN6IL-TNZTZM7op8hJZJPDbK061mJTy2
 
 
 let clasificador = null
-let detectorIdioma = null
 let traductor = null
 
 let textoOriginal = ""
@@ -25,9 +24,8 @@ let analisis = {
 }
 
 export async function initClasificador() {
-    console.log("Cargando modelos locales de IA (Clasificación, Detección y Traducción)...")
+    console.log("Cargando modelos locales de IA (Clasificación y Traducción)...")
     if (!clasificador) clasificador = await pipeline('zero-shot-classification', 'Xenova/mobilebert-uncased-mnli')
-    if (!detectorIdioma) detectorIdioma = await pipeline('text-classification', 'protectai/xlm-roberta-base-language-detection-onnx', { quantized: false })
     if (!traductor) traductor = await pipeline('translation', 'Xenova/opus-mt-es-en')
     console.log("Modelos listos")
 }
@@ -38,12 +36,15 @@ export function setPrompt(prompt) {
 }
 
 export async function preProcesarPrompt() {
-    if (detectorIdioma && traductor) {
-        const deteccion = await detectorIdioma(textoOriginal);
-        const idioma = deteccion[0].label;
-        console.log(`[ANALIZER] Idioma detectado: ${idioma} (Confianza: ${(deteccion[0].score * 100).toFixed(2)}%)`);
+    if (clasificador && traductor) {
+        // Usamos la IA de clasificación Zero-Shot que YA tienes cargada para adivinar el idioma
+        const deteccion = await clasificador(textoOriginal, ['english', 'spanish']);
+        const idiomaDetectado = deteccion.labels[0];
+        const confianza = deteccion.scores[0];
+        
+        console.log(`[ANALIZER] Idioma detectado (Zero-Shot): ${idiomaDetectado} (Confianza: ${(confianza * 100).toFixed(2)}%)`);
 
-        if (idioma !== 'en' && idioma === 'es') {
+        if (idiomaDetectado === 'spanish' && confianza > 0.5) {
             console.log("[ANALIZER] Traduciendo prompt al inglés para generar métricas correctas...");
             const resultado = await traductor(textoOriginal);
             texto = resultado[0].translation_text;
