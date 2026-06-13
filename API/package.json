@@ -11,6 +11,8 @@
     "start": "node src/index.js"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.100.1",
+    "@google/genai": "^2.8.0",
     "@xenova/transformers": "^2.0.1",
     "bcrypt": "^6.0.0",
     "body-parser": "^2.2.2",
@@ -22,7 +24,8 @@
     "mssql": "^12.2.1",
     "natural": "^8.1.1",
     "pg": "^8.20.0",
-    "silabajs": "^2.1.0"
+    "silabajs": "^2.1.0",
+    "tiktoken": "^1.0.22"
   },
   "devDependencies": {
     "nodemon": "^3.1.14"

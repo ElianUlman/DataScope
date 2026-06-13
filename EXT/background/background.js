@@ -76,7 +76,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     if (msg.type === "WEB_LOGOUT") {
         (async () => {
             const cookie = await chrome.cookies.get({
-                url: "https://datascope-orhf.onrender.com/",
+                url: "https://datascope-web-pruebas.onrender.com",
                 name: "datascope_token"
             });
             if (!cookie) {
@@ -94,23 +94,20 @@ chrome.cookies.onChanged.addListener(async (changeInfo) => {
 
     if (cause === "overwrite" || cause === "explicit") return;
 
-    const validDomains = ["datascope-web-pruebas.onrender.com", "datascope-orhf.onrender.com/", "onrender.com", "localhost", "192.168.0.128"];
+    const storageFlags = await chrome.storage.local.get("_clearing");
+    if (storageFlags._clearing) return; 
+
+    const validDomains = ["datascope-web-pruebas.onrender.com", "datascope-orhf.onrender.com", "onrender.com", "localhost", "192.168.0.128"];
     const isDomainValid = validDomains.some(domain => cookie.domain.includes(domain));
 
     if (!isDomainValid || cookie.name !== "datascope_token") return;
 
     if (!removed) {
-        // Cookie seteada desde la web → logueamos la extensión
         await chrome.storage.local.set({
             token: cookie.value,
-            expiresAt: cookie.expirationDate ? cookie.expirationDate * 1000 : Date.now() + (60 * 60 * 1000)
+            expiresAt: cookie.expirationDate ? cookie.expirationDate * 1000 : Date.now() + (24 * 60 * 60 * 1000)
         });
     } else {
-        // Cookie borrada desde la web → deslogueamos la extensión
-        const storage = await chrome.storage.local.get(["token", "_clearing"]);
-        if (storage._clearing) return;
-        if (storage.token) {
-            await chrome.storage.local.remove(["token", "expiresAt", "user"]);
-        }
+        await chrome.storage.local.remove(["token", "expiresAt", "user"]);
     }
 });

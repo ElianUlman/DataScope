@@ -6,6 +6,40 @@ import { setPrompt, getWords, tokenize, calcularComplejidad, clasificate, initCl
 import { validateFields, blockFields } from "../utils/validationUtils.js";
 
 class messageService {
+
+    async getUsedAiPorcentages(data){
+        validateFields(["companyId"], data)
+
+        const Ais = await messageRepository.getUsedAIs(data.companyId);
+        
+        let geminiCount=0, chatgptCount=0, claudeCount=0, otherCount=0
+
+        for(let i=0; i<Ais.length; i++){
+            if(Ais[i].platform?.includes("gemini")  ){
+                geminiCount++
+            }else if(Ais[i].platform?.includes("chatgpt")){
+                chatgptCount++
+            }else if(Ais[i].platform?.includes("claude")){
+                claudeCount++
+            }else{
+                otherCount++
+            }
+        }
+
+        //((Math.floor(((geminiCount * 100)/Ais.length)))/100)
+
+        return {
+            gemini: (Math.floor(((geminiCount * 100)/Ais.length)*100))/100+"%",
+            chatgpt: (Math.floor(((chatgptCount * 100)/Ais.length)*100))/100+"%",
+            claude: (Math.floor(((claudeCount * 100)/Ais.length)*100))/100+"%",
+            other: (Math.floor(((otherCount * 100)/Ais.length)*100))/100+"%"
+        }
+
+        
+    }
+
+
+
     
     async uploadMessage(data) {
         // 🔴 LOG 1: Ver qué contiene exactamente el objeto "data" que llegó al servicio
@@ -27,16 +61,16 @@ class messageService {
         //analizer.js no analiza ni claridad, ni "clarity examples" ni "clarity costraints" (asi que voy a igualarlos a 1 y despues los hacemos)
         
         setPrompt(data.content)
-        const cantTokens = tokenize()
+        //const cantTokens = tokenize(data.content, data.platform)
 
         await initClasificador();
         const {categoria: category} = await clasificate();
 
         const objectStatistics={
             message_id: 0,
-            used_tokens: cantTokens,
+            //used_tokens: cantTokens,
             latency_ms: 1,
-            estimated_cost: (cantTokens*0.0000001),
+            //estimated_cost: (cantTokens*0.0000001),
             category: category,
             clarity: 1,
             complexity: await averageComplexity(),

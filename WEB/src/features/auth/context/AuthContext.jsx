@@ -30,7 +30,6 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem("token")
         sessionStorage.removeItem("token")
 
-        // Solo borramos la cookie si existe, para no disparar eventos en cadena
         const cookieExists = getCookie("datascope_token")
         if (cookieExists) deleteCookie("datascope_token")
 

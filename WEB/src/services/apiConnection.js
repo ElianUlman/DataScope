@@ -31,8 +31,6 @@ export const userLogin = async (email, password) => {
   }
 };
 
-
-
 export const getUserData = async (token) => {
   try {
     const response = await axiosClient.get("/userdata", {
@@ -91,3 +89,4 @@ export const logOut = () => {
   sessionStorage.clear();
   deleteCookie("datascope_token");
 }
+

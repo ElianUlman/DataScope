@@ -2,10 +2,15 @@ import nlp from 'compromise'
 import natural from 'natural'
 import { pipeline } from '@xenova/transformers'
 
+
+import { encoding_for_model, get_encoding } from "tiktoken";
+
+import { GoogleGenAI } from '@google/genai';
+const gemini = new GoogleGenAI({ apiKey: 'AQ.Ab8RN6IL-TNZTZM7op8hJZJPDbK061mJTy27vBCnhuAIu5sByw' }); 
+
+
 let clasificador = null
 
-//btw chatgpt me dijo que es mejor no hacer variables globales por si le llegan muchos
-//request a la API (porque entonces se podria llegar a sobrescribir el valor)
 let texto
 let analisis = {
     tokens: [],
@@ -22,7 +27,7 @@ export async function initClasificador() {
     console.log("Modelo listo")
 }
 
-export function setPrompt(prompt){
+export function setPrompt(prompt) {
     texto = prompt
 }
 
@@ -41,32 +46,58 @@ export function getWords() {
     console.log("Oraciones:", analisis.oraciones)
 }
 
-export function tokenize() {
-    const tokenizer = new natural.WordTokenizer()
-    analisis.tokens = tokenizer.tokenize(texto)
-    analisis.tokensUnicos = new Set(analisis.tokens).size
+export async function tokenize(prompt, AI) {
 
-    console.log("-----TOKENS-----")
-    console.log("Tokens:", analisis.tokens)
-    console.log("Cantidad:", analisis.tokens.length)
-    console.log("Únicos:", analisis.tokensUnicos)
 
-    return analisis.tokens.length
+    if (AI === "chatgpt") {
+        return encoding_for_model("gpt-4").encode(prompt).length
+    } else if (AI === "claude") {
+        //para contar bien las tokens de claude, se necesita una key (que NO es gratuita)
+        return get_encoding("cl100k_base").encode(prompt).length
+
+    } else if (AI === "gemini") {
+        const result = await gemini.models.countTokens({
+            model: 'gemini-2.5-flash',
+            contents: prompt,
+        })
+        return result.totalTokens;
+        
+    }else{
+        return tokenizer.tokenize(prompt).length
+    }
+
+    //datascope26@gmail.com datascope1234
+
+
+    /** old
+        const tokenizer = new natural.WordTokenizer()
+        analisis.tokens = tokenizer.tokenize(texto)
+        analisis.tokensUnicos = new Set(analisis.tokens).size
+
+        console.log("-----TOKENS-----")
+        console.log("Tokens:", analisis.tokens)
+        console.log("Cantidad:", analisis.tokens.length)
+        console.log("Únicos:", analisis.tokensUnicos)
+
+        return analisis.tokens.length
+     
+     */
+
 }
 
 //bandaid function
-export function averageComplexity(){ 
+export function averageComplexity() {
     const complexity = calcularComplejidad()
 
-    let averageComplexity=0
-    let atributeCounter=0
-    for(let atribute of Object.values(complexity)){
-        if(typeof(atribute) === typeof(1) || typeof(atribute) === typeof(1.1)){
-            averageComplexity+=atribute;
+    let averageComplexity = 0
+    let atributeCounter = 0
+    for (let atribute of Object.values(complexity)) {
+        if (typeof (atribute) === typeof (1) || typeof (atribute) === typeof (1.1)) {
+            averageComplexity += atribute;
             atributeCounter++;
         }
     }
-    averageComplexity=(Math.floor((averageComplexity/atributeCounter)*100))/100
+    averageComplexity = (Math.floor((averageComplexity / atributeCounter) * 100)) / 100
     return averageComplexity
 }
 
@@ -113,7 +144,17 @@ export async function clasificate() {
         "creative_writing",
         "data_analysis",
         "translation",
-        "general_question"
+        "general_question",
+        "summarization",
+        "email_drafting",
+        "document_editing",
+        "research",
+        "brainstorming",
+        "math_and_calculations",
+        "customer_support",
+        "legal_or_compliance_question",
+        "human_resources",
+        "presentation_or_report_creation"
     ]
 
     const resultado = await clasificador(texto, categorias)

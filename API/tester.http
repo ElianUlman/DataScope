@@ -4,7 +4,15 @@
 ### eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJNaWNoYWVsU2NvdHQiLCJpYXQiOjE3NzgwOTAwNzgsImV4cCI6MTc3ODA5MzY3OH0.0sUWWmwxdXMiomTGTWJsPI05K58XR4jeoOopZWlmDEo
 GET http://localhost:3000/api/statsAvg
 Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJNaWNoYWVsU2NvdHQiLCJpYXQiOjE3NzkxMTQ1MDcsImV4cCI6MTc3OTExODEwN30.uALCH2EucNgN039UBifeTeWIbrLlvXBaAnXhYNFpfjU
+###
+POST http://localhost:3000/api/login
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjIsInVzZXJuYW1lIjoidGVzdEVtcGxveWVlIiwiaWF0IjoxNzc4MDk0ODA1LCJleHAiOjE3NzgwOTg0MDV9.sJpfWkUzejLYtV4bmqtioFRpgeX98w3OppjbTC4WqQY
+Content-Type: application/json
 
+{
+    "email": "michaelscott@gmail.com",
+    "companyId": "password"
+}
 
 ###
 POST http://localhost:3000/api/login
@@ -12,8 +20,8 @@ Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjIsInVzZXJuYW1lIjoi
 Content-Type: application/json
 
 {
-    "email": "testingsession@hotmail.com",
-    "password": "this_is_the_password"
+    "email": "michaelscott@gmail.com",
+    "password": "password"
 }
 ###
 PATCH http://localhost:3000/api/user

@@ -116,6 +116,12 @@
   outline: none;
 }
 
+.error-text {
+  color: #ff4d4f;
+  font-size: 14px;
+  margin-bottom: 18px;
+}
+
 .login-btn {
   width: 100%;
   border: none;
