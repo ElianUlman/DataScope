@@ -41,10 +41,7 @@
       "run_at": "document_idle"
     },
     {
-      "matches": [
-        "https://chatgpt.com/*",
-        "https://claude.ai/*"
-      ],
+      "matches": ["<all_urls>"],
       "js": ["content/modelDetector.js"],
       "world": "MAIN",
       "run_at": "document_start"

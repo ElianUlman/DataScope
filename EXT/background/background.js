@@ -43,7 +43,6 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
                     const username = data.user?.username || data.user?.name || "User";
                     const userData = { username, allowedAis: listaIAs, privateMode: false };
 
-                    // Guarda en storage y cookie (ahora sin romperse)
                     await saveSession(data.token, data.expiresAt, userData);
                     sendResponse({ ok: true, token: data.token });
                 } else {
