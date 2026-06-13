@@ -37,7 +37,7 @@ let analisis = {
 export async function initClasificador() {
     console.log("Cargando modelo local de IA (Clasificación)...")
     // Forzamos quantized: true para asegurar el menor consumo de memoria posible
-    if (!clasificador) clasificador = await pipeline('zero-shot-classification', 'Xenova/mobilebert-uncased-mnli', { quantized: true })
+    if (!clasificador) clasificador = await pipeline('zero-shot-classification', 'Xenova/nli-deberta-v3-xsmall', { quantized: true })
     console.log("Modelo listo")
 }
 
@@ -203,7 +203,7 @@ export async function clasificate() {
 
     // Añadimos un hypothesis_template para darle más contexto direccional al clasificador
     const resultado = await clasificador(texto, categorias, {
-        hypothesis_template: "This text is a {}."
+        hypothesis_template: "This message is related to {}."
     })
 
     // Volvemos a colocar los guiones bajos para no romper tu base de datos
