@@ -64,6 +64,8 @@ class messageService {
 
         console.log(`[API MESSAGE RECEIVED] Plataforma: ${data.platform} | Categoría: ${category} | Contenido: "${data.content}"`);
 
+        let complexityValue = await averageComplexity();
+
         const objectStatistics={
             message_id: 0,
             used_tokens: 1,
@@ -71,7 +73,7 @@ class messageService {
             estimated_cost: (1*0.0000001),
             category: category,
             clarity: 1,
-            complexity: await averageComplexity(),
+            complexity: Number.isNaN(complexityValue) ? 0 : (complexityValue || 0),
             clarity_examples: 1,
             clarity_constraints: 1
         }

@@ -73,17 +73,13 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     }
 
     if (msg.type === "WEB_LOGOUT") {
-        (async () => {
-            const cookie = await chrome.cookies.get({
-                url: "https://datascope-web-pruebas.onrender.com",
-                name: "datascope_token"
-            });
-            if (!cookie) {
-                await chrome.storage.local.remove(["token", "expiresAt", "user"]);
-                console.log("[Background] Logout desde la web confirmado, sesión limpiada.");
-            }
+        clearSession().then(() => {
+            console.log("[Background] Logout desde la web confirmado, sesión limpiada.");
             sendResponse({ ok: true });
-        })();
+        }).catch(err => {
+            console.error("[EXT LOGOUT ERROR] Fallo al limpiar sesión desde web:", err);
+            sendResponse({ ok: false, error: err.message });
+        });
         return true;
     }
 });
