@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - Elian
-    # El workflow solo se dispara si hay cambios reales dentro de la carpeta de la API
     paths:
       - 'API/**'
       - '.github/workflows/deploy.yml'
@@ -16,18 +15,17 @@ jobs:
       - name: Checkout del código
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Es obligatorio para que git subtree pueda calcular el historial
+          fetch-depth: 0
 
       - name: Push a Hugging Face Spaces
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
-          # Configuramos un usuario temporal de Git para evitar conflictos en el entorno virtual
           git config --global user.email "actions@github.com"
           git config --global user.name "GitHub Actions"
 
-          # Añadimos el repositorio remoto de Hugging Face
           git remote add hf https://user:$HF_TOKEN@huggingface.co/spaces/datascope26/datascope-api
           
-          # Extrae SOLO el contenido de la carpeta API y lo empuja con fuerza al main de Hugging Face
-          git subtree push --prefix API hf main
+          git subtree split --prefix API -b deploy-branch
+          
+          git push hf deploy-branch:main --force
