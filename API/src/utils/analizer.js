@@ -27,7 +27,7 @@ let analisis = {
 export async function initClasificador() {
     console.log("Cargando modelos locales de IA (Clasificación, Detección y Traducción)...")
     if (!clasificador) clasificador = await pipeline('zero-shot-classification', 'Xenova/mobilebert-uncased-mnli')
-    if (!detectorIdioma) detectorIdioma = await pipeline('text-classification', 'protectai/xlm-roberta-base-language-detection-onnx')
+    if (!detectorIdioma) detectorIdioma = await pipeline('text-classification', 'protectai/xlm-roberta-base-language-detection-onnx', { quantized: false })
     if (!traductor) traductor = await pipeline('translation', 'Xenova/opus-mt-es-en')
     console.log("Modelos listos")
 }
