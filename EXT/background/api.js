@@ -1,5 +1,5 @@
 const API_LOCAL = "http://10.152.2.105:3000/api"
-const API_CLOUD = "https://datascope-api-pruebas.onrender.com/api"
+const API_CLOUD = "https://datascope26-datascope-api.hf.space/api"
 const API_CASA = "http://192.168.0.128:3000/api"
 
 export async function sendMessage(content, platform, model, token) {

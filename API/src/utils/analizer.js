@@ -2,8 +2,6 @@ import 'dotenv/config'
 import nlp from 'compromise'
 import natural from 'natural'
 import { pipeline, env } from '@xenova/transformers'
-import LanguageDetect from 'languagedetect'
-import translate from 'translate'
 
 // OPTIMIZACIONES EXTREMAS DE MEMORIA:
 // 1. Forzamos a que use un solo hilo de procesamiento
@@ -11,17 +9,16 @@ env.backends.onnx.wasm.numThreads = 1;
 // 2. Desactivamos el proxy de workers para no duplicar memoria
 env.backends.onnx.wasm.proxy = false;
 // 3. Desactivar variables locales extras si no hacen falta
-env.allowLocalModels = true; 
+env.allowLocalModels = true;
 env.useBrowserCache = false;
 
 import { encoding_for_model, get_encoding } from "tiktoken";
 
 import { GoogleGenAI } from '@google/genai';
-const gemini = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY }); 
-
-const lngDetector = new LanguageDetect();
+const gemini = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 let clasificador = null
+let traductor = null
 
 let textoOriginal = ""
 let texto
@@ -35,10 +32,19 @@ let analisis = {
 }
 
 export async function initClasificador() {
-    console.log("Cargando modelo local de IA (Clasificación)...")
-    // Forzamos quantized: true para asegurar el menor consumo de memoria posible
-    if (!clasificador) clasificador = await pipeline('zero-shot-classification', 'Xenova/nli-deberta-v3-xsmall', { quantized: true })
-    console.log("Modelo listo")
+    console.log("Cargando modelos locales de IA...")
+
+    // 1. Modelo de traducción (Confirmado que funciona)
+    if (!traductor) {
+        traductor = await pipeline('translation', 'Xenova/opus-mt-es-en', { quantized: true })
+    }
+
+    // 2. Modelo de clasificación (Usamos un clásico que no falla en el hub de Xenova)
+    if (!clasificador) {
+        clasificador = await pipeline('zero-shot-classification', 'Xenova/nli-deberta-v3-large', { quantized: true })
+    }
+
+    console.log("Modelos listos")
 }
 
 export function setPrompt(prompt) {
@@ -47,25 +53,16 @@ export function setPrompt(prompt) {
 }
 
 export async function preProcesarPrompt() {
-    // Usamos languagedetect (0MB de consumo local) para adivinar el idioma
-    const detecciones = lngDetector.detect(textoOriginal, 1);
-    const idiomaDetectado = detecciones.length > 0 ? detecciones[0][0] : 'english';
-    const confianza = detecciones.length > 0 ? detecciones[0][1] : 0;
-        
-    console.log(`[ANALIZER] Idioma detectado (Languagedetect): ${idiomaDetectado} (Confianza: ${(confianza * 100).toFixed(2)}%)`);
+    console.log("Traduciendo texto a inglés para NLP y Clasificación...")
 
-    if (idiomaDetectado === 'spanish') {
-        console.log("[ANALIZER] Traduciendo prompt al inglés para generar métricas correctas...");
-            
-        // Usamos la API pública de Google Translate sin costo ni consumo de RAM local
-        translate.engine = 'google';
-        texto = await translate(textoOriginal, { from: 'es', to: 'en' });
-        console.log(`[ANALIZER] Texto traducido: "${texto}"`);
-    } else {
-        texto = textoOriginal;
-    }
+    // TRADUCCIÓN OBLIGATORIA
+    const resultadoTrad = await traductor(textoOriginal)
+    texto = resultadoTrad[0].translation_text
 
-    // Generamos las palabras (sustantivos, verbos, etc) en base al texto traducido
+    console.log("Texto traducido:", texto)
+
+    // A partir de aquí, 'texto' está en inglés. 
+    // Compromise extraerá sustantivos y verbos perfectamente.
     getWords()
 
     // Generamos los tokens aquí para que la métrica de 'complejidad' no falle
@@ -104,13 +101,10 @@ export async function tokenize(prompt, AI) {
             contents: prompt,
         })
         return result.totalTokens;
-        
-    }else{
+
+    } else {
         return tokenizer.tokenize(prompt).length
     }
-
-    //datascope26@gmail.com datascope1234
-
 
     /** old
         const tokenizer = new natural.WordTokenizer()
@@ -184,26 +178,18 @@ export async function clasificate() {
 
     // Usamos espacios en lugar de guiones bajos para que el modelo entienda el lenguaje natural
     const categorias = [
-        "technical programming question",
-        "creative writing",
-        "data analysis",
-        "translation",
-        "general question",
-        "summarization",
-        "email drafting",
-        "document editing",
-        "research",
-        "brainstorming",
-        "math and calculations",
-        "customer support",
-        "legal or compliance question",
-        "human resources",
-        "presentation or report creation"
+        "development and coding",
+        "data and math",
+        "text generation and editing",
+        "research and learning",
+        "brainstorming and creativity",
+        "general and support"
     ]
 
     // Añadimos un hypothesis_template para darle más contexto direccional al clasificador
     const resultado = await clasificador(texto, categorias, {
-        hypothesis_template: "This message is related to {}."
+        hypothesis_template: "This message is related to {}.",
+        multi_label: true
     })
 
     // Volvemos a colocar los guiones bajos para no romper tu base de datos
@@ -218,15 +204,6 @@ export async function clasificate() {
 
     console.log("-----CLASIFICACION-----")
     console.log(clasificacion)
-
-    // DESTRUCCIÓN DE VARIABLES GLOBALES:
-    // Al vaciar estas variables, le decimos al Garbage Collector 
-    // que ya puede reclamar y liberar esta memoria RAM.
-    textoOriginal = ""
-    texto = ""
-    analisis.tokens = []
-    analisis.sustantivos = []
-    analisis.verbos = []
 
     return clasificacion
 }

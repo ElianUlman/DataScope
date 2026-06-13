@@ -1,4 +1,4 @@
-export const PORT=process.env.PORT || 3000
+export const PORT = process.env.PORT || 7860;
 export const hashRounds = 10;
 export const tokenWholePassword = "horse lamp plane fart";
 /*

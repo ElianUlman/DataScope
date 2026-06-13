@@ -50,3 +50,109 @@ Content-Type: application/json
 ###2gulag@siberia.ru: t-34
 
 
+
+
+POST https://datascope26-datascope-api.hf.space/api/message
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OSwidXNlcm5hbWUiOiIxMjM0IiwiZW1haWwiOiIxMjM0QGdtYWlsLmNvbSIsImFsbG93ZWRfYWlzIjoie2NoYXRncHQsY2xhdWRlLGdlbWluaSxvdGhlcn0iLCJpYXQiOjE3ODEzNzA1NjIsImV4cCI6MTc4MTM3NDE2Mn0.OEp-hgzz8K28wyGeJ5exj1EPVIqZwWG4ALZu5lZ7Fk4
+Content-Type: application/json
+
+{
+    "content": "Tengo un bug en la base de datos de PostgreSQL, ¿cómo hago un inner join entre users y companies?",    
+    "platform": "chatgpt",
+    "sender": "user"
+}
+
+### Prueba 2 (Para ver si cambia la categoría)
+POST https://datascope26-datascope-api.hf.space/api/message
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OSwidXNlcm5hbWUiOiIxMjM0IiwiZW1haWwiOiIxMjM0QGdtYWlsLmNvbSIsImFsbG93ZWRfYWlzIjoie2NoYXRncHQsY2xhdWRlLGdlbWluaSxvdGhlcn0iLCJpYXQiOjE3ODEzNzA1NjIsImV4cCI6MTc4MTM3NDE2Mn0.OEp-hgzz8K28wyGeJ5exj1EPVIqZwWG4ALZu5lZ7Fk4
+Content-Type: application/json
+
+{
+    "content": "Traduce este correo formal al inglés para un cliente importante",
+    "platform": "claude",
+    "sender": "user"
+}
+
+### =======================================================================
+### PRUEBA 3: Categoría esperada -> development_and_coding
+### (Testea palabras clave técnicas mixtas: React, useEffect, loop infinito)
+### =======================================================================
+POST https://datascope26-datascope-api.hf.space/api/message
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OSwidXNlcm5hbWUiOiIxMjM0IiwiZW1haWwiOiIxMjM0QGdtYWlsLmNvbSIsImFsbG93ZWRfYWlzIjoie2NoYXRncHQsY2xhdWRlLGdlbWluaSxvdGhlcn0iLCJpYXQiOjE3ODEzNzA1NjIsImV4cCI6MTc4MTM3NDE2Mn0.OEp-hgzz8K28wyGeJ5exj1EPVIqZwWG4ALZu5lZ7Fk4
+Content-Type: application/json
+
+{
+    "content": "Mi componente de React se queda encerrado en un loop infinito cuando renderizo la lista, creo que el problema está en las dependencias del useEffect. ¿Me das una mano?",
+    "platform": "chatgpt",
+    "sender": "user"
+}
+
+### =======================================================================
+### PRUEBA 4: Categoría esperada -> data_and_math
+### (Testea lógica matemática y análisis numérico aplicado a negocio)
+### =======================================================================
+POST https://datascope26-datascope-api.hf.space/api/message
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OSwidXNlcm5hbWUiOiIxMjM0IiwiZW1haWwiOiIxMjM0QGdtYWlsLmNvbSIsImFsbG93ZWRfYWlzIjoie2NoYXRncHQsY2xhdWRlLGdlbWluaSxvdGhlcn0iLCJpYXQiOjE3ODEzNzA1NjIsImV4cCI6MTc4MTM3NDE2Mn0.OEp-hgzz8K28wyGeJ5exj1EPVIqZwWG4ALZu5lZ7Fk4
+Content-Type: application/json
+
+{
+    "content": "Necesito la fórmula de Excel para calcular el desvío estándar de la columna de ingresos mensuales y sacar el promedio ponderado del trimestre.",
+    "platform": "gemini",
+    "sender": "user"
+}
+
+### =======================================================================
+### PRUEBA 5: Categoría esperada -> text_generation_and_editing
+### (Testea redacción corporativa y síntesis de contenido)
+### =======================================================================
+POST https://datascope26-datascope-api.hf.space/api/message
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OSwidXNlcm5hbWUiOiIxMjM0IiwiZW1haWwiOiIxMjM0QGdtYWlsLmNvbSIsImFsbG93ZWRfYWlzIjoie2NoYXRncHQsY2xhdWRlLGdlbWluaSxvdGhlcn0iLCJpYXQiOjE3ODEzNzA1NjIsImV4cCI6MTc4MTM3NDE2Mn0.OEp-hgzz8K28wyGeJ5exj1EPVIqZwWG4ALZu5lZ7Fk4
+Content-Type: application/json
+
+{
+    "content": "Redacta un correo electrónico formal notificando al equipo de compras que el presupuesto de infraestructura fue aprobado y que necesitamos coordinar la firma del contrato.",
+    "platform": "claude",
+    "sender": "user"
+}
+
+### =======================================================================
+### PRUEBA 6: Categoría esperada -> research_and_learning
+### (Testea consultas teóricas y búsqueda de información/conceptos)
+### =======================================================================
+POST https://datascope26-datascope-api.hf.space/api/message
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OSwidXNlcm5hbWUiOiIxMjM0IiwiZW1haWwiOiIxMjM0QGdtYWlsLmNvbSIsImFsbG93ZWRfYWlzIjoie2NoYXRncHQsY2xhdWRlLGdlbWluaSxvdGhlcn0iLCJpYXQiOjE3ODEzNzA1NjIsImV4cCI6MTc4MTM3NDE2Mn0.OEp-hgzz8K28wyGeJ5exj1EPVIqZwWG4ALZu5lZ7Fk4
+Content-Type: application/json
+
+{
+    "content": "¿Me puedes explicar el concepto de Blockchain y cuáles son las diferencias fundamentales entre el mecanismo de consenso Proof of Work y Proof of Stake?",
+    "platform": "chatgpt",
+    "sender": "user"
+}
+
+### =======================================================================
+### PRUEBA 7: Categoría esperada -> brainstorming_and_creativity
+### (Testea generación de ideas e intenciones de marketing/creatividad)
+### =======================================================================
+POST https://datascope26-datascope-api.hf.space/api/message
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OSwidXNlcm5hbWUiOiIxMjM0IiwiZW1haWwiOiIxMjM0QGdtYWlsLmNvbSIsImFsbG93ZWRfYWlzIjoie2NoYXRncHQsY2xhdWRlLGdlbWluaSxvdGhlcn0iLCJpYXQiOjE3ODEzNzQyNDcsImV4cCI6MTc4MTM3Nzg0N30.DHpXn5J_cCsaE4FVYT61e4j4UvIyhxzbmmXQRxp2oqo
+Content-Type: application/json
+
+{
+    "content": "Dame 5 ideas creativas e innovadoras para una campaña de marketing digital en LinkedIn orientada a captar empresas de software interesadas en ciberseguridad.",
+    "platform": "gemini",
+    "sender": "user"
+}
+
+### =======================================================================
+### PRUEBA 8: Categoría esperada -> general_and_support
+### (Testea interacciones casuales, soporte o saludos cotidianos)
+### =======================================================================
+POST https://datascope26-datascope-api.hf.space/api/message
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OSwidXNlcm5hbWUiOiIxMjM0IiwiZW1haWwiOiIxMjM0QGdtYWlsLmNvbSIsImFsbG93ZWRfYWlzIjoie2NoYXRncHQsY2xhdWRlLGdlbWluaSxvdGhlcn0iLCJpYXQiOjE3ODEzNzQyNDcsImV4cCI6MTc4MTM3Nzg0N30.DHpXn5J_cCsaE4FVYT61e4j4UvIyhxzbmmXQRxp2oqo
+Content-Type: application/json
+
+{
+    "content": "¡Hola! Buenos días, espero que estés bien. Quería saber si me puedes ayudar hoy con un par de dudas que tengo sobre la gestión de tareas.",
+    "platform": "claude",
+    "sender": "user"
+}

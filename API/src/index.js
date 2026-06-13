@@ -13,11 +13,12 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+app.get('/', (req, res) => {
+    res.status(200).send("API de DataScope activa y funcionando 🚀");
+});
+
 app.use('/api', routesPrueba);
 
-
-app.listen(3000, ()=>{
-
-    console.log("api corriendo en localhost:"+PORT);
-    
-})
+app.listen(PORT, "0.0.0.0", () => {
+    console.log(`API de DataScope corriendo en el puerto ${PORT}`);
+});
