@@ -13,10 +13,10 @@ export const getInvites = async (req,res)=>{
 
 export const createInvite = async (req, res) =>{
     try{
-        const {targetUserMail} = req.body
+        const {targetUserMail, area} = req.body
         const companyId= req.targetCompanyId
 
-        const invite = await inviteService.createInvite({targetUserMail, companyId})
+        const invite = await inviteService.createInvite({targetUserMail, companyId, area})
 
         res.status(201).json(invite)
     }catch(e){

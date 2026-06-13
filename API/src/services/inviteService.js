@@ -13,14 +13,14 @@ class inviteService {
 
   async createInvite(data){
    
-    validateFields(['companyId', 'targetUserMail'], data)
+    validateFields(['companyId', 'targetUserMail', 'area'], data)
     blockFields(['creationdate'], data)
 
     const targetUser = await userRepository.findByEmail(data.targetUserMail)
     const existing = await inviteRepository.getInvite(targetUser.id, data.companyId)
     if(existing){throw new Error("invite already exists")}
 
-    return await inviteRepository.create({"companyfk": data.companyId, "userfk": targetUser.id, "isadmin": false, "isvalid": true})
+    return await inviteRepository.create({"companyfk": data.companyId, "userfk": targetUser.id, "area": data.area, "isadmin": false, "isvalid": true})
   }
 
   async isAdminOfCompany(data){
@@ -36,5 +36,3 @@ class inviteService {
 }
 
 export default new inviteService();
-
-

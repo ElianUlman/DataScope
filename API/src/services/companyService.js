@@ -3,7 +3,7 @@ import userRepository from "../repositories/userRepository.js"
 import inviteRepository from "../repositories/inviteRepository.js";
 import { pool } from "../db.js";
 
-import { validateFields } from "../utils/validationUtils.js";
+import { validateFields, blockFields } from "../utils/validationUtils.js";
 
 class companyService {
 
