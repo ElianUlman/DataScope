@@ -171,31 +171,36 @@ export async function clasificate() {
         return null
     }
 
+    // Usamos espacios en lugar de guiones bajos para que el modelo entienda el lenguaje natural
     const categorias = [
-        "technical_programming_question",
-        "creative_writing",
-        "data_analysis",
+        "technical programming question",
+        "creative writing",
+        "data analysis",
         "translation",
-        "general_question",
+        "general question",
         "summarization",
-        "email_drafting",
-        "document_editing",
+        "email drafting",
+        "document editing",
         "research",
         "brainstorming",
-        "math_and_calculations",
-        "customer_support",
-        "legal_or_compliance_question",
-        "human_resources",
-        "presentation_or_report_creation"
+        "math and calculations",
+        "customer support",
+        "legal or compliance question",
+        "human resources",
+        "presentation or report creation"
     ]
 
-    const resultado = await clasificador(texto, categorias)
+    // Añadimos un hypothesis_template para darle más contexto direccional al clasificador
+    const resultado = await clasificador(texto, categorias, {
+        hypothesis_template: "This prompt is about {}."
+    })
 
+    // Volvemos a colocar los guiones bajos para no romper tu base de datos
     const clasificacion = {
-        categoria: resultado.labels[0],
+        categoria: resultado.labels[0].replace(/ /g, '_'),
         confianza: parseFloat(resultado.scores[0].toFixed(2)),
         top3: resultado.labels.slice(0, 3).map((label, i) => ({
-            categoria: label,
+            categoria: label.replace(/ /g, '_'),
             confianza: parseFloat(resultado.scores[i].toFixed(2))
         }))
     }
