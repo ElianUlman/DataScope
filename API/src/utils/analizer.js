@@ -1,16 +1,16 @@
+import 'dotenv/config'
 import nlp from 'compromise'
 import natural from 'natural'
 import { pipeline } from '@xenova/transformers'
+import translate from 'translate'
 
 
 import { encoding_for_model, get_encoding } from "tiktoken";
 
 import { GoogleGenAI } from '@google/genai';
-const gemini = new GoogleGenAI({ apiKey: 'AQ.Ab8RN6IL-TNZTZM7op8hJZJPDbK061mJTy27vBCnhuAIu5sByw' }); 
-
+const gemini = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY }); 
 
 let clasificador = null
-let traductor = null
 
 let textoOriginal = ""
 let texto
@@ -24,10 +24,10 @@ let analisis = {
 }
 
 export async function initClasificador() {
-    console.log("Cargando modelos locales de IA (Clasificación y Traducción)...")
-    if (!clasificador) clasificador = await pipeline('zero-shot-classification', 'Xenova/mobilebert-uncased-mnli')
-    if (!traductor) traductor = await pipeline('translation', 'Xenova/opus-mt-es-en')
-    console.log("Modelos listos")
+    console.log("Cargando modelo local de IA (Clasificación)...")
+    // Forzamos quantized: true para asegurar el menor consumo de memoria posible
+    if (!clasificador) clasificador = await pipeline('zero-shot-classification', 'Xenova/mobilebert-uncased-mnli', { quantized: true })
+    console.log("Modelo listo")
 }
 
 export function setPrompt(prompt) {
@@ -36,7 +36,7 @@ export function setPrompt(prompt) {
 }
 
 export async function preProcesarPrompt() {
-    if (clasificador && traductor) {
+    if (clasificador) {
         // Usamos la IA de clasificación Zero-Shot que YA tienes cargada para adivinar el idioma
         const deteccion = await clasificador(textoOriginal, ['english', 'spanish']);
         const idiomaDetectado = deteccion.labels[0];
@@ -46,8 +46,10 @@ export async function preProcesarPrompt() {
 
         if (idiomaDetectado === 'spanish' && confianza > 0.5) {
             console.log("[ANALIZER] Traduciendo prompt al inglés para generar métricas correctas...");
-            const resultado = await traductor(textoOriginal);
-            texto = resultado[0].translation_text;
+            
+            // Usamos la API pública de Google Translate sin costo ni consumo de RAM local
+            translate.engine = 'google';
+            texto = await translate(textoOriginal, { from: 'es', to: 'en' });
             console.log(`[ANALIZER] Texto traducido: "${texto}"`);
         }
     }
