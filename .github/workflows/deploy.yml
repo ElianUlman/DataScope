@@ -1,0 +1,30 @@
+name: Push to Hugging Face Spaces
+
+on:
+  push:
+    branches:
+      - Elian
+    # Esto asegura que solo se dispare si cambias código de la API (asumiendo que está en /src o raíz)
+    paths:
+      - 'src/**'
+      - 'package.json'
+      - 'Dockerfile'
+      - '.github/workflows/deploy.yml'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          lfs: true
+
+      - name: Push a Hugging Face Spaces
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        # Hugging Face usa Git por detrás. Clonamos con fuerza sobre su repositorio para "pisar" los archivos
+        run: |
+          git remote add hf https://user:$HF_TOKEN@huggingface.co/spaces/datascope26/datascope-api
+          git push --force hf Elian:main

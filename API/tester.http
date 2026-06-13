@@ -164,8 +164,8 @@ Content-Type: application/json
 Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OSwidXNlcm5hbWUiOiIxMjM0IiwiZW1haWwiOiIxMjM0QGdtYWlsLmNvbSIsImFsbG93ZWRfYWlzIjoie2NoYXRncHQsY2xhdWRlLGdlbWluaSxvdGhlcn0iLCJpYXQiOjE3ODEzODAxNjgsImV4cCI6MTc4MTM4Mzc2OH0.qdtjgs6zB3soPmsFn98jss0-I8CpPfNux9yXdE74bsE
 
 {
-  "companyId": 1,
-  "targetUserMail": "nuevo_empleado@gmail.com",
+  "companyId": 12,
+  "targetUserMail": "Bot1@gmail.com",
   "area": "Desarrollo"
 }
 
