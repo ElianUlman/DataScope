@@ -10,7 +10,10 @@ const gemini = new GoogleGenAI({ apiKey: 'AQ.Ab8RN6IL-TNZTZM7op8hJZJPDbK061mJTy2
 
 
 let clasificador = null
+let detectorIdioma = null
+let traductor = null
 
+let textoOriginal = ""
 let texto
 let analisis = {
     tokens: [],
@@ -22,13 +25,39 @@ let analisis = {
 }
 
 export async function initClasificador() {
-    console.log("Cargando modelo de IA...")
-    clasificador = await pipeline('zero-shot-classification', 'Xenova/mobilebert-uncased-mnli')
-    console.log("Modelo listo")
+    console.log("Cargando modelos locales de IA (Clasificación, Detección y Traducción)...")
+    if (!clasificador) clasificador = await pipeline('zero-shot-classification', 'Xenova/mobilebert-uncased-mnli')
+    if (!detectorIdioma) detectorIdioma = await pipeline('text-classification', 'Xenova/xlm-roberta-base-language-detection')
+    if (!traductor) traductor = await pipeline('translation', 'Xenova/opus-mt-es-en')
+    console.log("Modelos listos")
 }
 
 export function setPrompt(prompt) {
+    textoOriginal = prompt
     texto = prompt
+}
+
+export async function preProcesarPrompt() {
+    if (detectorIdioma && traductor) {
+        const deteccion = await detectorIdioma(textoOriginal);
+        const idioma = deteccion[0].label;
+        console.log(`[ANALIZER] Idioma detectado: ${idioma} (Confianza: ${(deteccion[0].score * 100).toFixed(2)}%)`);
+
+        if (idioma !== 'en' && idioma === 'es') {
+            console.log("[ANALIZER] Traduciendo prompt al inglés para generar métricas correctas...");
+            const resultado = await traductor(textoOriginal);
+            texto = resultado[0].translation_text;
+            console.log(`[ANALIZER] Texto traducido: "${texto}"`);
+        }
+    }
+
+    // Generamos las palabras (sustantivos, verbos, etc) en base al texto traducido
+    getWords()
+
+    // Generamos los tokens aquí para que la métrica de 'complejidad' no falle
+    const tokenizer = new natural.WordTokenizer()
+    analisis.tokens = tokenizer.tokenize(texto)
+    analisis.tokensUnicos = new Set(analisis.tokens).size
 }
 
 export function getWords() {

@@ -56,7 +56,10 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     }
 
     if (msg.type === "CHECK_SESSION") {
-        isSessionValid().then(valid => sendResponse({ ok: valid }));
+        isSessionValid().then(valid => {
+            console.log(`[EXT BACKGROUND] CHECK_SESSION validado: ${valid}`);
+            sendResponse({ ok: valid });
+        });
         return true;
     }
 

@@ -2,7 +2,7 @@ import { isTokenValid, checkTabAccessPermission, getCurrentAi } from './auth.js'
 import {
     findButton, cleanButtonCandidates, sendbuttonSnapshot,
     checkButton, findElementByFingerprint, checkSameElement,
-    getSendButtonQuery
+    getSendButtonQuery, getDigitalPrint, buttonToString
 } from './buttonDetector.js'
 import { setEditor, configEditor } from './editorDetector.js'
 
@@ -10,6 +10,7 @@ let oldEditorContent = ""
 let sendButton = null
 let isExtensionRunning = false
 let isWaitingForSend = false
+let loggedEditors = new Set()
 
 function sendData(type, content, currentPlatform) {
     try {
@@ -76,16 +77,26 @@ const observer = new MutationObserver((mutationList) => {
 })
 
 function initializeDataScopeExtension() {
+    console.log("[EXT INIT] Inicializando listeners de Data Scope en el DOM...");
     document.addEventListener('focusin', (e) => {
         setEditor(e, (editorElement) => {
-            currentEditor = editorElement
-            configEditor(
-                editorElement,
-                (text) => { oldEditorContent = text },
-                (text) => {
-                    if (text?.trim() !== "") handleSend()
-                }
-            )
+            const editorPrint = buttonToString(getDigitalPrint(editorElement));
+            
+            if (!loggedEditors.has(editorPrint)) {
+                console.log("[EXT NUEVO EDITOR] Se detectó un nuevo editor de texto:", editorElement);
+                loggedEditors.add(editorPrint);
+            }
+
+            if (currentEditor !== editorElement) {
+                currentEditor = editorElement
+                configEditor(
+                    editorElement,
+                    (text) => { oldEditorContent = text },
+                    (text) => {
+                        if (text?.trim() !== "") handleSend()
+                    }
+                )
+            }
         })
     })
 
@@ -93,24 +104,31 @@ function initializeDataScopeExtension() {
 }
 
 async function runExtension() {
+    console.log("[EXT START] Iniciando comprobaciones para ejecutar la extensión...");
     const tokenValido = await isTokenValid();
+    console.log(`[EXT START] Estado del token: ${tokenValido}`);
 
     if (!tokenValido) {
+        console.log("[EXT START] Ejecución abortada: Token inválido o sin sesión.");
         return false;
     }
 
     const storagePrivateMode = await chrome.storage.local.get("user");
     const isPrivateModeActive = storagePrivateMode.user?.privateMode || false;
+    console.log(`[EXT START] Estado del modo privado: ${isPrivateModeActive}`);
 
     if (isPrivateModeActive) {
+        console.log("[EXT START] Ejecución abortada: Modo privado activado.");
         return false;
     }
 
     await checkTabAccessPermission(initializeDataScopeExtension);
+    console.log("[EXT START] Comprobaciones finalizadas.");
     return true;
 }
 
 async function tryStartExtension() {
+    console.log(`[EXT START] tryStartExtension llamado. isExtensionRunning: ${isExtensionRunning}`);
     if (isExtensionRunning) return;
     const success = await runExtension();
     if (success) isExtensionRunning = true;

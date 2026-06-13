@@ -1,6 +1,7 @@
 let sendButtonCandidates = new Set()
 let sendButtonSnapshot
 let sendButtonQuery
+let loggedButtons = new Set()
 let listenersAttached = false
 
 export function getSendButtonQuery() { return sendButtonQuery }
@@ -45,8 +46,15 @@ export function findButton(start, levels, onClickCallback) {
 
         const botones = ancestro.querySelectorAll('button, [role="button"]')
         botones.forEach((boton) => {
+            const botonPrint = buttonToString(getDigitalPrint(boton));
+            
+            if (!loggedButtons.has(botonPrint)) {
+                console.log("[EXT NUEVO BOTON] Se detectó un nuevo candidato a botón de envío:", boton);
+                loggedButtons.add(botonPrint);
+            }
+            
             attachListeners(boton, onClickCallback)
-            sendButtonCandidates.add(buttonToString(getDigitalPrint(boton)))
+            sendButtonCandidates.add(botonPrint)
         })
 
         ancestro = ancestro.parentElement;
