@@ -14,19 +14,18 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 
     if (msg.type === "USER_MESSAGE") {
         (async () => {
-            console.log("[background] USER_MESSAGE recibido — content:", msg.content, "platform:", msg.currentPlatform, "model:", msg.model)
             try {
                 const token = await getToken();
                 if (!token) {
-                    console.warn("[background] no hay token, abortando")
+                    console.warn("[EXT ERROR] Intento de envío de mensaje fallido: No autenticado (sin token).");
                     return sendResponse({ ok: false, error: "No autenticado" });
                 }
-                console.log("[background] token obtenido — llamando sendMessage en api.js")
+                console.log(`[EXT SENDING DATA] Platform: ${msg.currentPlatform} | Model: ${msg.model} | Payload: "${msg.content}"`);
                 const data = await sendMessage(msg.content, msg.currentPlatform, msg.model, token);
-                console.log("[background] sendMessage completado")
+                console.log(`[EXT API RESPONSE] Respuesta al enviar mensaje:`, data);
                 sendResponse({ ok: true });
             } catch (err) {
-                console.error("[background] error:", err.message);
+                console.error("[EXT MESSAGE ERROR] Error detallado al enviar mensaje a la API:", err);
                 sendResponse({ ok: false, error: err.message });
             }
         })();
@@ -49,7 +48,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
                     sendResponse({ ok: false, error: data.error || "Credenciales incorrectas" });
                 }
             } catch (err) {
-                console.error("Error en login:", err.message);
+                console.error("[EXT LOGIN ERROR] Fallo al intentar iniciar sesión:", err);
                 sendResponse({ ok: false, error: err.message });
             }
         })();

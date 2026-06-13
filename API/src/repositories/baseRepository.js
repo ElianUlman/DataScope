@@ -10,7 +10,18 @@ export default class BaseRepository {
 
   async query(sql, params, client) {
     const executor = client || pool;
-    return executor.query(sql, params);
+    try {
+      console.log(`[API DB] Intentando operar en base de datos. Tabla: ${this.table}`);
+      const result = await executor.query(sql, params);
+      console.log(`[API DB SUCCESS] Operación exitosa en base de datos. Tabla: ${this.table}`);
+      return result;
+    } catch (error) {
+      console.error(`[API DB ERROR] Fallo al operar en la base de datos. Tabla: ${this.table}`);
+      console.error(`[API DB ERROR DETAILS] SQL Ejecutado: ${sql}`);
+      console.error(`[API DB ERROR DETAILS] Parámetros:`, params);
+      console.error(`[API DB ERROR DETAILS] Mensaje de error:`, error);
+      throw error;
+    }
   }
 
   async getAll() {

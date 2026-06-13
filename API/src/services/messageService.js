@@ -42,10 +42,6 @@ class messageService {
 
     
     async uploadMessage(data) {
-        // 🔴 LOG 1: Ver qué contiene exactamente el objeto "data" que llegó al servicio
-        console.log("=== [BACKEND SERVICIO] Objeto 'data' recibido ===");
-        console.log(data);
-        
         validateFields(['user_id', 'content', 'sender', 'platform'], data)
         blockFields(['creation_datetime'], data)
         
@@ -66,11 +62,13 @@ class messageService {
         await initClasificador();
         const {categoria: category} = await clasificate();
 
+        console.log(`[API MESSAGE RECEIVED] Plataforma: ${data.platform} | Categoría: ${category} | Contenido: "${data.content}"`);
+
         const objectStatistics={
             message_id: 0,
-            //used_tokens: cantTokens,
+            used_tokens: 1,
             latency_ms: 1,
-            //estimated_cost: (cantTokens*0.0000001),
+            estimated_cost: (1*0.0000001),
             category: category,
             clarity: 1,
             complexity: await averageComplexity(),
@@ -82,16 +80,8 @@ class messageService {
         try{
             await client.query('BEGIN')
             
-            // 🔴 LOG 2: Ver el objeto justo un milisegundo antes de ejecutar el INSERT en la BD
-            console.log("=== [BACKEND SERVICIO] Pasando 'data' a BaseRepository ===");
-            console.log(data);
-
             const message = await messageRepository.create(data, client) //need to use the id
             
-            // 🔴 LOG 3: Ver qué devolvió la base de datos tras el insert
-            console.log("=== [BACKEND SERVICIO] Respuesta de messageRepository.create ===");
-            console.log(message);
-
             objectStatistics.message_id=message.id
             
             await statisticRepository.create(objectStatistics, client)
@@ -103,6 +93,7 @@ class messageService {
         } catch (error) {
 
             await client.query('ROLLBACK')
+            console.error(`[API MESSAGE ERROR] Ocurrió un error al intentar procesar y guardar el mensaje:`, error);
             throw new Error(error.message)
 
         } finally {

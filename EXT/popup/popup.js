@@ -16,13 +16,10 @@ document.getElementById("sesion").addEventListener("submit", async (e) => {
         payload: data
     });
 
-    console.log("Respuesta de la API recibida en popup:", response);
+    console.log("[EXT LOGIN API RESPONSE] Respuesta recibida al loguearse:", response);
 
     if (response && response.ok) {
-        console.log("¡Login aprobado!");
-
         chrome.storage.local.set({ token: response.token }, () => {
-            console.log("Token escrito con éxito.");
             verificarPantalla();
         });
 
@@ -41,11 +38,9 @@ function verificarPantalla() {
         const seccionPrincipal = document.getElementById("conSesion");
 
         if (result.token) {
-            console.log("Vista activa: CON SESIÓN");
             if (seccionAuth) seccionAuth.style.display = "none";
             if (seccionPrincipal) seccionPrincipal.style.display = "block";
         } else {
-            console.log("Vista activa: SIN SESIÓN");
             if (seccionAuth) seccionAuth.style.display = "block";
             if (seccionPrincipal) seccionPrincipal.style.display = "none";
         }
@@ -60,7 +55,7 @@ const btnLogout = document.getElementById("btn-logout");
 if (btnLogout) {
     btnLogout.addEventListener("click", () => {
         chrome.runtime.sendMessage({ type: "LOGOUT" }, () => {
-            console.log("Sesión eliminada.");
+            console.log("[EXT LOGOUT] Sesión cerrada y eliminada exitosamente.");
             verificarPantalla();
         });
     });
@@ -74,6 +69,8 @@ const handlePrivateMode = async () => {
     const isPrivateModeActive = currentUserData.privateMode || false;
 
     const newPrivateModeState = !isPrivateModeActive;
+
+    console.log(`[EXT PRIVATE MODE] Modo privado cambiado a: ${newPrivateModeState ? 'ACTIVADO' : 'DESACTIVADO'}`);
 
     updateBtnText(newPrivateModeState)
 

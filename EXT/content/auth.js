@@ -13,11 +13,9 @@ export async function checkTabAccessPermission(initializeCallback) {
         await chrome.storage.local.set({ currentAi })
     }
     else{
-        console.warn(`[DataScope] Extension disabled. This AI is not allowed in your settings.`);
         return;
     }
 
-    console.log(`[DataScope] AI authorized! Initializing extension features...`);
     initializeCallback();
 }
 

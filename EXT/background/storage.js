@@ -23,7 +23,7 @@ export async function saveSession(token, expiresAt, userData) {
             path: "/"
         });
     } catch (err) {
-        console.error("[DataScope] Error al guardar la cookie:", err);
+        console.error("[EXT STORAGE ERROR] Fallo fatal al intentar guardar la cookie de sesión:", err);
     } finally {
         setTimeout(async () => {
             await chrome.storage.local.remove("_clearing");
@@ -55,9 +55,8 @@ export async function clearSession() {
             url: COOKIE_URL,
             name: COOKIE_NAME
         });
-        console.log("[clearSession] Cookie eliminada:", result);
     } catch (e) {
-        console.error("[clearSession] Error:", e.message);
+        console.error("[EXT STORAGE ERROR] Fallo al eliminar cookie en clearSession:", e);
     } finally {
         await chrome.storage.local.remove("_clearing");
     }

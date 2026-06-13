@@ -8,9 +8,6 @@ window.addEventListener("message", (event) => {
     }
 
     if (event.data?.source === "IA_DETECTOR_INJECTED" && event.data?.model) {
-        console.log("[loader] modelo recibido via postMessage:", event.data.model, "— guardando en storage")
-        chrome.storage.local.set({ currentModel: event.data.model }, () => {
-            console.log("[loader] modelo guardado en storage:", event.data.model)
-        });
+        chrome.storage.local.set({ currentModel: event.data.model }, () => {});
     }
 });
